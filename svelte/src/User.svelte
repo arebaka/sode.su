@@ -4,7 +4,6 @@
     export let api;
     export let lang;
     export let dict;
-    export let path;
     export let params;
 
     let profile;

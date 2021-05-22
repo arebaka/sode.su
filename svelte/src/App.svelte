@@ -86,9 +86,7 @@
 	let api;
 	let lang;
 	let dict;
-	let path   = location.pathname.split('/');
 	let params = getUrlParams();
-	path.shift();
 
 	let ui = {
 		menu: {
@@ -242,8 +240,8 @@
 	<div id="toasts"></div>
 
 	<main id="container">
-		{#if path[0].startsWith('@')}
-			<User api={api} lang={lang} dict={dict} path={path} params={params}/>
+		{#if /^\/@[^\/]*$/.test(location.pathname)}
+			<User api={api} lang={lang} dict={dict} params={params}/>
 		{:else}
 			<Error code={parseInt(document.getElementById("status-code").getAttribute("content"))}/>
 		{/if}

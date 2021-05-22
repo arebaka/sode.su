@@ -37,7 +37,7 @@ router.get("/:entityType(@|~):entityId", async (req, res, next) => {
     if (!profile)
         return next(404);
     if (!isNaN(req.params.entityId) && profile.alias)
-        return res.redirect(req.path.replace(req.params.entityId, alias));
+        return res.redirect(req.path.replace(req.params.entityId, profile.alias));
 
     res
         .type(".html")
