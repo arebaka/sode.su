@@ -6,8 +6,7 @@ const cookieParser = require("cookie-parser");
 const useragent    = require("express-useragent");
 const helmet       = require("helmet");
 const csrf         = require("csurf");
-
-const { compress, decompress } = require("express-compress");
+const compression  = require("compression");
 
 const indexRouter  = require("./routes");
 const i18nRouter   = require("./routes/i18n");
@@ -39,8 +38,7 @@ class Server
         this.app.use(useragent.express());
         this.app.use(helmet());
 //        this.app.use(csrf({ cookie: true }));
-        this.app.use(compress());
-        this.app.use(decompress());
+        this.app.use(compression());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 
