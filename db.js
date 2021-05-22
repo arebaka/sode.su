@@ -55,6 +55,35 @@ class DBHelper
         await this.start();
     }
 
+    makeSalt(length)
+    {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let   res = [];
+
+        for (let i = 0; i < length; i++) {
+            res.push(chars.charAt(Math.floor(
+                Math.random() * chars.length
+            )));
+        }
+
+        return res.join('');
+    }
+
+    async getUser(id) {
+        let user = await this.pool.query(`
+                select * from ${entityTables["user"].account}
+                where id = $1
+            `, [
+                id
+            ]);
+
+        user = user.rows[0];
+        if (!user)
+            return null;
+
+        return user;
+    }
+
     async getProfile(entityType, entityId)
     {
         let profile = await this.pool.query(`
@@ -87,6 +116,28 @@ class DBHelper
             return null;
 
         return bio.text;
+    }
+
+    async createUser(id, username, name, authDT)
+    {
+        await this.pool.query("insert into entities default values");
+
+        let entityId = await this.pool.query("select last_value from entities_id_seq");
+        entityId = entityId.rows[0].last_value;
+
+        await this.pool.query(`
+                insert into ${entityTables["user"].account} (id, entity_id, tg_id, tg_username, auth_dt, salt)
+                values ($1, $2, $3, $4, $5, $6)
+            `, [
+                id, entityId, id, username, new Date(authDT * 1000).toUTCString(), this.makeSalt(32)
+            ]);
+
+        await this.pool.query(`
+                insert into ${entityTables["user"].profile} (id, alias, cover_image_id, avatar_image_id, bio_id, name)
+                values ($1, $2, $3, $4, $5, $6)
+            `, [
+                id, username, null, null, 1, name
+            ]);
     }
 }
 

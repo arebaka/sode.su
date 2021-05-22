@@ -24,10 +24,22 @@ router.post("/auth", async (req, res, next) => {
         dataCheck = dataCheck
             .join('\n');
 
-        if (crypto.createHmac("sha256", db.tgSecretKey).update(dataCheck).digest("hex") === hash)
+        if (crypto.createHmac("sha256", db.tgSecretKey).update(dataCheck).digest("hex") === hash) {
+            let status = 200;
+            let user   = await db.getUser(req.body.id);
+
+            if (!user) {
+                await db.createUser(req.body.id, req.body.username, req.body.first_name, req.body.auth_date);
+                status = 201;
+            }
+
             return res
-                .status(200)
-                .json({ status: api.errors.ok });
+                .status(status)
+                .json({
+                    status: api.errors.ok,
+                    userid: req.body.id
+                });
+        }
 
         res
             .status(401)
