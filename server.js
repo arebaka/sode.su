@@ -74,13 +74,24 @@ class Server
         this.app.use("/",        indexRouter);
         this.app.use("/api",     apiRouter);
 
+        this.app.all(/.*/, (req, res, next) => next(404));
+
         this.app.use((err, req, res, next) => {
             console.error(err, req.path);
             res
                 .status(err)
                 .type(".html")
                 .set("Cache-Control", "public, max-age: 0")
-                .sendFile(path.resolve(`html/errors/${err}.html`));
+                .send(cache.page({
+                    status:    err,
+                    lang:      i18n[res.locals.clientLang].meta.lang,
+                    descr:     i18n[res.locals.clientLang].errors[404].descr,
+                    url:       req.hostname + req.path,
+                    css:       "css/basic.css",
+                    canonical: req.hostname + req.path,
+                    title:     i18n[res.locals.clientLang].errors[404].title,
+                    type:      "website"
+                }));
         });
 
         if (this.port == 443) {

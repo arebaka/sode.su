@@ -251,6 +251,19 @@ body {
   margin: .5rem;
   cursor: pointer; }
 
+#error-code {
+  font-family: Mono;
+  font-size: 10rem;
+  line-height: 15rem;
+  text-align: center;
+}
+#error-title {
+  font-family: Mono;
+  font-size: 5rem;
+  line-height: 10rem;
+  text-align: center;
+}
+
 /****** Загрузочный фрейм и прелоадеры ******/
 #preloader,
 .preloader {

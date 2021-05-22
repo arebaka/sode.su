@@ -5,6 +5,12 @@ module.exports = {
 			separator:       ", ",
 			super_separator: "; "
 		},
+		errors: {
+			[404]: {
+				title: "404 – sode.su",
+				descr: "Not Found"
+			}
+		},
 		index: {
 			title: "sode.su – an antisocial network",
 			descr: "A social network with cool markup and custom themes for doomers and other autists."
@@ -22,6 +28,12 @@ module.exports = {
 			lang:            "ru",
 			separator:       ", ",
 			super_separator: "; "
+		},
+		errors: {
+			[404]: {
+				title: "404 – sode.su",
+				descr: "Not Found"
+			}
 		},
 		index: {
 			title: "sode.su – анонимная социальная сеть",
