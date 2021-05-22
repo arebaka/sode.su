@@ -252,33 +252,22 @@ body {
   cursor: pointer; }
 
 /****** Загрузочный фрейм и прелоадеры ******/
-#preloader {
-  z-index: 100;
+#preloader,
+.preloader {
+  z-index: 1000;
   position: fixed;
-  top: 40vh;
-  right: 40vw;
-  bottom: 40vh;
-  left: 40vw;
-  display: none;
-  background-color: #F0F8FF;
-  border: 2vh ridge #7D80B8;
-  border-radius: 50%;
-  box-shadow: 0 0 5px #7D80B8; }
-
-.night #preloader {
-  background-color: #000;
-  border-color: #212D3B;
-  box-shadow: none; }
-
-#preloader p {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   font: 0.9rem/2rem Buttons, Emoji, Basic, sans-serif;
   font-size: 2rem;
   font-weight: bold;
   text-align: center;
-  line-height: 16vh;
-  color: #EF798A; }
+  line-height: 100vh;
+  color: #7D80B8; }
 
-.night #preloader p {
+.night #preloader {
   color: #CECECE; }
 
 .preloader, .ring-preloader {
@@ -511,6 +500,7 @@ body {
 #auth {
   z-index: 100;
   position: fixed;
+  top: 0;
   right: 0;
   float: right;
   height: 2.4rem; }

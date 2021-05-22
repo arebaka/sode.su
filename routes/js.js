@@ -7,7 +7,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get("/*.js", (req, res, next) => {
+router.get("/:name.js", (req, res, next) => {
     res
         .type(".js")
         .sendFile(path.resolve(`public/js${req.path}`), err => {

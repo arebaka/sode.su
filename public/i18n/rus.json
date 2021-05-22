@@ -1,36 +1,36 @@
 {
 	"time": {
-		"forever": "foverer",
-		"today": "today at {{TIME}}",
-		"yesterday": "yesterday at {{TIME}}",
-		"tomorrow": "tomorrow at {{TIME}}"
+		"forever": "навсегда",
+		"today": "сегодня в {{TIME}}",
+		"yesterday": "вчера в {{TIME}}",
+		"tomorrow": "завтра в {{TIME}}"
 	},
 	"langs": {
-		"epo": "Esperanto",
-		"eng": "English",
-		"rus": "Russian",
-		"mol": "Moldavian",
-		"ukr": "Ukrainian",
-		"nih": "Japanese",
-		"zho": "Chinese",
-		"esp": "Spanish",
-		"fra": "French",
-		"deu": "Deutch",
-		"ara": "Arabish",
-		"hin": "Hindi",
-		"ben": "Bengali",
-		"por": "Portuguese",
-		"han": "Korean",
-		"ita": "Italian",
-		"vie": "Vietnamese",
-		"ind": "Indonesian",
-		"tur": "Turkish",
-		"pol": "Polish",
-		"fas": "Farsi",
-		"nld": "Dutch",
-		"swe": "Swedish",
-		"bel": "Belorussian",
-		"ron": "Romanian"
+		"epo": "Эсперанто",
+		"eng": "Английский",
+		"rus": "Русский",
+		"mol": "Молдавский",
+		"ukr": "Украинский",
+		"nih": "Японский",
+		"zho": "Китайский",
+		"esp": "Испанский",
+		"fra": "Французский",
+		"deu": "Немецкий",
+		"ara": "Арабский",
+		"hin": "Хинди",
+		"ben": "Бенгальский",
+		"por": "Португальский",
+		"han": "Корейский",
+		"ita": "Итальянский",
+		"vie": "Вьетнамский",
+		"ind": "Индонезийский",
+		"tur": "Турецкий",
+		"pol": "Польский",
+		"fas": "Фарси",
+		"nld": "Нидерландский",
+		"swe": "Шведский",
+		"bel": "Белорусский",
+		"ron": "Румынский"
 	},
 	"preloader": "Загрузка...",
 	"topnav": {
@@ -57,204 +57,76 @@
 		"music": "Музыка"
 	},
 	"self_menu": {
-		"home": "My homepage",
-		"settings": "Settings",
-		"themes": "Design themes",
-		"bookmarks": "Bookmarks",
-		"stickers": "Stickers",
-		"polls": "Polls",
-		"moderation": "Moderation",
-		"log_out": "Log out",
-		"lang": "Language"
+		"home": "Моя страница",
+		"settings": "Настройки",
+		"themes": "Темы оформления",
+		"bookmarks": "Закладки",
+		"stickers": "Стикеры",
+		"polls": "Опросы",
+		"moderation": "Модерация",
+		"log_out": "Выйти",
+		"lang": "Язык"
 	},
 	"copyright": "Sode.su © 2019-2021",
-	"index": {
-		"title": "sode.su – an antisocial network",
-		"heading": "Welcome to anonymous antisocial network",
-		"intro": "Sode.su (そうです) is an antisocial rather than social network. Nobody cares about your age or gender here. There are only three prepared fields in your profile for auto-configuration bots: location, languages ​​and website. No sources of inspiration, no attitude to alcohol, smoking and anal sex. Instead of filling out a carbon copy profile, you are given another tool: a powerful markup language. You can embed <a href='https://sode.su'>links</a> into any part of the text, insert images, videos and music anywhere, <i>italicize</i> words, <ins>underline</ins>, cover with <mark>spoilers</mark> and do a lot of other perversions. Not only in the profile, this markup is available everywhere: in posts, comments, messages... Want more? Write your own style sheet for your page, and your profile design will be transformed for everyone who visits it. As with any social network, you can make friends here. Only now you cannot show off them, they are all hidden. Choose your friends wisely, not just for show. The number of members of every group is also hidden, and under its posts, in addition to likes, there are dislikes. Authors of both are not displayed, only the rating is known. Dont like something? Do you bet that the main thing on the internet is the approval of the celebrities, and the price of each statement is determined by the authority of the author? Then boldly turn around and drag your elastic ass out of here, because here there is an opportunity not to sign your posts and comments at all, but to leave them anonymously, on behalf of a special user – <a href='@0'>Anonym</a>. Moreover, Anonym is available even for unregistered visitors. Registration, of course, gives you some advantages: your own profile and wall, messages, friends, but you can use sode.su fully as an imageboard without registration. If you are interested, we suggest that you familiarize yourself with the markup in more detail, the name of which is Simple Markup (SMU). You can call it Super Markup for fun.",
-		"layout": "<hr /> <h1># Heading</h1> <h2>## Heading<h2> <h3>### Heading</h3> <p><span class='reply'>&gt;&gt;123</span> (reply)</p> <blockquote>&gt; quote (the space after &gt; is required)</blockquote> <br /> <p>*[<b>Bold</b>]* <br />%[<i>Italic</i>]%<br /> _[<ins>Underline</ins>]_<br /> ^[<span class='overline'>Overline</span>]^<br /> ~[<del>Strikethrough</del>]~<br /> +[<sup>Superscript</sup>]+<br /> &[<sub>Subscript</sub>]&<br /> `[<tt>Monospase</tt>]`<br /> =[<mark>Spoiler</mark>]=<br /> <br /> [[link to the image] optional alt]<br /> [{link to the video} optional link to the poster]<br /> {[link to the track] optional title}<br /> {{<a href='https://sode.su'>https://sode.su</a>}} (direct link)<br /> {{https://sode.su} different link text}</p> <br /> <ul><li>- item of unordered list</li> <li>- another item</li></ul> <br /> <ul style='list-style: none;'><li>0. item of ordered list, 0 will turn into 1</li> <li>0. another item, 0 will turn into 2</li></ul> <br /> <p>--- (horizontal rule)</p> <hr />",
-		"stats": {
-			"count": {
-				"intro": "You will soon try these brackets and hyphens yourself. In addition, there are ubiquitous mentions of users (<span class='mention username'>@username</span>) and clubs (<span class='mention clubname'>~clubname</span>), and <span class='hashtag'>#hashtags</span>. All types of groups are called clubs here: publics, boards and just private corrals. In fact, such aliases for mentions and the address bar (such as <span class='mention username'>@username</span>) simply cannot be taken. Let's say someone takes the username <span class='mention username'>@putin</span>, and then the real putin joins the social network and will pull us on the testicles for a long time. In this situation, of course, we would have made a decision in favor of an anonym rather than some kind of president, but if someone else creates a club <span class='mention clubname'>~apple</span>, and then the real CEO of Apple Inc will appear, it is will be inconvenient. Let's be honest, we are not very willing to issue such nicknames, but we give everyone a numeric identifier. For example, Anonym's profile: <span class='mention username'>@0</span>, and the profile of the creator of this chicken coop: <span class='mention username'>@1</span>. Other users, of course, have longer numbers and not so pretty, but you should not dwell on their beauty. Your number is native, and for you, it is the most beautiful. It is even better if there is more entropy in it, it emphasizes your individuality. Although, you know, I changed my mind. Take your favorite username, but remember that I reserve the right to take it back from you one day. <br /> Now look how many anonyms have already joined us before you and how much content they have created.",
-				"users": "Total users: ",
-				"clubs": "Total clubs: ",
-				"club_members": "Total members of all clubs: ",
-				"posts": "Total posts: ",
-				"post_comments": "Total comments to all posts: ",
-				"confas": "Total group chats (confas): ",
-				"messages": "Total messages: ",
-				"confa_members": "Total members of all confas: ",
-				"voice_stock": "Total grinded voices (a joint stock): ",
-				"images": "Total original images: ",
-				"videos": "Total original videos: ",
-				"music": "Total original tracks (of music): ",
-				"themes": "Total original themes: ",
-				"fonts": "Total original fonts: ",
-				"stickers": "Total original stickers: ",
-				"stickerpacks": "Total stickerpacks: ",
-				"polls": "Total polls: ",
-				"voices": "Total voice messages: ",
-				"scheduled_posts": "Total scheduled posts: ",
-				"scheduled_messages": "Total scheduled messages: "
-			},
-			"average": {
-				"intro": "As you can see, sode.su has already achieved excellent results and continues to develop. The date of birth of the social network is April 27, 2019. In just the first year, it reached over 0 million new users. Now let's take a look at the average values.",
-				"friends": "Average # of friends one user has: ",
-				"wall_posts": "Average # of posts on one wall: ",
-				"private_messages": "Average # of messages in one private chat: ",
-				"confa_messages": "Average # of messages in one confa: ",
-				"sitckerpack_stickers": "Average # of stickers in one stickerpack: ",
-				"club_members": "Average # of members in one club: ",
-				"post_comments": "Average # of comments to one post: ",
-				"image_comments": "Average # of comments to one image: ",
-				"video_comments": "Average # of comments to one video: ",
-				"theme_comments": "Average # of comments to one theme: ",
-				"font_comments": "Average # of comments to one font: ",
-				"post_rating": "Average post rating: ",
-				"image_rating": "Average image rating: ",
-				"video_rating": "Average video rating: ",
-				"theme_rating": "Average theme rating: ",
-				"font_rating": "Average font rating: "
-			},
-			"hashtags": {
-				"intro": "To be honest, we would like to add more statistics here. If you have any ideas, send your suggestions to <a href='mailto:feedback@sode.su'>feedback@sode.su</a>. Remember there are hashtags here? We are not against trends, and we also keep a summary of popular tags for the last week. Here are 15 of the best."
-			},
-			"weekly_top": {
-				"intro": "If you carefully counted the hashtags and caught us in an undercount, it simply means that there were less than 15 hashtags in the last week. Considering the crazy popularity of sode.su, you might not even see anything in the trends at all, it is just that one text pad is followed by another without any useful information between them. That means that you urgently need to go to some club and write a post with a meaning and a couple of hashtags. Just do not write any trash about the cocks and anuses. If there are no ideas, it is better to leave trending hashtags empty. Another anonymous person will come soon with something to say. For now, let's take a look at the last piece of statistics – the most popular content of all sections <strong>for the last week</strong>.",
-				"reposts": {
-					"intro": "3 most reposted posts:"
-				},
-				"post_ratings": {
-					"intro": "3 most rated posts (by likes and dislikes):"
-				},
-				"image_ratings": {
-					"intro": "3 most rated images:"
-				},
-				"video_ratings": {
-					"intro": "3 most rated videos:"
-				},
-				"video_views": {
-					"intro": "3 most viewed videos:"
-				},
-				"music_listening": {
-					"intro": "3 most listened tracks:"
-				},
-				"post_comments": {
-					"intro": "3 most commented posts:"
-				},
-				"image_comments": {
-					"intro": "3 most commented images:"
-				},
-				"video_comments": {
-					"intro": "3 most commented videos:"
-				},
-				"image_savings": {
-					"intro": "3 most saved images:"
-				},
-				"video_savings": {
-					"intro": "3 most saved videos:"
-				},
-				"music_savings": {
-					"intro": "3 most saved tracks:"
-				}
-			},
-			"top": {
-				"intro": "Here, too, some values may be missing for the same annoying reason. In addition, if you are looking at this page in the summer of 2020, a lot of the new functionality has not been finalized for you yet. Now for a surprise. This was not the last piece of statistics. Admit it, you are interested in finding out the most popular content not only in a week, but all the time? We admit in return that it is even easier for us to get such values, since we dont need to process the date. And since we understood each other, let's take a look at the global top of all goodies.",
-				"reposts": {
-					"intro": "3 most reposted posts:"
-				},
-				"post_ratings": {
-					"intro": "3 most rated posts:"
-				},
-				"image_ratings": {
-					"intro": "3 most rated images:"
-				},
-				"video_ratings": {
-					"intro": "3 most rated videos:"
-				},
-				"video_views": {
-					"intro": "3 most viewed videos:"
-				},
-				"music_listening": {
-					"intro": "3 most listened tracks:"
-				},
-				"post_comments": {
-					"intro": "3 most commented posts:"
-				},
-				"image_comments": {
-					"intro": "3 most commented images:"
-				},
-				"video_comments": {
-					"intro": "3 most commented videos:"
-				},
-				"image_savings": {
-					"intro": "3 most saved images:"
-				},
-				"video_savings": {
-					"intro": "3 most saved videos:"
-				},
-				"music_savings": {
-					"intro": "3 most saved tracks:"
-				}
-			},
-			"extra": {
-				"intro": "And finally,",
-				"hashtags": "Top 3 hashtags of all time:",
-				"bookmarks": "Top 3 bookmarked posts:",
-				"stikerpacks": "Top 3 saved stickerpacks:",
-				"user_langs": "Top 3 languages users speak:",
-				"club_langs": "Top 3 languages clubs use:",
-				"confa_langs": "Top 3 languages confas use:",
-				"confa_commands": "3 most used commands in confas:",
-				"largest_club_members": "# of members of the largest club: ",
-				"largest_confa_members": "# of members of the largest confa: "
-			}
-		},
-		"auth": {
-			"intro": "Perhaps you have a question: can you do anything here, especially if you hide under the guise of Anonym? Well, trolling and other fatness will really not be punished by the administration of sode.su, but may cause a backlash from the administrators of the clubs. And content protected by copyright and any prohibition like cp will already bring you to justice: you will get a hammer for a week. In general, it is better not to behave like cattle from 4chan. It has been noticed that when trying to crap everything, people often forget to take off their pants. Now, if you have gotten to this line, it is time to join us. All you need is your email for confirmation. You can take a temporary one, but then if you lose your password, you will hardly be able to recover it. We do not send spam and do not advise you. Come on, click one of these buttons, buddy. Or you can walk anonymously for now, take a closer look at the local coloring. To do this, look in the \"Clubs\" section for some interesting saloon with an open wall or comments. Nobody will ever take away the ability to write anonymously. On the contrary, club admins can establish forced anonymity. Unless some kind of social whore will ban Anonym, but what whatever it takes, there are no rules for polite moderation here."
-		}
-	},
-	"log_in": {
-		"title": "Logging in",
-		"errors": {
-			"title": "Logging in failed",
-			"invalid_data": "The email address is invalid."
-		}
-	},
-	"log_out": {
-		"title": "Logging out",
-		"text": "Log out of your account?<br />The session will be destroyed.",
-		"yes": "Yes",
-		"no": "No"
-	},
 	"popups": {
 		"buttons": {
-			"yes": "Yes",
-			"no": "No"
+			"yes": "Да",
+			"no": "Нет"
 		},
 		"cookies": {
 			"title": "The site uses cookies",
 			"text": "By continuing to use the site, you agree to the conditions for the processing of pesonal data and <a href='https://www.termsfeed.com/blog/sample-cookies-policy-template'>the use of cookie files</a>."
 		},
 		"links": {
-			"post": "Link to the post",
-			"image": "Link to the image",
-			"video": "Link to the video",
-			"music": "Link to the track"
+			"post": "Ссылка на запись",
+			"image": "Ссылка на пикчу",
+			"video": "Ссылка на видео",
+			"music": "Ссылка на трек"
 		}
 	},
 	"errors": {},
 	"markup": {
-		"heading": "Heading",
-		"quote": "Quote",
-		"bold": "Bold",
-		"italic": "Italic",
-		"underline": "Underline",
-		"overline": "Overline",
-		"strikethrough": "Strikethrough",
-		"superscript": "Superscript",
-		"subscript": "Subscript",
-		"monospace": "Monospace",
-		"spoiler": "Spoiler"
+		"heading": "Заголовок",
+		"quote": "Цитата",
+		"bold": "Полужирный",
+		"italic": "Курсив",
+		"underline": "Подчёркнутый",
+		"overline": "Надчёркнутый",
+		"strikethrough": "Зачёркнутый",
+		"superscript": "Суперскрипт",
+		"subscript": "Субскрипт",
+		"monospace": "Моноширинный",
+		"spoiler": "Спойлер"
+	},
+	"log_in": {
+		"title": "Вход",
+		"errors": {
+			"title": "Ошибка входа",
+			"unauthorized": "Неудачно.",
+			"invalid_data": "Неверный запрос."
+		}
+	},
+	"log_out": {
+		"title": "Выход",
+		"text": "Выйти из аккаунта?<br />Сессия будет уничтожена.",
+		"yes": "Да",
+		"no": "Нет"
+	},
+	"index": {},
+	"profile": {
+		"user": {
+			"default": {
+				"name": "Анон",
+				"bio": "Образец биографии."
+			},
+			"buttons": {
+				"chat": "Открыть чат",
+				"friend": "Добавить в друзья",
+				"theme": "Тема оформления",
+				"images": "Пикчи",
+				"videos": "Видео",
+				"music": "Музыка"
+			}
+		}
 	}
 }

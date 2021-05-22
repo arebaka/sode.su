@@ -17,7 +17,7 @@ router.get("/:name.css", async (req, res, next) => {
         });
 });
 
-router.get("/fonts/*.ttf", async (req, res, next) => {
+router.get("/fonts/:name.ttf", async (req, res, next) => {
     res
         .type(":name.ttf")
         .sendFile(path.resolve(`public/css${req.path}`), err => {

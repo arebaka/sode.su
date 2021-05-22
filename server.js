@@ -9,13 +9,14 @@ const csrf         = require("csurf");
 
 const { compress, decompress } = require("express-compress");
 
-const indexRouter = require("./routes");
-const i18nRouter  = require("./routes/i18n");
-const imgRouter   = require("./routes/img");
-const cssRouter   = require("./routes/css");
-const htmlRouter  = require("./routes/html");
-const jsRouter    = require("./routes/js");
-const apiRouter   = require("./routes/api");
+const indexRouter  = require("./routes");
+const i18nRouter   = require("./routes/i18n");
+const imgRouter    = require("./routes/img");
+const cssRouter    = require("./routes/css");
+const layoutRouter = require("./routes/layouts");
+const jsRouter     = require("./routes/js");
+const entityRouter = require("./routes/entities");
+const apiRouter    = require("./routes/api");
 
 const db    = require("./db");
 const api   = require("./api");
@@ -64,16 +65,17 @@ class Server
             next();
         });
 
-        this.app.use("/i18n", i18nRouter);
-        this.app.use("/img",  imgRouter);
-        this.app.use("/css",  cssRouter);
-        this.app.use("/html", htmlRouter);
-        this.app.use("/js",   jsRouter);
-        this.app.use("/api",  apiRouter);
-        this.app.use("/",     indexRouter);
+        this.app.use("/i18n",    i18nRouter);
+        this.app.use("/img",     imgRouter);
+        this.app.use("/css",     cssRouter);
+        this.app.use("/layouts", layoutRouter);
+        this.app.use("/js",      jsRouter);
+        this.app.use("/",        entityRouter);
+        this.app.use("/",        indexRouter);
+        this.app.use("/api",     apiRouter);
 
         this.app.use((err, req, res, next) => {
-            console.error(err);
+            console.error(err, req.path);
             res
                 .status(err)
                 .type(".html")

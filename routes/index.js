@@ -55,9 +55,9 @@ router.get("/", async (req, res) => {
         .send(cache.page({
             lang:      i18n[res.locals.clientLang].meta.lang,
             descr:     i18n[res.locals.clientLang].index.descr,
-            url:       `${api.host}/`,
+            url:       `${api.hostname}/`,
             css:       "css/index.css",
-            canonical: `${api.host}/`,
+            canonical: `${api.hostname}/`,
             title:     i18n[res.locals.clientLang].index.title,
             type:      "website"
         }));

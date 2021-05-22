@@ -1,9 +1,15 @@
 const crypto = require("crypto");
 const pg     = require("pg");
 
-entityTables = {
-    "user": "users",
-    "club": "clubs"
+const entityTables = {
+    "user": {
+        account: "users",
+        profile: "user_profiles"
+    },
+    "club": {
+        account: "clubs",
+        profile: "club_profiles"
+    }
 };
 
 class DBHelper
@@ -49,37 +55,38 @@ class DBHelper
         await this.start();
     }
 
-    async getImage(album_owner_type, album_owner_id, album_id, image_hash, image_type)
+    async getProfile(entityType, entityId)
     {
-        let album = await this.pool.query(`
-                select a.id, a.commentable from albums a
-                join entities e on e.id = a.owner_id
-                join ${entityTables[album_owner_type]} u on u.entity_id = e.id
-                where u.id = ${isNaN(album_owner_id)
-                    ? "select user_id from user_profiles where username = $2"
-                    : "$2"}
-                and a.id = $3
+        let profile = await this.pool.query(`
+                select * from ${entityTables[entityType].profile}
+                where ${isNaN(entityId) ? "alias" : "id"} = $1
             `, [
-                album_owner_type, album_owner_id, album_id
-        ]);
-        album = album.rows[0];
-        if (!album)
+                entityId
+            ]);
+
+        profile = profile.rows[0];
+        if (!profile)
             return null;
 
-        let image = await this.pool.query(`
-                select i.id, e.id, c.text, i.last_comment_index, i.saved_dt
-                from images i
-                join entities e on e.id = i.owner_id
-                join content c on c.id = i.descr_id
-                where i.album_id = $1
-                and i.hash = $2
-                and i.type = $3
+        profile.bio_id = undefined;
+        return profile;
+    }
+
+    async getBio(entityType, entityId)
+    {
+        let bio = await this.pool.query(`
+                select c.text from content c
+                join ${entityTables[entityType].profile} p on p.bio_id = c.id
+                where p.${isNaN(entityId) ? "alias" : "id"} = $1
             `, [
-                album["id"], image_hash, image_type
-        ]);
-        image = image.rows[0];
-        if (!image)
+                entityId
+            ]);
+
+        bio = bio.rows[0];
+        if (!bio)
             return null;
+
+        return bio.text;
     }
 }
 

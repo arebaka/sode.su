@@ -29,7 +29,7 @@ router.post("/auth", async (req, res, next) => {
                 .status(200)
                 .json({ status: api.errors.ok });
 
-        return res
+        res
             .status(401)
             .json({ status: api.errors.unauthorized });
     }

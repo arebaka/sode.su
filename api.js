@@ -22,7 +22,7 @@ module.exports = {
     },
     paths: {
         i18n:    "i18n/",
-        layout:  "html/",
+        layouts: "layouts/",
         scripts: "js/",
         posts:   "p/",
         images:  "i/",
@@ -35,20 +35,20 @@ module.exports = {
         bio:     "bio.smu",
         wall:    "wall.json"
     },
-    affixes: {
+    patterns: {
         entities: {
-            user: "@",
-            club: "~"
+            user: "@*",
+            club: "~*"
         },
-        i18n:       ".json",
-        layout:     ".html",
-        script:     ".js",
-        post:       ".json",
-        image_info: ".json",
-        video_info: ".json",
-        music_info: ".json",
-        theme:      ".css",
-        theme_info: ".css.json",
+        i18n:       "*.json",
+        layout:     "*.html",
+        script:     "*.js",
+        post:       "*.json",
+        image_info: "*.json",
+        video_info: "*.json",
+        music_info: "*.json",
+        theme:      "*.css",
+        theme_info: "*.json",
     },
     actions: {
         users: "api/users",
@@ -80,7 +80,7 @@ module.exports = {
         "nih": "ja"
     },
     entities: {
-        "@": "person",
+        "@": "user",
         "~": "club"
     },
     file_formats: {
@@ -93,6 +93,7 @@ module.exports = {
         entity: {
             type: "user",
             id:   0
-        }
+        },
+        album: "@"
     }
 };

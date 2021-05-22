@@ -7,7 +7,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get("/*.html", (req, res, next) => {
+router.get("/:name.html", (req, res, next) => {
     res
         .type(".html")
         .sendFile(path.resolve(`public/html${req.path}`), err => {

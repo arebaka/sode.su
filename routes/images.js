@@ -10,17 +10,17 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get(/^\/(@|~)([^\/]*)\/i\/([^\/]*)\/([^\/]*)\.(jpeg|png|gif|bmp|webp|svg)$/, async (req, res, next) => {
+router.get("/:albumOwnerPrefix(@|~):albumOwnerId/i/:album/name.:ext(jpeg|png|gif|bmp|webp|svg)", async (req, res, next) => {
     try {
         const image = await db.getImage(
-            api.entities[req.params[0]], req.params[1], req.params[2], req.params[3], req.params[4]
+            api.entities[req.params.albumOwnerPrefix], req.params.albumOwnerId, req.params.album, req.params.name, req.params.ext
         );
         if (!image)
             return next(404);
 
         res
-            .type(`.${req.params[4]}`)
-            .sendFile(path.resolve(`images/${req.params[4]}/${req.params[3]}.${req.params[4]}`), err => {
+            .type(`.${req.params.ext}`)
+            .sendFile(path.resolve(`images/${req.params.ext}/${req.params.name}.${req.params.ext}`), err => {
                 if (err) {
                     next(500);
                 }

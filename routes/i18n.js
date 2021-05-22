@@ -7,7 +7,7 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get("/*.json", async (req, res, next) => {
+router.get("/:name.json", async (req, res, next) => {
     res
         .type(".json")
         .sendFile(path.resolve(`public/i18n${req.path}`), err => {

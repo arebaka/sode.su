@@ -7,16 +7,9 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get("/*", async (req, res, next) => {
-    const ext = req.params[0].substring(
-        req.params[0].lastIndexOf('.') + 1
-    );
-
-    if (["ico", "svg", "png", "jpeg", "gif", "webp"].indexOf(ext) == -1)
-        return next(404);
-
+router.get("/:name.:ext(ico|svg|png|jpeg|gif|webp)", async (req, res, next) => {
     res
-        .type(`.${ext}`)
+        .type(`.${req.params.ext}`)
         .sendFile(path.resolve(`public/img${req.path}`), err => {
             if (err) {
                 next(404);
