@@ -69,7 +69,7 @@ class Server
             next();
         });
 
-        this.app.get(/.*\/$/, (req, res, next) => res.redirect(req.url.slice(0, -1)));
+        this.app.get(/.+\/$/, (req, res, next) => res.redirect(req.url.slice(0, -1)));
 
         this.app.use("/i18n",    i18nRouter);
         this.app.use("/img",     imgRouter);

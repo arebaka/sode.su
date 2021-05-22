@@ -87,7 +87,8 @@
 	let api;
 	let lang;
 	let dict;
-	let params = getUrlParams();
+	let params     = getUrlParams();
+	let statusCode = parseInt(document.getElementById("status-code").getAttribute("content"));
 
 	let ui = {
 		menu: {
@@ -241,10 +242,10 @@
 	<div id="toasts"></div>
 
 	<main id="container">
-		{#if /^\/@[^\/]*$/.test(location.pathname)}
-			<User api={api} lang={lang} dict={dict} params={params}/>
-		{:else}
+		{#if statusCode < 200 || statusCode > 299}
 			<Error code={parseInt(document.getElementById("status-code").getAttribute("content"))}/>
+		{:else if /^\/@[^\/]*$/.test(location.pathname)}
+			<User api={api} lang={lang} dict={dict} params={params}/>
 		{/if}
 	</main>
 
