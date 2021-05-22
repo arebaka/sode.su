@@ -52,7 +52,7 @@ class Server
                 scriptSrc:  ["'self'", "'unsafe-eval'", "telegram.org"]
         }}));
 
-        this.app.use((req, res, next) => {
+        this.app.use(async (req, res, next) => {
             res.locals.clientLang = req.query["lang"] || req.cookies["lang"];
 
             if (!i18n[res.locals.clientLang]){
@@ -61,6 +61,10 @@ class Server
 
             res.set("Server", "Desu");
             res.set("X-API-Version", "0");
+
+            res.locals.authorized = req.cookies.userid && req.cookies.session
+                    && await db.hasSession(req.cookies.userid, req.cookies.session)
+                ? true : false;
 
             next();
         });

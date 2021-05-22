@@ -1,6 +1,8 @@
 const crypto = require("crypto");
 const pg     = require("pg");
 
+const { v4: uuidv4 } = require("uuid");
+
 const entityTables = {
     "user": {
         account: "users",
@@ -69,6 +71,12 @@ class DBHelper
         return res.join('');
     }
 
+    async hasSession(userId, sessionKey)
+    {
+        let session = await this.pool.query("select * from sessions where user_id = $1 and key = $2", [userId, sessionKey]);
+        return session.rows[0] ? true : false;
+    }
+
     async getUser(id) {
         let user = await this.pool.query(`
                 select * from ${entityTables["user"].account}
@@ -116,6 +124,36 @@ class DBHelper
             return null;
 
         return bio.text;
+    }
+
+    async authUser(id, authDT, sessionKey, ip, useragent)
+    {
+        authDT = new Date(authDT * 1000).toUTCString();
+        await this.pool.query("update users set auth_dt = $1 where id = $2", [authDT, id]);
+        let session;
+
+        if (sessionKey) {
+            session = await this.pool.query("select key from sessions where user_id = $1 and key = $2", [id, sessionKey]);
+            session = session.rows[0];
+        }
+        else {
+            session = null;
+        }
+
+        if (session) {
+            await this.pool.query("update sessions set auth_dt = $1 where user_id = $2", [authDT, id]);
+            return session.key;
+        }
+
+        session = uuidv4();
+        await this.pool.query(`
+                insert into sessions (user_id, key, ip, auth_dt, useragent)
+                values ($1, $2, $3, $4, $5)
+            `, [
+                id, session, ip, authDT, useragent
+            ]);
+
+        return session;
     }
 
     async createUser(id, username, name, authDT)

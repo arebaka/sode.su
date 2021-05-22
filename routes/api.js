@@ -25,16 +25,26 @@ router.post("/auth", async (req, res, next) => {
             .join('\n');
 
         if (crypto.createHmac("sha256", db.tgSecretKey).update(dataCheck).digest("hex") === hash) {
-            let status = 200;
-            let user   = await db.getUser(req.body.id);
+            let status;
+            let user = await db.getUser(req.body.id);
 
-            if (!user) {
+            if (user) {
+                status = 200;
+            }
+            else {
                 await db.createUser(req.body.id, req.body.username, req.body.first_name, req.body.auth_date);
                 status = 201;
             }
 
+            let session = await db.authUser(
+                req.body.id, req.body.auth_date, req.cookies.session,
+                req.connection.remoteAddress, req.useragent.source
+            );
+
             return res
                 .status(status)
+                // will keep the session for 90 days
+                .set("Set-Cookie", `session=${session}; path=/; domain=${api.domain}; max-age=${90 * 24 * 60 * 60}; samesite=lax; secure httponly`)
                 .json({
                     status: api.errors.ok,
                     userid: req.body.id

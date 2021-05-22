@@ -73,7 +73,8 @@
 		.then(res => res.json())
 		.then(res => {
 			if (res.status == api.errors.ok) {
-				alert("ALL RIGHT");
+				setCookie("userid", res.userid, 90);
+				location.href = "@" + res.userid;
 			}
 		});
 	}

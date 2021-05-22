@@ -9,3 +9,5 @@ images/*
 videos/*
 audios/*
 thumbs/*
+
+public/js/bundle.js
