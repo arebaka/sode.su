@@ -18,7 +18,7 @@ router.get("/robots.txt", async (req, res) => {
         .sendFile(path.resolve("public/robots.txt"));
 });
 
-router.get("/api.json", async (req, res) => {
+router.get("/api", async (req, res) => {
     res
         .type(".json")
         .json(api);

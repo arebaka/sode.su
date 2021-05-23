@@ -50,7 +50,7 @@ module.exports = {
         theme:      "*.css",
         theme_info: "*.json",
     },
-    actions: {
+    methods: {
         users: "api/users",
         me:    "api/me",
         auth:  "api/auth"

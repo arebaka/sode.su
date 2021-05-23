@@ -84,6 +84,7 @@ class Server
         this.app.use((err, req, res, next) => {
             if (isNaN(err))
                 err = 500;
+            console.log(req.url);
 
             res
                 .status(err)

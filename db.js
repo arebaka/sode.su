@@ -92,6 +92,23 @@ class DBHelper
         return user;
     }
 
+    async getMe(id)
+    {
+        let user = await this.pool.query(`
+                select u.role, u.registered_dt, up.* from ${entityTables["user"].account} u
+                join ${entityTables["user"].profile} up on up.id = u.id
+                where u.id = $1
+            `, [
+                id
+            ]);
+
+        user = user.rows[0];
+        if (!user)
+            return null;
+
+        return user;
+    }
+
     async getProfile(entityType, entityId)
     {
         let profile = await this.pool.query(`

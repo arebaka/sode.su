@@ -11,10 +11,35 @@ router.use((req, res, next) => {
     next();
 });
 
+router.post("/me", async (req, res, next) => {
+    try {
+        if (!res.locals.authorized)
+            return res
+                .status(401)
+                .json({ status: api.errors.unauthorized });
+
+        const user = await db.getMe(req.cookies.userid);
+
+        if (!user)
+            return res
+                .status(401)
+                .json({ status: api.errors.unauthorized });
+
+        return res
+            .status(200)
+            .json({ status: api.errors.ok, data: user });
+    }
+    catch (err) {
+        res
+            .status(400)
+            .json({ status: api.errors.invalid_data });
+    }
+});
+
 router.post("/auth", async (req, res, next) => {
     try {
-        let hash      = req.body.hash;
-        let dataCheck = [];
+        const hash      = req.body.hash;
+        let   dataCheck = [];
         delete req.body.hash;
 
         for (let key in req.body) {
@@ -25,8 +50,8 @@ router.post("/auth", async (req, res, next) => {
             .join('\n');
 
         if (crypto.createHmac("sha256", db.tgSecretKey).update(dataCheck).digest("hex") === hash) {
-            let status;
-            let user = await db.getUser(req.body.id);
+            let   status;
+            const user = await db.getUser(req.body.id);
 
             if (user) {
                 status = 200;
@@ -36,7 +61,7 @@ router.post("/auth", async (req, res, next) => {
                 status = 201;
             }
 
-            let session = await db.authUser(
+            const session = await db.authUser(
                 req.body.id, req.body.auth_date, req.cookies.session,
                 req.connection.remoteAddress, req.useragent.source
             );
@@ -56,7 +81,6 @@ router.post("/auth", async (req, res, next) => {
             .json({ status: api.errors.unauthorized });
     }
     catch (err) {
-        console.log(err);
         res
             .status(400)
             .json({ status: api.errors.invalid_data });

@@ -25,7 +25,7 @@
 	}
 
 	window.onTelegramAuth = function(user) {
-		fetch(api.actions.auth, {
+		fetch(api.methods.auth, {
 			method:  "POST",
 			headers: { "Content-Type": "application/json" },
 			body:    JSON.stringify(user)
@@ -39,10 +39,10 @@
 		});
 	}
 
-	const topnavTabs    = ["friends", "feed", "feedback", "clubs"];
-	const mediaTabs     = ["images", "videos", "music"];
-	const selfMenuItems = ["settings", "themes", "bookmarks", "stickers", "polls", "moderation"];
-	const menuItems     = ["friends", "feed", "feedback", "clubs", "images", "videos", "music"];
+	const topnavTabs  = ["friends", "feed", "feedback", "clubs"];
+	const mediaTabs   = ["images", "videos", "music"];
+	const meMenuItems = ["settings", "themes", "bookmarks", "stickers", "polls", "moderation"];
+	const menuItems   = ["friends", "feed", "feedback", "clubs", "images", "videos", "music"];
 
 	let api;
 	let lang;
@@ -57,6 +57,7 @@
 			+ '"}'
 		) : [];
 	let statusCode = parseInt(document.getElementById("status-code").getAttribute("content"));
+	let me;
 
 	let ui = {
 		menu: {
@@ -82,7 +83,7 @@
 			.then(res => dict = res);
 	})());
 
-	fetch("api.json")
+	fetch("api")
 		.then(res => res.json())
 		.then(res => {
 			api  = res;
@@ -90,6 +91,17 @@
 				|| getCookie("lang")
 				|| api.lang2to3[navigator.language.substr(0, 2).toLowerCase()]
 				|| "eng";
+
+			if (getCookie("userid")) {
+				fetch(api.methods.me, { method: "POST" })
+					.then(res => res.json())
+					.then(res => {
+						if (res.status == api.errors.ok) {
+							me = res.data;
+							document.getElementsByTagName("html")[0].className += " authorized";
+						}
+					});
+			}
 		});
 
 	import User  from "./User.svelte";
@@ -112,9 +124,8 @@
 					</a>
 				</li>
 			{/each}
-
 			<li class="topnav-box" id="topnav-media">
-				<p class="topnav-label"></p>
+				<p class="topnav-label">{dict.topnav.media}</p>
 				<ul id="topnav-medias">
 					{#each mediaTabs as tab}
 						<li class="topnav-media-box">
@@ -143,30 +154,36 @@
 		<button id="log-in-button" on:click={() => {ui.logIn.open = true}}>{dict.topnav.log_in}</button>
 	</div>
 
-	<div id="self">
-		<p id="self-name"></p>
-		<p id="self-alias"></p>
-		<img src="" alt="" id="self-avatar" />
-		<nav id="self-menu-box">
-			<ul id="self-menu">
-				{#each selfMenuItems as item}
-					<li class="self-menu-box" id="self-menu-{item}">
-						<a href="{item}" rel="me" class="self-menu">{dict.self_menu[item]}</a>
+	{#if me}
+		<div id="me">
+			<p id="me-name">{me.name}</p>
+			<p id="me-username">{me.alias}</p>
+			{#if me.avatar}
+				<img src="" alt="" id="me-avatar" />
+			{:else}
+				<p id="me-avatar">{me.name[0]}</p>
+			{/if}
+			<nav id="me-menu-box">
+				<ul id="me-menu">
+					{#each meMenuItems as item}
+						<li class="me-menu-box" id="me-menu-{item}">
+							<a href="{item}" rel="me" class="me-menu">{dict.me_menu[item]}</a>
+						</li>
+					{/each}
+					<li class="me-menu-box" id="me-menu-log-out">
+						<button class="me-menu">{dict.me_menu.log_out}</button>
 					</li>
-				{/each}
-				<li class="self-menu-box" id="self-menu-log-out">
-					<button class="self-menu">{dict.self_menu.log_out}</button>
-				</li>
-				<li class="self-menu-box" id="self-menu-language">
-					<select class="self-menu" bind:value={lang}>
-						{#each Object.entries(api.langs) as [code, label]}
-							<option class="self-menu-language" value="{code}" selected={code == lang}>{label}</option>
-						{/each}
-					</select>
-				</li>
-			</ul>
-		</nav>
-	</div>
+					<li class="me-menu-box" id="me-menu-language">
+						<select class="me-menu" bind:value={lang}>
+							{#each Object.entries(api.langs) as [code, label]}
+								<option class="me-menu-language" value="{code}" selected={code == lang}>{label}</option>
+							{/each}
+						</select>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	{/if}
 
 	<nav id="menu-box" class:open={ui.menu.open} on:click={() => {ui.menu.open = !ui.menu.open}}>
 		<a href="{api.host}" rel="index" id="menu-logo"></a>

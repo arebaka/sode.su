@@ -16,7 +16,7 @@
   font-family: Mono;
   src: url("fonts/roboto-mono-regular.ttf") format("truetype"); }
 /****** Миксины ******/
-#self-name, #self-alias, .comment-author-name-box, .image-owner-name-box,
+#me-name, #me-username, .comment-author-name-box, .image-owner-name-box,
 .video-owner-name-box {
   white-space: nowrap;
   overflow: hidden;
@@ -340,7 +340,7 @@ body {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  border-bottom: 2px solid #7D80B8; }
+  border-right: 2px solid #7D80B8; }
 
 .night #topnav-logo {
   background-color: #0E1621;
@@ -556,14 +556,16 @@ body {
 #sign-up-button:active {
   transform: scaleX(0.9); }
 
-#self {
+#me {
+  z-index: 100;
   position: fixed;
+  top: 0;
   right: 0;
   display: none;
   float: right;
   cursor: pointer; }
 
-#self-name {
+#me-name {
   float: left;
   max-width: 15rem;
   height: 1rem;
@@ -574,10 +576,10 @@ body {
   line-height: 1rem;
   color: #FFF; }
 
-.night #self-name {
+.night #me-name {
   color: #0E1621; }
 
-#self-alias {
+#me-username {
   clear: left;
   float: left;
   max-width: 15rem;
@@ -586,21 +588,26 @@ body {
   padding-right: 1rem;
   font: 0.9rem/1.5rem Mono, Emoji, monospace, Basic, sans-serif;
   line-height: .8rem;
-  color: #FFF07C; }
+  color: #FFF; }
 
-#self-avatar {
+#me-avatar {
   display: inline-block;
   width: 3.4rem;
   height: 3.4rem;
+  font-family: Mono;
+  font-size: 3.4rem;
+  line-height: 3.4rem;
+  text-align: center;
+  color: #7D80B8;
   background-color: #FFF;
   border-left: 2px solid #7D80B8;
   content: "100"; }
 
-.night #self-avatar {
+.night #me-avatar {
   background-color: #0E1621;
   border-color: #212D3B; }
 
-#self-menu-box {
+#me-menu-box {
   position: absolute;
   top: 2.4rem;
   right: -16rem;
@@ -611,18 +618,18 @@ body {
   transition: all 0.2s ease 0s;
   cursor: pointer; }
 
-.night #self-menu-box {
+.night #me-menu-box {
   background-color: #0E1621;
   border-color: #212D3B; }
 
-#self:hover #self-menu-box,
-#self:focus #self-menu-box {
+#me:hover #me-menu-box,
+#me:focus #me-menu-box {
   right: 0; }
 
-.self-menu {
+.me-menu {
   display: block; }
 
-.self-menu {
+.me-menu {
   display: block;
   float: right;
   width: 15rem;
@@ -639,19 +646,24 @@ body {
   border-bottom: 1px solid #7D80B8;
   cursor: pointer; }
 
-.night .self-menu {
+.night .me-menu {
   color: #ECECEC;
   border-color: #212D3B; }
 
-select.self-menu {
+.me-menu:hover,
+.me-menu:focus {
+  text-decoration: none;
+}
+
+select.me-menu {
   padding-right: 0; }
 
-select.self-menu option {
+select.me-menu option {
   text-transform: none; }
 
-#self-menu-edit-profile .self-menu,
-#self-menu-polls .self-menu,
-#self-menu-log-out .self-menu {
+#me-menu-edit-profile .me-menu,
+#me-menu-polls .me-menu,
+#me-menu-log-out .me-menu {
   border-bottom-width: .2rem; }
 
 /****** Боковое меню ******/
@@ -1841,7 +1853,7 @@ body.audioplayer .video-frame-box {
 .authorized #topnav-chats,
 .authorized #topnav-feedback,
 .authorized #topnav-media,
-.authorized #self,
+.authorized #me,
 .authorized #menu-friends,
 .authorized #menu-chats,
 .authorized #menu-feedback,
@@ -1913,8 +1925,8 @@ body.audioplayer .video-frame-box {
     margin-left: 0; } }
 @media screen and (max-width: 380px) {
   #sign-up-button,
-  #self-name,
-  #self-alias {
+  #me-name,
+  #me-username {
     display: none; }
 
   #log-in,
