@@ -47,13 +47,15 @@
 	let api;
 	let lang;
 	let dict;
-	let params = JSON.parse('{"'
-		+ decodeURI(location.search
-			.substring(1))
-			.replace(/"/g, '\\"')
-			.replace(/&/g, '","')
-			.replace(/=/g,'":"')
-		+ '"}');
+	let params = location.search
+		? JSON.parse('{"'
+			+ decodeURI(location.search
+				.substring(1))
+				.replace(/"/g, '\\"')
+				.replace(/&/g, '","')
+				.replace(/=/g,'":"')
+			+ '"}'
+		) : [];
 	let statusCode = parseInt(document.getElementById("status-code").getAttribute("content"));
 
 	let ui = {

@@ -5,8 +5,8 @@ const express      = require("express");
 const cookieParser = require("cookie-parser");
 const useragent    = require("express-useragent");
 const helmet       = require("helmet");
-const csrf         = require("csurf");
 const compression  = require("compression");
+const logger       = require("morgan");
 
 const indexRouter  = require("./routes");
 const i18nRouter   = require("./routes/i18n");
@@ -37,8 +37,10 @@ class Server
         this.app.use(cookieParser());
         this.app.use(useragent.express());
         this.app.use(helmet());
-//        this.app.use(csrf({ cookie: true }));
         this.app.use(compression());
+        this.app.use(logger("common", {
+            skip: (req, res) => req.method == "GET" && res.statusCode < 400
+        }));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 
@@ -52,7 +54,6 @@ class Server
 
         this.app.use(async (req, res, next) => {
             res.locals.clientLang = req.query["lang"] || req.cookies["lang"];
-
             if (!i18n[res.locals.clientLang]){
                 res.locals.clientLang = "eng";
             }
@@ -81,7 +82,9 @@ class Server
         this.app.all(/.*/, (req, res, next) => next(404));
 
         this.app.use((err, req, res, next) => {
-            console.error(err, req.path);
+            if (isNaN(err))
+                err = 500;
+
             res
                 .status(err)
                 .type(".html")
