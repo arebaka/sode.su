@@ -115,8 +115,9 @@
 			}
 		});
 
-	import User  from "./User.svelte";
-	import Error from "./Error.svelte";
+	import User     from "./User.svelte";
+	import Error    from "./Error.svelte";
+	import Settings from "./Settings.svelte";
 </script>
 
 {#if api && dict}
@@ -168,7 +169,7 @@
 	{#if me}
 		<div id="me">
 			<p id="me-name">{me.name}</p>
-			<p id="me-username">{me.alias}</p>
+			<p id="me-username">{me.username}</p>
 			{#if me.avatar}
 				<img src="" alt="" id="me-avatar" />
 			{:else}
@@ -176,6 +177,9 @@
 			{/if}
 			<nav id="me-menu-box">
 				<ul id="me-menu">
+					<li class="me-menu-box" id="me-menu-profile">
+						<a href="@{me.id}" re="me" class="me-menu">{dict.me_menu.profile}</a>
+					</li>
 					{#each meMenuItems as item}
 						<li class="me-menu-box" id="me-menu-{item}">
 							<a href="{item}" rel="me" class="me-menu">{dict.me_menu[item]}</a>
@@ -242,6 +246,8 @@
 			<Error code={parseInt(document.getElementById("status-code").getAttribute("content"))}/>
 		{:else if /^\/@[^\/]*$/.test(location.pathname)}
 			<User api={api} lang={lang} dict={dict} params={params}/>
+		{:else if location.pathname.startsWith("/settings")}
+			<Settings api={api} lang={lang} dict={dict} params={params}/>
 		{/if}
 	</main>
 

@@ -56,9 +56,9 @@ router.get("/", async (req, res) => {
             status:    404,
             lang:      i18n[res.locals.clientLang].meta.lang,
             descr:     i18n[res.locals.clientLang].index.descr,
-            url:       `${api.hostname}/`,
+            url:       req.hostname + req.path,
             css:       "css/index.css",
-            canonical: `${api.hostname}/`,
+            canonical: `${api.host}/`,
             title:     i18n[res.locals.clientLang].index.title,
             type:      "website"
         }));

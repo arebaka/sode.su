@@ -8,14 +8,15 @@ const helmet       = require("helmet");
 const compression  = require("compression");
 const logger       = require("morgan");
 
-const indexRouter  = require("./routes");
-const i18nRouter   = require("./routes/i18n");
-const imgRouter    = require("./routes/img");
-const cssRouter    = require("./routes/css");
-const layoutRouter = require("./routes/layouts");
-const jsRouter     = require("./routes/js");
-const entityRouter = require("./routes/entities");
-const apiRouter    = require("./routes/api");
+const indexRouter    = require("./routes");
+const i18nRouter     = require("./routes/i18n");
+const imgRouter      = require("./routes/img");
+const cssRouter      = require("./routes/css");
+const layoutRouter   = require("./routes/layouts");
+const jsRouter       = require("./routes/js");
+const entityRouter   = require("./routes/entities");
+const settingsRouter = require("./routes/settings");
+const apiRouter      = require("./routes/api");
 
 const db    = require("./db");
 const api   = require("./api");
@@ -70,14 +71,15 @@ class Server
 
         this.app.get(/.+\/$/, (req, res, next) => res.redirect(req.url.slice(0, -1)));
 
-        this.app.use("/i18n",    i18nRouter);
-        this.app.use("/img",     imgRouter);
-        this.app.use("/css",     cssRouter);
-        this.app.use("/layouts", layoutRouter);
-        this.app.use("/js",      jsRouter);
-        this.app.use("/",        entityRouter);
-        this.app.use("/",        indexRouter);
-        this.app.use("/api",     apiRouter);
+        this.app.use("/i18n",     i18nRouter);
+        this.app.use("/img",      imgRouter);
+        this.app.use("/css",      cssRouter);
+        this.app.use("/layouts",  layoutRouter);
+        this.app.use("/js",       jsRouter);
+        this.app.use("/settings", settingsRouter);
+        this.app.use("/",         entityRouter);
+        this.app.use("/",         indexRouter);
+        this.app.use("/api",      apiRouter);
 
         this.app.all(/.*/, (req, res, next) => next(404));
 

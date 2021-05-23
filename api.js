@@ -18,6 +18,7 @@ module.exports = {
         videos:     "videos",
         music:      "music",
         themes:     "themes",
+        settings:   "settings",
         moderation: "moderation"
     },
     paths: {
@@ -54,7 +55,23 @@ module.exports = {
         users:  "api/users",
         me:     "api/me",
         auth:   "api/auth",
-        logout: "api/logout"
+        logout: "api/logout",
+        settings: {
+            profile: {
+                all:      "api/set/profile",
+                username: "api/set/profile/username",
+                name:     "api/set/profile/name",
+                bio:      "api/set/profile/bio"
+            },
+            privacy: {
+                all:                "api/set/privacy",
+                friendable:         "api/set/privacy/friendable",
+                invitable:          "api/set/privacy/invitable",
+                commentable:        "api/set/privacy/commentable",
+                searchable:         "api/set/privacy/searchable",
+                anon_comments_only: "/api.set/privacy/anon_comments_only"
+            }
+        }
     },
     errors: {
         "ok":           0,

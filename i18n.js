@@ -15,6 +15,10 @@ module.exports = {
 			title: "sode.su – an antisocial network",
 			descr: "A social network with cool markup and custom themes for doomers and other autists."
 		},
+		settings: {
+			title: "Settings – sode.su",
+			descr: "",
+		},
 		user: {
 			title: "{{name}} – sode.su",
 			descr: "A favorite user of sode.su antisotial network",
@@ -38,6 +42,10 @@ module.exports = {
 		index: {
 			title: "sode.su – анонимная социальная сеть",
 			descr: "Социальная сеть с крутой разметкой и пользовательскими темами оформления для думеров и прочих аутистов."
+		},
+		settings: {
+			title: "Настройки – sode.su",
+			descr: "",
 		},
 		user: {
 			title: "{{name}} – sode.su",

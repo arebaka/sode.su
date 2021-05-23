@@ -57,7 +57,7 @@
 		"music": "Music"
 	},
 	"me_menu": {
-		"home": "My homepage",
+		"profile": "My profile",
 		"settings": "Settings",
 		"themes": "Design themes",
 		"bookmarks": "Bookmarks",
@@ -126,6 +126,63 @@
 				"images": "Images",
 				"videos": "Videos",
 				"music": "Music"
+			}
+		}
+	},
+	"settings": {
+		"back": "Back",
+		"index": {
+			"title": "Settings",
+			"descr": "Choose a section"
+		},
+		"profile": {
+			"title": "Profile",
+			"descr": "See information about your own profile as other users will see it",
+			"username": {
+				"title": "Username",
+				"descr": "Temporary stub",
+				"placeholder": "0..32 characters..."
+			},
+			"name": {
+				"title": "Name",
+				"descr": "Temporary stub",
+				"placeholder": "1..255 characters..."
+			},
+			"bio": {
+				"title": "Bio",
+				"descr": "Temporary stub",
+				"placeholder": "In the future, it will be possible to use the SMU here..."
+			}
+		},
+		"privacy": {
+			"title": "Privacy",
+			"descr": "Manage your privacy",
+			"friendable": {
+				"title": "Who can add me as friend",
+				"private": "Nobody",
+				"protected": "Friend of friends",
+				"public": "Everybody"
+			},
+			"invitable": {
+				"title": "Who can invite me to the clubs",
+				"private": "Nobody",
+				"protected": "Only friends",
+				"public": "Everybody"
+			},
+			"commentable": {
+				"title": "Who can comment the posts on my wall",
+				"private": "Nobody",
+				"protected": "Only friends",
+				"public": "Everybody"
+			},
+			"flags": {
+				"title": "Flags"
+			},
+			"searchable": {
+				"title": "Other users can find me through user search"
+			},
+			"anon_comments_only": {
+				"title": "Comments on my wall can only be posted anonymously"
 			}
 		}
 	}

@@ -106,6 +106,10 @@ class DBHelper
         if (!user)
             return null;
 
+        user.username = user.alias;
+        user.alias = undefined;
+        user.bio_id = undefined;
+
         return user;
     }
 
@@ -122,7 +126,10 @@ class DBHelper
         if (!profile)
             return null;
 
+        profile.username = profile.alias;
+        profile.alias = undefined;
         profile.bio_id = undefined;
+
         return profile;
     }
 

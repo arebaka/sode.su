@@ -57,7 +57,7 @@
 		"music": "Музыка"
 	},
 	"me_menu": {
-		"home": "Моя страница",
+		"profile": "Мой профиль",
 		"settings": "Настройки",
 		"themes": "Темы оформления",
 		"bookmarks": "Закладки",
@@ -126,6 +126,63 @@
 				"images": "Пикчи",
 				"videos": "Видео",
 				"music": "Музыка"
+			}
+		}
+	},
+	"settings": {
+		"back": "Назад",
+		"index": {
+			"title": "Настройки",
+			"descr": "Выбери раздел"
+		},
+		"profile": {
+			"title": "Профиль",
+			"descr": "Информация о твоём собственном профиле, так так её увидят другие пользователи",
+			"username": {
+				"title": "Юзернейм",
+				"descr": "Temporary stub",
+				"placeholder": "0..32 символов..."
+			},
+			"name": {
+				"title": "Имя",
+				"descr": "Temporary stub",
+				"placeholder": "1..255 символов..."
+			},
+			"bio": {
+				"title": "Био",
+				"descr": "Temporary stub",
+				"placeholder": "In the future, it will be possible to use the SMU here..."
+			}
+		},
+		"privacy": {
+			"title": "Приватность",
+			"descr": "Управляй своей приватностью",
+			"friendable": {
+				"title": "Кто может добавлять меня в друзья",
+				"private": "Никто",
+				"protected": "Друзья друзей",
+				"public": "Все"
+			},
+			"invitable": {
+				"title": "Кто может приглашать меня в клубы",
+				"private": "Никто",
+				"protected": "Только друзья",
+				"public": "Все"
+			},
+			"commentable": {
+				"title": "Кто может комментировать записи на моей стене",
+				"private": "Никто",
+				"protected": "Только друзья",
+				"public": "Все"
+			},
+			"flags": {
+				"title": "Флаги"
+			},
+			"searchable": {
+				"title": "Другие пользователи могут найти меня через поиск"
+			},
+			"anon_comments_only": {
+				"title": "Комментарии на моей стене можно оставлять только анонимно"
 			}
 		}
 	}

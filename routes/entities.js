@@ -36,8 +36,8 @@ router.get("/:entityType(@|~):entityId", async (req, res, next) => {
 
     if (!profile)
         return next(404);
-    if (!isNaN(req.params.entityId) && profile.alias)
-        return res.redirect(req.path.replace(req.params.entityId, profile.alias));
+    if (!isNaN(req.params.entityId) && profile.username)
+        return res.redirect(req.path.replace(req.params.entityId, profile.username));
 
     res
         .type(".html")
@@ -48,10 +48,10 @@ router.get("/:entityType(@|~):entityId", async (req, res, next) => {
             url:       req.hostname + req.path,
             css:       "css/user.css",
             canonical: req.hostname + req.path,
+            type:      "profile",
             title:     i18n[res.locals.clientLang].user.title.replace(
                 "{{name}}", profile.name ? profile.name : i18n[res.locals.clientLang].user.default.name
-            ),
-            type:      "profile"
+            )
         }));
 });
 
