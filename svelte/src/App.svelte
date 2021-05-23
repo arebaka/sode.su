@@ -1,44 +1,4 @@
 <script type="text/javascript">
-	function getUrlParams(url=location.href)
-	{
-		let obj = {};
-
-		if (url) {
-			let query = url.split("?")[1];
-			if (!query)
-				return obj;
-
-			query = query.split("#")[0];
-			let arr;
-
-			for (let i of arr) {
-				let a = i.split("="),
-					paramNum  = undefined,
-					paramName = a[0].replace(/\[\d*\]/, function(v) {
-						paramNum = v.slice(1,-1);
-						return "";
-					});
-
-				let paramValue = a[1] === undefined ? "" : a[1];
-				paramName  = paramName.toLowerCase();
-				paramValue = paramValue.toLowerCase();
-
-				if (obj[paramName]) {
-					if (paramNum === undefined) {
-						obj[paramName].push(paramValue);
-					} else {
-						obj[paramName][paramNum] = paramValue;
-					}
-				}
-				else {
-					obj[paramName] = [paramValue];
-				}
-			}
-		}
-
-		return obj;
-	}
-
 	function setCookie(key, value, days)
 	{
 		const date = new Date();
@@ -87,7 +47,13 @@
 	let api;
 	let lang;
 	let dict;
-	let params     = getUrlParams();
+	let params = JSON.parse('{"'
+		+ decodeURI(location.search
+			.substring(1))
+			.replace(/"/g, '\\"')
+			.replace(/&/g, '","')
+			.replace(/=/g,'":"')
+		+ '"}');
 	let statusCode = parseInt(document.getElementById("status-code").getAttribute("content"));
 
 	let ui = {
