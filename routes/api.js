@@ -87,4 +87,25 @@ router.post("/auth", async (req, res, next) => {
     }
 });
 
+router.post("/logout", async (req, res, next) => {
+    try {
+        if (!res.locals.authorized)
+            return res
+                .status(401)
+                .json({ status: api.errors.unauthorized });
+
+        await db.destroySession(req.cookies.userid, req.cookies.session);
+
+        res
+            .status(200)
+            .set("Set-Cookie", `session=; path=/; domain=${api.domain}; max-age=0; samesite=lax; secure httponly`)
+            .json({ status: api.errors.ok });
+    }
+    catch (err) {
+        res
+            .status(400)
+            .json({ status: api.errors.invalid_data });
+    }
+});
+
 module.exports = router;

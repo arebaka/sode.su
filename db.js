@@ -158,7 +158,14 @@ class DBHelper
         }
 
         if (session) {
-            await this.pool.query("update sessions set auth_dt = $1 where user_id = $2", [authDT, id]);
+            await this.pool.query(`
+                    update sessions
+                    set ip = $1, auth_dt = $2, useragent = $3
+                    where user_id = $4
+                `, [
+                    ip, authDT, useragent, id
+                ]);
+
             return session.key;
         }
 
@@ -193,6 +200,11 @@ class DBHelper
             `, [
                 id, username, null, null, 1, name
             ]);
+    }
+
+    async destroySession(userId, key)
+    {
+        await this.pool.query("delete from sessions where user_id = $1 and key = $2", [userId, key]);
     }
 }
 

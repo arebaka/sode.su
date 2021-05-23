@@ -51,9 +51,10 @@ module.exports = {
         theme_info: "*.json",
     },
     methods: {
-        users: "api/users",
-        me:    "api/me",
-        auth:  "api/auth"
+        users:  "api/users",
+        me:     "api/me",
+        auth:   "api/auth",
+        logout: "api/logout"
     },
     errors: {
         "ok":           0,

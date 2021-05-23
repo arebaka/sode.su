@@ -21,7 +21,18 @@
 	{
 		const date = new Date();
 		date.setTime(date.getTime() + (-1 * 24 * 60 * 60 * 1000));
-		document.cookie = key + "=; expires=" + date.toUTCString() + "; path=/";
+		document.cookie = key + `=; path=/; domain=${api.domain}; expires=${date.toUTCString()}; max-age=0; samesite=lax; secure`;
+	}
+
+	function logout()
+	{
+		if (getCookie("userid")) {
+			fetch(api.methods.logout, { method: "POST" });
+		}
+
+		delCookie("userid");
+		document.getElementsByTagName("html")[0].classList.remove("authorized");
+		me = null;
 	}
 
 	window.onTelegramAuth = function(user) {
@@ -171,7 +182,7 @@
 						</li>
 					{/each}
 					<li class="me-menu-box" id="me-menu-log-out">
-						<button class="me-menu">{dict.me_menu.log_out}</button>
+						<button class="me-menu" on:click={logout}>{dict.me_menu.log_out}</button>
 					</li>
 					<li class="me-menu-box" id="me-menu-language">
 						<select class="me-menu" bind:value={lang}>
