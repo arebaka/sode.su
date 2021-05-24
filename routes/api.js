@@ -6,10 +6,14 @@ const router  = express.Router();
 const api = require("../api");
 const db  = require("../db");
 
+const settingsRouter = require("./api/settings");
+
 router.use((req, res, next) => {
     res.set("Cache-Control", "public, max-age=0");
     next();
 });
+
+router.use("/set", settingsRouter);
 
 router.post("/me", async (req, res, next) => {
     try {
@@ -25,7 +29,7 @@ router.post("/me", async (req, res, next) => {
                 .status(401)
                 .json({ status: api.errors.unauthorized });
 
-        return res
+        res
             .status(200)
             .json({ status: api.errors.ok, data: user });
     }

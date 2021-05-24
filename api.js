@@ -74,11 +74,16 @@ module.exports = {
         }
     },
     errors: {
-        "ok":           0,
-        "invalid_data": 1,
-        "unauthorized": 2
+        "ok":             0,
+        "invalid_data":   1,
+        "unauthorized":   2,
+        "too_short":      3,
+        "too_long":       4,
+        "already_in_use": 5,
     },
     limits: {
+        username_min_length: 5,
+        username_max_length: 32,
         comment_length: 1500,
         post_length:    15000,
         bio_length:     15000

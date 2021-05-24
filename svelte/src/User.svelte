@@ -2,9 +2,7 @@
     const profileButtons = ["chat", "friend", "theme", "images", "videos", "music"];
 
     export let api;
-    export let lang;
     export let dict;
-    export let params;
 
     let profile;
     let bio;

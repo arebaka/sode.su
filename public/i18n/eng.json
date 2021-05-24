@@ -141,7 +141,14 @@
 			"username": {
 				"title": "Username",
 				"descr": "Temporary stub",
-				"placeholder": "0..32 characters..."
+				"placeholder": "5..32 characters...",
+				"errors": {
+					"1": "Username contains invalid characters!",
+					"2": "Unauthorized!",
+					"3": "Username is too short! Minimum 5 characters!",
+					"4": "Username is too long! Maximum 32 characters!",
+					"5": "Username is already in use!"
+				}
 			},
 			"name": {
 				"title": "Name",

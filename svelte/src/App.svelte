@@ -1,4 +1,8 @@
 <script type="text/javascript">
+	import User     from "./User.svelte";
+	import Error    from "./Error.svelte";
+	import Settings from "./Settings.svelte";
+
 	function setCookie(key, value, days)
 	{
 		const date = new Date();
@@ -79,20 +83,19 @@
 		}
 	};
 
-	$: (lang, (() => {
+	$: lang, (() => {
 		if (!api) return;
 		if (!api.langs[lang]) {
 			lang = "eng";
 		}
 
-		dict = undefined;
 		setCookie("lang", lang, 10000);
 		document.getElementsByTagName("html")[0].setAttribute("lang", api.lang3to2[lang]);
 
 		fetch(api.paths.i18n + api.patterns.i18n.replace("*", lang))
 			.then(res => res.json())
 			.then(res => dict = res);
-	})());
+	})();
 
 	fetch("api")
 		.then(res => res.json())
@@ -114,10 +117,6 @@
 					});
 			}
 		});
-
-	import User     from "./User.svelte";
-	import Error    from "./Error.svelte";
-	import Settings from "./Settings.svelte";
 </script>
 
 {#if api && dict}
@@ -247,7 +246,7 @@
 		{:else if /^\/@[^\/]*$/.test(location.pathname)}
 			<User api={api} lang={lang} dict={dict} params={params}/>
 		{:else if location.pathname.startsWith("/settings")}
-			<Settings api={api} lang={lang} dict={dict} params={params}/>
+			<Settings api={api} lang={lang} dict={dict} params={params} me={me}/>
 		{/if}
 	</main>
 
