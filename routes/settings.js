@@ -19,7 +19,6 @@ router.get("/:section?", (req, res, next) => {
         .set("Cache-Control", "public, max-age=0")
         .type(".html")
         .send(cache.page({
-            status:    200,
             lang:      i18n[res.locals.clientLang].meta.lang,
             descr:     i18n[res.locals.clientLang].settings.descr,
             url:       req.hostname + req.path,

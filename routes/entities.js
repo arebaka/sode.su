@@ -42,7 +42,6 @@ router.get("/:entityType(@|~):entityId", async (req, res, next) => {
     res
         .type(".html")
         .send(cache.page({
-            status:    200,
             lang:      i18n[res.locals.clientLang].meta.lang,
             descr:     i18n[res.locals.clientLang].user.descr,
             url:       req.hostname + req.path,

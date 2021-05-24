@@ -1,4 +1,6 @@
 <script type="text/javascript">
+    import Error from "./Error.svelte";
+
     const profileButtons = ["chat", "friend", "theme", "images", "videos", "music"];
 
     export let api;
@@ -8,11 +10,11 @@
     let bio;
 
     fetch(`${location.pathname}/${api.files.profile}`)
-        .then(res => res.json())
+        .then(res => res.status == 200 ? res.json() : null)
         .then(res => profile = res);
 
     fetch(`${location.pathname}/${api.files.bio}`)
-        .then(res => res.text())
+        .then(res => res.status == 200 ? res.text() : null)
         .then(res => bio = res);
 </script>
 
@@ -45,6 +47,8 @@
             <div id="profile-bio">{bio ? bio : dict.profile.user.default.bio}</div>
         {/if}
     </div>
+{:else if profile == null}
+    <Error code={404}/>
 {:else}
     <p class="preloader">{dict.preloader}</p>
 {/if}

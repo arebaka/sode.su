@@ -4,8 +4,6 @@
     };
 
     export let code;
-
-    console.log(code, titles)
 </script>
 
 <p id="error-code">{code}</p>

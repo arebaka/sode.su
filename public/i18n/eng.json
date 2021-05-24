@@ -142,7 +142,8 @@
 				"title": "Username",
 				"descr": "Temporary stub",
 				"placeholder": "5..32 characters...",
-				"errors": {
+				"responses": {
+					"0": "Username has been changed successfully.",
 					"1": "Username contains invalid characters!",
 					"2": "Unauthorized!",
 					"3": "Username is too short! Minimum 5 characters!",

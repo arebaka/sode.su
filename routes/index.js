@@ -53,7 +53,6 @@ router.get("/", async (req, res) => {
         .set("Cache-Control", "public, max-age=0")
         .type(".html")
         .send(cache.page({
-            status:    404,
             lang:      i18n[res.locals.clientLang].meta.lang,
             descr:     i18n[res.locals.clientLang].index.descr,
             url:       req.hostname + req.path,

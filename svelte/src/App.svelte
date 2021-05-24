@@ -1,4 +1,6 @@
 <script type="text/javascript">
+	import { Router, Route, link } from "svelte-routing";
+
 	import User     from "./User.svelte";
 	import Error    from "./Error.svelte";
 	import Settings from "./Settings.svelte";
@@ -62,6 +64,7 @@
 	let api;
 	let lang;
 	let dict;
+	let me;
 	let params = location.search
 		? JSON.parse('{"'
 			+ decodeURI(location.search
@@ -71,8 +74,6 @@
 				.replace(/=/g,'":"')
 			+ '"}'
 		) : [];
-	let statusCode = parseInt(document.getElementById("status-code").getAttribute("content"));
-	let me;
 
 	let ui = {
 		menu: {
@@ -83,8 +84,7 @@
 		}
 	};
 
-	$: lang, (() => {
-		if (!api) return;
+	$: if (lang && api) {
 		if (!api.langs[lang]) {
 			lang = "eng";
 		}
@@ -95,7 +95,7 @@
 		fetch(api.paths.i18n + api.patterns.i18n.replace("*", lang))
 			.then(res => res.json())
 			.then(res => dict = res);
-	})();
+	};
 
 	fetch("api")
 		.then(res => res.json())
@@ -119,140 +119,148 @@
 		});
 </script>
 
-{#if api && dict}
-	<nav id="topnav-box">
-		<a href="{api.host}" rel="index" id="topnav-logo"></a>
-		<div id="menu-button-box">
-			<button class="topnav-button" id="menu-button" on:click={() => {ui.menu.open = !ui.menu.open}}></button>
-		</div>
+<Router>
+	{#if api && dict}
+		<nav id="topnav-box">
+			<a href="/" rel="index" id="topnav-logo"></a>
+			<div id="menu-button-box">
+				<button class="topnav-button" id="menu-button" on:click={() => { ui.menu.open = !ui.menu.open }}></button>
+			</div>
 
-		<ul id="topnav">
-			{#each topnavTabs as tab}
-				<li class="topnav-box" id="topnav-{tab}">
-					<a href="{tab}" rel="bookmark" class="topnav">
-						<p class="notice" data-counter="0"></p>
-						<p class="topnav-label">{dict.topnav[tab]}</p>
-					</a>
+			<ul id="topnav">
+				{#each topnavTabs as tab}
+					<li class="topnav-box" id="topnav-{tab}">
+						<a href="{tab}" rel="bookmark" class="topnav" id="topnav-{tab}">
+							<p class="notice" data-counter="0"></p>
+							<p class="topnav-label">{dict.topnav[tab]}</p>
+						</a>
+					</li>
+				{/each}
+				<li class="topnav-box" id="topnav-media">
+					<p class="topnav-label">{dict.topnav.media}</p>
+					<ul id="topnav-medias">
+						{#each mediaTabs as tab}
+							<li class="topnav-media-box">
+								<a href="{tab}" rel="bookmark" class="topnav-media" id="topnav-{tab}">
+									<p class="notice" data-counter="1">α</p>
+									<p class="topnav-media-label">{dict.topnav[tab]}</p>
+								</a>
+							</li>
+						{/each}
+					</ul>
 				</li>
-			{/each}
-			<li class="topnav-box" id="topnav-media">
-				<p class="topnav-label">{dict.topnav.media}</p>
-				<ul id="topnav-medias">
-					{#each mediaTabs as tab}
-						<li class="topnav-media-box">
-							<a href="{tab}" rel="bookmark" class="topnav-media" id="topnav-{tab}">
-								<p class="notice" data-counter="1">α</p>
-								<p class="topnav-media-label">{dict.topnav[tab]}</p>
-							</a>
-						</li>
-					{/each}
-				</ul>
-			</li>
-			<li class="topnav-box" id="topnav-language">
-				<p class="topnav-label">{dict.topnav.lang}</p>
-				<ul id="topnav-languages">
-					{#each Object.entries(api.langs) as [code, label]}
-						<li class="topnav-language-box">
-							<p class="topnav-language" on:click={() => {lang = code}}>{label}</p>
-						</li>
-					{/each}
-				</ul>
-			</li>
-		</ul>
-	</nav>
-
-	<div id="auth">
-		<button id="log-in-button" on:click={() => {ui.logIn.open = true}}>{dict.topnav.log_in}</button>
-	</div>
-
-	{#if me}
-		<div id="me">
-			<p id="me-name">{me.name}</p>
-			<p id="me-username">{me.username}</p>
-			{#if me.avatar}
-				<img src="" alt="" id="me-avatar" />
-			{:else}
-				<p id="me-avatar">{me.name[0]}</p>
-			{/if}
-			<nav id="me-menu-box">
-				<ul id="me-menu">
-					<li class="me-menu-box" id="me-menu-profile">
-						<a href="@{me.id}" re="me" class="me-menu">{dict.me_menu.profile}</a>
-					</li>
-					{#each meMenuItems as item}
-						<li class="me-menu-box" id="me-menu-{item}">
-							<a href="{item}" rel="me" class="me-menu">{dict.me_menu[item]}</a>
-						</li>
-					{/each}
-					<li class="me-menu-box" id="me-menu-log-out">
-						<button class="me-menu" on:click={logout}>{dict.me_menu.log_out}</button>
-					</li>
-					<li class="me-menu-box" id="me-menu-language">
-						<select class="me-menu" bind:value={lang}>
-							{#each Object.entries(api.langs) as [code, label]}
-								<option class="me-menu-language" value="{code}" selected={code == lang}>{label}</option>
-							{/each}
-						</select>
-					</li>
-				</ul>
-			</nav>
-		</div>
-	{/if}
-
-	<nav id="menu-box" class:open={ui.menu.open} on:click={() => {ui.menu.open = !ui.menu.open}}>
-		<a href="{api.host}" rel="index" id="menu-logo"></a>
-		<ul id="menu" on:click|stopPropagation>
-			{#each menuItems as item}
-				<li class="menu-box" id="menu-{item}">
-					<a href="{item}" rel="bookmark" class="menu">
-						<p class="notice" data-counter="0"></p>
-						<p class="menu-label">{dict.menu[item]}</p>
-					</a>
+				<li class="topnav-box" id="topnav-language">
+					<p class="topnav-label">{dict.topnav.lang}</p>
+					<ul id="topnav-languages">
+						{#each Object.entries(api.langs) as [code, label]}
+							<li class="topnav-language-box">
+								<p class="topnav-language" on:click={() => {lang = code}}>{label}</p>
+							</li>
+						{/each}
+					</ul>
 				</li>
-			{/each}
-			<li class="menu-box" id="menu-language">
-				<select class="menu" bind:value={lang}>
-					{#each Object.entries(api.langs) as [code, label]}
-						<option class="menu-language" value="{code}" selected={code == lang}>{label}</option>
-					{/each}
-				</select>
-			</li>
-		</ul>
-	</nav>
+			</ul>
+		</nav>
 
-	<div id="log-in-box" class:open={ui.logIn.open} on:click={() => {ui.logIn.open = false}}>
-		<div id="log-in" on:click|stopPropagation>
-			<h1 id="log-in-header">{dict.log_in.title}</h1>
-			<script async src="https://telegram.org/js/telegram-widget.js?15"
-				data-telegram-login="sodesu_bot" data-size="large" data-radius="0"
-				data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+		<div id="auth">
+			<button id="log-in-button" on:click={() => {ui.logIn.open = true}}>{dict.topnav.log_in}</button>
 		</div>
-	</div>
 
-	<div id="log-out-box">
-		<div id="log-out">
-			<h1 id="log-out-header"></h1>
-			<p id="log-out-text"></p>
-			<button id="log-out-yes-button"></button>
-			<button id="log-out-no-button"></button>
-		</div>
-	</div>
-
-	<div id="toasts"></div>
-
-	<main id="container">
-		{#if statusCode < 200 || statusCode > 299}
-			<Error code={parseInt(document.getElementById("status-code").getAttribute("content"))}/>
-		{:else if /^\/@[^\/]*$/.test(location.pathname)}
-			<User api={api} lang={lang} dict={dict} params={params}/>
-		{:else if location.pathname.startsWith("/settings")}
-			<Settings api={api} lang={lang} dict={dict} params={params} me={me}/>
+		{#if me}
+			<div id="me">
+				<p id="me-name">{me.name}</p>
+				<p id="me-username">{me.username}</p>
+				{#if me.avatar}
+					<img src="" alt="" id="me-avatar" />
+				{:else}
+					<p id="me-avatar">{me.name[0]}</p>
+				{/if}
+				<nav id="me-menu-box">
+					<ul id="me-menu">
+						<li class="me-menu-box" id="me-menu-profile">
+							<a href="@{me.id}" re="me" class="me-menu">{dict.me_menu.profile}</a>
+						</li>
+						{#each meMenuItems as item}
+							<li class="me-menu-box" id="me-menu-{item}">
+								<a href="{item}" rel="me" class="me-menu">{dict.me_menu[item]}</a>
+							</li>
+						{/each}
+						<li class="me-menu-box" id="me-menu-log-out">
+							<button class="me-menu" on:click={logout}>{dict.me_menu.log_out}</button>
+						</li>
+						<li class="me-menu-box" id="me-menu-language">
+							<select class="me-menu" bind:value={lang}>
+								{#each Object.entries(api.langs) as [code, label]}
+									<option class="me-menu-language" value="{code}" selected={code == lang}>{label}</option>
+								{/each}
+							</select>
+						</li>
+					</ul>
+				</nav>
+			</div>
 		{/if}
-	</main>
 
-	<footer id="footer">
-		<p id="copyright"><small> Sode.su &copy; 2019-2021 </small></p>
-	</footer>
-{:else}
-	<p id="preloader">Loading...</p>
-{/if}
+		<nav id="menu-box" class:open={ui.menu.open} on:click={() => {ui.menu.open = !ui.menu.open}}>
+			<a href="/" rel="index" id="menu-logo"></a>
+			<ul id="menu" on:click|stopPropagation>
+				{#each menuItems as item}
+					<li class="menu-box" id="menu-{item}">
+						<a href="{item}" rel="bookmark" class="menu">
+							<p class="notice" data-counter="0"></p>
+							<p class="menu-label">{dict.menu[item]}</p>
+						</a>
+					</li>
+				{/each}
+				<li class="menu-box" id="menu-language">
+					<select class="menu" bind:value={lang}>
+						{#each Object.entries(api.langs) as [code, label]}
+							<option class="menu-language" value="{code}" selected={code == lang}>{label}</option>
+						{/each}
+					</select>
+				</li>
+			</ul>
+		</nav>
+
+		<div id="log-in-box" class:open={ui.logIn.open} on:click={() => {ui.logIn.open = false}}>
+			<div id="log-in" on:click|stopPropagation>
+				<h1 id="log-in-header">{dict.log_in.title}</h1>
+				<script async src="https://telegram.org/js/telegram-widget.js?15"
+					data-telegram-login="sodesu_bot" data-size="large" data-radius="0"
+					data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+			</div>
+		</div>
+
+		<div id="log-out-box">
+			<div id="log-out">
+				<h1 id="log-out-header"></h1>
+				<p id="log-out-text"></p>
+				<button id="log-out-yes-button"></button>
+				<button id="log-out-no-button"></button>
+			</div>
+		</div>
+
+		<div id="toasts"></div>
+
+		<main id="container">
+			<Route path="/settings/*">
+				<Settings api={api} dict={dict} me={me}/>
+			</Route>
+			<Route path="/:entity" let:params>
+				{#if /^@([0-9]+)|([A-Za-z_][A-Za-z0-9_\-\.]*)$/.test(params.entity)}
+					<User api={api} dict={dict}/>
+				{:else}
+					<Error code={404}/>
+				{/if}
+			</Route>
+			<Route path="*">
+				<Error code={404}/>
+			</Route>
+		</main>
+
+		<footer id="footer">
+			<p id="copyright"><small> Sode.su &copy; 2019-2021 </small></p>
+		</footer>
+	{:else}
+		<p class="preloader">Loading...</p>
+	{/if}
+</Router>

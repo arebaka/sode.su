@@ -1881,12 +1881,18 @@ body.audioplayer .video-frame-box {
     0 2px 2px rgba(0,0,0,0.15);
 }
 #settings-back {
+  display: block;
   float: left;
   margin-right: .5rem;
   width: 3rem;
   height: 3rem;
   font-size: 0;
+  text-align: center;
   background: none;
+}
+#settings-back:hover,
+#settings-back:focus {
+  text-decoration: none;
 }
 #settings-back:before {
   content: "<";
@@ -1915,6 +1921,7 @@ body.audioplayer .video-frame-box {
   background-color: #F0F8FF;
 }
 .settings-section {
+  display: block;
   padding: 0 .5rem;
   font-family: Mono;
   font-size: 1.2rem;
@@ -1927,6 +1934,10 @@ body.audioplayer .video-frame-box {
 .settings-section:hover,
 .settings-section:focus {
   background-color: #F0F8FF;
+  text-decoration: none;
+}
+.settings-section:visited {
+  color: #7D80B8;
 }
 .settings-form {
   padding: 0 .5rem;
@@ -1950,10 +1961,17 @@ body.audioplayer .video-frame-box {
   line-height: 1.5rem;
   border: 1px solid #7D80B8;
 }
+#settings-profile-username:before {
+  content: "@";
+  font-family: Basic;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
 #settings-profile-bio {
   display: block;
   padding: .5rem;
   width: 100%;
+  font-family: Basic;
   font-size: 1rem;
   line-height: 1.5rem;
   border: 1px solid #7D80B8;
@@ -1998,14 +2016,18 @@ body.audioplayer .video-frame-box {
   margin-right: .5rem;
   cursor: pointer;
 }
-.settings-error {
+.settings-response {
   display: block;
   width: 100%;
   font-size: .8rem;
-  line-height: 1rem;
+  color: #080;
+}
+.error .settings-response {
   color: #C00;
 }
-.settings-form .error {
+.error #settings-profile-username,
+.error #settings-profile-name,
+.error #settings-profile-bio {
   border-color: #C00;
 }
 
