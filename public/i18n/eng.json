@@ -143,23 +143,34 @@
 				"descr": "Temporary stub",
 				"placeholder": "5..32 characters...",
 				"responses": {
-					"0": "Username has been changed successfully.",
-					"1": "Username contains invalid characters!",
-					"2": "Unauthorized!",
-					"3": "Username is too short! Minimum 5 characters!",
-					"4": "Username is too long! Maximum 32 characters!",
-					"5": "Username is already in use!"
+					"ok": "Username has been changed successfully.",
+					"invalid_data": "Username contains invalid characters!",
+					"unauthorized": "Unauthorized!",
+					"too_short": "Username is too short! Minimum 5 characters!",
+					"too_long": "Username is too long! Maximum 32 characters!",
+					"already_in_use": "Username is already in use!"
 				}
 			},
 			"name": {
 				"title": "Name",
 				"descr": "Temporary stub",
-				"placeholder": "1..255 characters..."
+				"placeholder": "1..255 characters...",
+				"responses": {
+					"ok": "Name has been changed successfully.",
+					"unauthorized": "Unauthorized!",
+					"required": "Name is required!",
+					"too_long": "Name is too long! Maximum 255 characters!"
+				}
 			},
 			"bio": {
 				"title": "Bio",
 				"descr": "Temporary stub",
-				"placeholder": "In the future, it will be possible to use the SMU here..."
+				"placeholder": "In the future, it will be possible to use the SMU here...",
+				"responses": {
+					"ok": "Bio has been changed successfully.",
+					"unauthorized": "Unauthorized!",
+					"too_long": "Bio is too long! Maximum 15000 characters!"
+				}
 			}
 		},
 		"privacy": {

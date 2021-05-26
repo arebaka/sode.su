@@ -6,24 +6,37 @@ const router  = express.Router();
 const api = require("../../api");
 const db  = require("../../db");
 
-router.post("/profile/username", async (req, res, next) => {
+router.post("/profile", async (req, res, next) => {
     try {
         if (!res.locals.authorized)
             return res
                 .status(401)
                 .json({status: api.errors.unauthorized});
 
-        let status;
+        let status = api.errors.ok;
 
-        if (!req.body || typeof req.body != "string") {
-            await db.setUsername(req.cookie.userid, null);
-            status = api.errors.ok;
-        } else if (!/[A-Za-z_][A-Za-z0-9_\-\.]*/.test(req.body)) {
-            status = api.errors.invalid_data;
-        } else if (req.body.length < api.limits.username_min_length) {
-            status = api.errors.too_short;
-        } else  if (req.body.length > api.limits.username_max_length) {
-            status = api.errors.too_long;
+        if (typeof req.body.username == "string") {
+            if (!req.body.username) {
+                await db.setUsername(req.cookies.userid, null);
+            } else if (!/[A-Za-z_][A-Za-z0-9_\-\.]*/.test(req.body.username)) {
+                status = api.errors.invalid_data;
+            } else if (req.body.username.length < api.limits.username_min_length) {
+                status = api.errors.too_short;
+            } else  if (req.body.username.length > api.limits.username_max_length) {
+                status = api.errors.too_long;
+            } else {
+                await db.setUsername(req.cookies.userid, req.body.username);
+            }
+        }
+
+        if (typeof req.body.name == "string") {
+            if (!req.body.name) {
+                status = api.errors.required;
+            } else if (req.body.name.length > api.limits.name_max_length) {
+                status = api.errors.too_long;
+            } else {
+                await db.setName("user", req.cookies.userid, req.body.name);
+            }
         }
 
         res

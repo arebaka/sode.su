@@ -16,6 +16,8 @@
     fetch(`${location.pathname}/${api.files.bio}`)
         .then(res => res.status == 200 ? res.text() : null)
         .then(res => bio = res);
+
+    document.getElementById("stylesheet").setAttribute("href", "css/user.css");  // TODO change
 </script>
 
 {#if profile}

@@ -130,7 +130,7 @@
 			<ul id="topnav">
 				{#each topnavTabs as tab}
 					<li class="topnav-box" id="topnav-{tab}">
-						<a href="{tab}" rel="bookmark" class="topnav" id="topnav-{tab}">
+						<a href="{tab}" rel="bookmark" class="topnav" id="topnav-{tab}" use:link>
 							<p class="notice" data-counter="0"></p>
 							<p class="topnav-label">{dict.topnav[tab]}</p>
 						</a>
@@ -169,7 +169,7 @@
 		{#if me}
 			<div id="me">
 				<p id="me-name">{me.name}</p>
-				<p id="me-username">{me.username}</p>
+				<p id="me-username">{me.username ? "@" + me.username : ""}</p>
 				{#if me.avatar}
 					<img src="" alt="" id="me-avatar" />
 				{:else}
@@ -178,11 +178,11 @@
 				<nav id="me-menu-box">
 					<ul id="me-menu">
 						<li class="me-menu-box" id="me-menu-profile">
-							<a href="@{me.id}" re="me" class="me-menu">{dict.me_menu.profile}</a>
+							<a href="@{me.username ? me.username : me.id}" re="me" class="me-menu" use:link>{dict.me_menu.profile}</a>
 						</li>
 						{#each meMenuItems as item}
 							<li class="me-menu-box" id="me-menu-{item}">
-								<a href="{item}" rel="me" class="me-menu">{dict.me_menu[item]}</a>
+								<a href="{item}" rel="me" class="me-menu" use:link>{dict.me_menu[item]}</a>
 							</li>
 						{/each}
 						<li class="me-menu-box" id="me-menu-log-out">
@@ -205,7 +205,7 @@
 			<ul id="menu" on:click|stopPropagation>
 				{#each menuItems as item}
 					<li class="menu-box" id="menu-{item}">
-						<a href="{item}" rel="bookmark" class="menu">
+						<a href="{item}" rel="bookmark" class="menu" use:link>
 							<p class="notice" data-counter="0"></p>
 							<p class="menu-label">{dict.menu[item]}</p>
 						</a>

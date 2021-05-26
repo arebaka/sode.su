@@ -218,7 +218,12 @@ class DBHelper
     {
         if (!username)
             return await this.pool.query(`update ${entityTables["user"].profile} set alias = null where id = $1`, [userId]);
-        await this.pool.query(`update ${entityTables["user"]}.profile set alias = $1 where id = $2`, [username, userId]);
+        await this.pool.query(`update ${entityTables["user"].profile} set alias = $1 where id = $2`, [username, userId]);
+    }
+
+    async setName(entityType, entityId, name)
+    {
+        await this.pool.query(`update ${entityTables[entityType].profile} set name = $1 where id = $2`, [name, entityId]);
     }
 }
 

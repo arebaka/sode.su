@@ -84,9 +84,10 @@ class Server
         this.app.all(/.*/, (req, res, next) => next(404));
 
         this.app.use((err, req, res, next) => {
-            if (isNaN(err))
+            if (isNaN(err)) {
+                console.error(err);
                 err = 500;
-            console.log(req.url);
+            }
 
             res
                 .status(err)

@@ -57,36 +57,24 @@ module.exports = {
         auth:   "api/auth",
         logout: "api/logout",
         settings: {
-            profile: {
-                all:      "api/set/profile",
-                username: "api/set/profile/username",
-                name:     "api/set/profile/name",
-                bio:      "api/set/profile/bio"
-            },
-            privacy: {
-                all:                "api/set/privacy",
-                friendable:         "api/set/privacy/friendable",
-                invitable:          "api/set/privacy/invitable",
-                commentable:        "api/set/privacy/commentable",
-                searchable:         "api/set/privacy/searchable",
-                anon_comments_only: "/api.set/privacy/anon_comments_only"
-            }
+            profile: "api/set/profile",
+            privacy: "api/set/privacy"
         }
     },
     errors: {
-        "ok":             0,
-        "invalid_data":   1,
-        "unauthorized":   2,
-        "too_short":      3,
-        "too_long":       4,
-        "already_in_use": 5,
+        ok:             0,
+        invalid_data:   1,
+        unauthorized:   2,
+        required:       3
+        too_short:      4,
+        too_long:       5,
+        already_in_use: 6,
     },
     limits: {
         username_min_length: 5,
         username_max_length: 32,
-        comment_length: 1500,
-        post_length:    15000,
-        bio_length:     15000
+        name_max_length:     255,
+        bio_max_length:      15000
     },
     langs: {
         eng: "English",
