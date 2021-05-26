@@ -65,10 +65,11 @@ module.exports = {
         ok:             0,
         invalid_data:   1,
         unauthorized:   2,
-        required:       3
+        required:       3,
         too_short:      4,
         too_long:       5,
         already_in_use: 6,
+        invalid_value:  7
     },
     limits: {
         username_min_length: 5,

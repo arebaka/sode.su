@@ -180,28 +180,54 @@
 				"title": "Who can add me as friend",
 				"private": "Nobody",
 				"protected": "Friend of friends",
-				"public": "Everybody"
+				"public": "Everybody",
+				"responses": {
+					"ok": "The value has been changed successfully.",
+					"unauthorized": "Unauthorized!",
+					"required": "Value is required!",
+					"invalid_value": "Invalid value!"
+				}
 			},
 			"invitable": {
 				"title": "Who can invite me to the clubs",
 				"private": "Nobody",
 				"protected": "Only friends",
-				"public": "Everybody"
+				"public": "Everybody",
+				"responses": {
+					"ok": "The value has been changed successfully.",
+					"unauthorized": "Unauthorized!",
+					"required": "Value is required!",
+					"invalid_value": "Invalid value!"
+				}
 			},
 			"commentable": {
 				"title": "Who can comment the posts on my wall",
 				"private": "Nobody",
 				"protected": "Only friends",
-				"public": "Everybody"
+				"public": "Everybody",
+				"responses": {
+					"ok": "The value has been changed successfully.",
+					"unauthorized": "Unauthorized!",
+					"required": "Value is required!",
+					"invalid_value": "Invalid value!"
+				}
 			},
 			"flags": {
 				"title": "Flags"
 			},
 			"searchable": {
-				"title": "Other users can find me through user search"
+				"title": "Other users can find me through user search",
+				"responses": {
+					"ok": "The flag has been changed successfully.",
+					"unauthorized": "Unauthorized!"
+				}
 			},
 			"anon_comments_only": {
-				"title": "Comments on my wall can only be posted anonymously"
+				"title": "Comments on my wall can only be posted anonymously",
+				"responses": {
+					"ok": "The flag has been changed successfully.",
+					"unauthorized": "Unauthorized!"
+				}
 			}
 		}
 	}

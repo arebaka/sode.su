@@ -125,9 +125,9 @@ class Server
             console.log(`Server running at localhost on port ${this.port}`);
         });
 
-//        server.on("connection", socket => {
-//            socket.keepAlive(true);
-//        });
+        server.on("connection", socket => {
+            socket.setKeepAlive(true);
+        });
     }
 
     async stop()

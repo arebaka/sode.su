@@ -214,16 +214,21 @@ class DBHelper
         await this.pool.query("delete from sessions where user_id = $1 and key = $2", [userId, key]);
     }
 
-    async setUsername(userId, username)
+    async setAlias(entityType, entityId, alias)
     {
-        if (!username)
-            return await this.pool.query(`update ${entityTables["user"].profile} set alias = null where id = $1`, [userId]);
-        await this.pool.query(`update ${entityTables["user"].profile} set alias = $1 where id = $2`, [username, userId]);
+        if (!alias)
+            return await this.pool.query(`update ${entityTables[entityType].profile} set alias = null where id = $1`, [entityId]);
+        await this.pool.query(`update ${entityTables[entityType].profile} set alias = $1 where id = $2`, [alias, entityId]);
     }
 
     async setName(entityType, entityId, name)
     {
         await this.pool.query(`update ${entityTables[entityType].profile} set name = $1 where id = $2`, [name, entityId]);
+    }
+
+    async setPrivacy(entityType, entityId, option, value)
+    {
+        await this.pool.query(`update ${entityTables[entityType].profile} set ${option} = $1 where id = $2`, [value, entityId])
     }
 }
 

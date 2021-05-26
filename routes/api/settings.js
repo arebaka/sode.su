@@ -25,7 +25,7 @@ router.post("/profile", async (req, res, next) => {
             } else  if (req.body.username.length > api.limits.username_max_length) {
                 status = api.errors.too_long;
             } else {
-                await db.setUsername(req.cookies.userid, req.body.username);
+                await db.setAlias("user", req.cookies.userid, req.body.username);
             }
         }
 
@@ -44,11 +44,47 @@ router.post("/profile", async (req, res, next) => {
             .json({ status: status });
     }
     catch (err) {
-            res
-                .status(400)
-                .json({ status: api.errors.invalid_data });
+        res
+            .status(400)
+            .json({ status: api.errors.invalid_data });
+    }
+
+});
+
+router.post("/privacy", async (req, res, next) => {
+    try {
+        if (!res.locals.authorized)
+            return res
+                .status(401)
+                .json({status: api.errors.unauthorized});
+
+        let status = api.errors.ok;
+
+        for (let option of ["friendable", "invitable", "commentable"]) {
+            if (typeof req.body[option] == "string") {
+                if (!["public", "protected", "private"].indexOf(req.body[option]) == -1) {
+                    status = api.errors.invalid_value;
+                } else {
+                    await db.setPrivacy("user", req.cookies.userid, option, req.body[option]);
+                }
+            }
         }
 
+        for (let flag of ["searchable", "anon_comments_only"]) {
+            if (typeof req.body[flag] == "boolean") {
+                await db.setPrivacy("user", req.cookies.userid, flag, req.body[flag]);
+            }
+        }
+
+        res
+            .status(status == api.errors.ok ? 200 : 403)
+            .json({ status: status });
+    }
+    catch (err) {
+        res
+            .status(400)
+            .json({ status: api.errors.invalid_data });
+    }
 });
 
 module.exports = router;
