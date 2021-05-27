@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	import { Router, Route, link } from "svelte-routing";
+	import { Router, Route, link, navigate } from "svelte-routing";
 
 	import User     from "./User.svelte";
 	import Error    from "./Error.svelte";
@@ -33,32 +33,38 @@
 	function logout()
 	{
 		if (getCookie("userid")) {
-			fetch(api.methods.logout, { method: "POST" });
+			fetch(api.methods.logout, { method: "POST" }).then(() => {
+				delCookie("userid");
+				document.getElementsByTagName("html")[0].classList.remove("authorized");
+				me = null;
+			});
 		}
 
-		delCookie("userid");
-		document.getElementsByTagName("html")[0].classList.remove("authorized");
-		me = null;
 	}
 
 	window.onTelegramAuth = function(user) {
 		fetch(api.methods.auth, {
-			method:  "POST",
-			headers: { "Content-Type": "application/json" },
-			body:    JSON.stringify(user)
-		})
-		.then(res => {
-			let status = res.status;
-			res = res.json();
-			res["status_code"] = status;
-			return res;
-		})
-		.then(res => {
-			if (res.status == api.errors.ok) {
-				setCookie("userid", res.userid, 90);
-				location.href = res.status_code == 200 ? "@" + res.userid : api.sections.settings + "/profile";  // TODO clear hardcore from everything
-			}
-		});
+				method:  "POST",
+				headers: { "Content-Type": "application/json" },
+				body:    JSON.stringify(user)
+			})
+			.then(res => res.json())
+			.then(res => {
+				if (res.status == api.errors.ok) {
+					document.getElementsByTagName("html")[0].className += " authorized";
+					setCookie("userid", res.userid, 90);
+					ui.logIn.open = false;
+
+					fetch(api.methods.me, { method: "POST" })
+						.then(res => res.json())
+						.then(res => {
+							if (res.status == api.errors.ok) {
+								me = res.data;
+								navigate(res.new_user ? api.sections.settings + "/profile" : "@" + (me.username ? me.username : me.id));  // TODO clear hardcore from everything
+							}
+						});
+				}
+			});
 	}
 
 	const topnavTabs  = ["friends", "feed", "feedback", "clubs"];

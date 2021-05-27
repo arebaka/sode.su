@@ -75,8 +75,9 @@ router.post("/auth", async (req, res, next) => {
                 // will keep the session for 90 days
                 .set("Set-Cookie", `session=${session}; path=/; domain=${api.domain}; max-age=${90 * 24 * 60 * 60}; samesite=lax; secure httponly`)
                 .json({
-                    status: api.errors.ok,
-                    userid: req.body.id
+                    status:   api.errors.ok,
+                    userid:   req.body.id,
+                    new_user: status == 201
                 });
         }
 
