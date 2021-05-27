@@ -202,10 +202,10 @@ class DBHelper
             ]);
 
         await this.pool.query(`
-                insert into ${entityTables["user"].profile} (id, alias, cover_image_id, avatar_image_id, bio_id, name)
-                values ($1, $2, $3, $4, $5, $6)
+                insert into ${entityTables["user"].profile} (id, cover_image_id, avatar_image_id, bio_id, name)
+                values ($1, $2, $3, $4, $5)
             `, [
-                id, username, null, null, 1, name
+                id, null, null, 1, name
             ]);
     }
 

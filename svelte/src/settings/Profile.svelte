@@ -19,15 +19,12 @@
         responses.username = null;
         if (me.username == profile.username) return;
 
-        if (!profile.username) {
-            responses.username = null;
-        } else if (!/^[A-Za-z_][A-Za-z0-9_\-\.]*$/.test(profile.username)) {
-            responses.username = api.errors.invalid_data;
-        } else if (profile.username.length < api.limits.username_min_length) {
-            responses.username = api.errors.too_short;
-        } else  if (profile.username.length > api.limits.username_max_length) {
-            responses.username = api.errors.too_long;
-        }
+        if (!/^[A-Za-z_][A-Za-z0-9_\-\.]*$/.test(profile.username))
+            return responses.username = api.errors.invalid_data;
+        if (profile.username.length < api.limits.username_min_length)
+            return responses.username = api.errors.too_short;
+        if (profile.username.length > api.limits.username_max_length)
+            return responses.username = api.errors.too_long;
 
         if (!responses.username) {
             fetch(api.methods.settings.profile, {
@@ -50,11 +47,10 @@
         responses.name = null;
         if (me.name == profile.name) return;
 
-        if (!profile.name) {
-            responses.name = api.errors.required;
-        } else  if (profile.name.length > api.limits.name_max_length) {
-            responses.name = api.errors.too_long;
-        }
+        if (!profile.name)
+            return responses.name = api.errors.required;
+        if (profile.name.length > api.limits.name_max_length)
+            return responses.name = api.errors.too_long;
 
         if (!responses.name) {
             fetch(api.methods.settings.profile, {
@@ -77,11 +73,8 @@
         responses.bio = null;
         if (me.bio == profile.bio) return;
 
-        if (!profile.bio) {
-            responses.bio = api.errors.required;
-        } else  if (profile.bio.length > api.limits.bio_max_length) {
-            responses.bio = api.errors.too_long;
-        }
+        if (profile.bio.length > api.limits.bio_max_length)
+            return responses.bio = api.errors.too_long;
 
         if (!responses.bio) {
             fetch(api.methods.settings.profile, {
@@ -98,6 +91,36 @@
                 });
         }
     }
+
+    function checkUsername()
+    {
+        responses.username = null;
+
+        if (!/^[A-Za-z_][A-Za-z0-9_\-\.]*$/.test(profile.username))
+            return responses.username = api.errors.invalid_data;
+        if (profile.username.length < api.limits.username_min_length)
+            return responses.username = api.errors.too_short;
+        if (profile.username.length > api.limits.username_max_length)
+            return responses.username = api.errors.too_long;
+    }
+
+    function checkName()
+    {
+        responses.name = null;
+
+        if (!profile.name)
+            return responses.name = api.errors.required;
+        if (profile.name.length > api.limits.name_max_length)
+            return responses.name = api.errors.too_long;
+    }
+
+    function checkBio()
+    {
+        responses.bio = null;
+
+        if (profile.bio.length > api.limits.bio_max_length)
+            return responses.bio = api.errors.too_long;
+    }
 </script>
 
 {#if profile && profile.bio !== undefined}
@@ -109,7 +132,8 @@
                 {dict.settings.profile.username.descr}
             </span>
             <input type="text" name="username" placeholder="{dict.settings.profile.username.placeholder}"
-                id="settings-profile-username" bind:value={profile.username} on:blur={changeUsername} />
+                id="settings-profile-username" bind:value={profile.username} on:blur={changeUsername} on:change={checkUsername}
+                on:keydown={checkUsername} on:keyup={checkUsername} on:pase={checkUsername} on:cut={checkUsername}/>
             {#if responses.username !== null}
                 <p class="settings-response" id="settings-profile-username-response">
                     {dict.settings.profile.username.responses[Object.keys(api.errors).find(key => api.errors[key] == responses.username)]}
@@ -122,7 +146,8 @@
                 {dict.settings.profile.name.descr}
             </span>
             <input type="text" name="name" placeholder="{dict.settings.profile.name.placeholder}"
-                id="settings-profile-name" bind:value={profile.name} required on:blur={changeName} />
+                id="settings-profile-name" bind:value={profile.name} required on:blur={changeName} on:change={checkName}
+                on:keydown={checkName} on:keyup={checkName} on:pase={checkName} on:cut={checkName}/>
             {#if responses.name !== null}
                 <p class="settings-response" id="settings-profile-name-response">
                     {dict.settings.profile.name.responses[Object.keys(api.errors).find(key => api.errors[key] == responses.name)]}
@@ -135,7 +160,8 @@
                 {dict.settings.profile.bio.descr}
             </span>
             <textarea name="bio" placeholder="{dict.settings.profile.bio.placeholder}"
-                id="settings-profile-bio" bind:value={profile.bio} on:blur={changeBio}></textarea>
+                id="settings-profile-bio" bind:value={profile.bio} on:blur={changeBio} on:change={checkBio}
+                on:keydown={checkBio} on:keyup={checkBio} on:pase={checkBio} on:cut={checkBio}></textarea>
             {#if responses.bio !== null}
                 <p class="settings-response" id="settings-profile-bio-response">
                     {dict.settings.profile.bio.responses[Object.keys(api.errors).find(key => api.errors[key] == responses.bio)]}

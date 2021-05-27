@@ -47,11 +47,16 @@
 			headers: { "Content-Type": "application/json" },
 			body:    JSON.stringify(user)
 		})
-		.then(res => res.json())
+		.then(res => {
+			let status = res.status;
+			res = res.json();
+			res["status_code"] = status;
+			return res;
+		})
 		.then(res => {
 			if (res.status == api.errors.ok) {
 				setCookie("userid", res.userid, 90);
-				location.href = "@" + res.userid;
+				location.href = res.status_code == 200 ? "@" + res.userid : api.sections.settings + "/profile";  // TODO clear hardcore from everything
 			}
 		});
 	}
