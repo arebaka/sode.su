@@ -39,6 +39,16 @@ router.post("/profile", async (req, res, next) => {
             }
         }
 
+        if (typeof req.body.bio == "string") {
+            if (!req.body.bio) {
+                await db.setBio("user", req.cookies.userid, 1);
+            } else if (req.body.bio.length > api.limits.bio_max_length) {
+                status = api.errors.too_long;
+            } else {
+                await db.setBio("user", req.cookies.userid, 1);
+            }
+        }
+
         res
             .status(status == api.errors.ok ? 200 : 403)
             .json({ status: status });

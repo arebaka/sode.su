@@ -1,6 +1,5 @@
 const fs           = require("fs");
 const path         = require("path");
-const https        = require("https");
 const express      = require("express");
 const cookieParser = require("cookie-parser");
 const useragent    = require("express-useragent");
@@ -18,10 +17,11 @@ const entityRouter   = require("./routes/entities");
 const settingsRouter = require("./routes/settings");
 const apiRouter      = require("./routes/api");
 
-const db    = require("./db");
-const api   = require("./api");
-const i18n  = require("./i18n");
-const cache = require("./cache");
+const config = require("./config")
+const db     = require("./db");
+const api    = require("./api");
+const i18n   = require("./i18n");
+const cache  = require("./cache");
 
 
 
@@ -29,7 +29,6 @@ class Server
 {
     constructor(port)
     {
-        this.server = null;
         this.port   = port;
         this.db     = db;
 
@@ -104,28 +103,17 @@ class Server
                     type:      "website"
                 }));
         });
-
-        if (this.port == 443) {
-            this.server = https.createServer({
-                    key:  fs.readFileSync(process.env.CERT_KEY).toString(),
-                    cert: fs.readFileSync(process.env.CERT_CHAIN).toString()
-                },
-                this.app
-            );
-        }
     }
 
     async start()
     {
-        const server = this.server ? this.server : this.app;
-
         await this.db.start();
 
-        server.listen(this.port, () => {
+        this.app.listen(this.port, () => {
             console.log(`Server running at localhost on port ${this.port}`);
         });
 
-        server.on("connection", socket => {
+        this.app.on("connection", socket => {
             socket.setKeepAlive(true);
         });
     }

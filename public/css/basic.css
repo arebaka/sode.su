@@ -629,7 +629,6 @@ body {
 
 .me-menu {
   display: block;
-  float: right;
   width: 15rem;
   padding: 0 1rem;
   font: 0.9rem/1.5rem Mono, Emoji, monospace, Basic, sans-serif;
@@ -648,6 +647,11 @@ body {
   color: #ECECEC;
   border-color: #212D3B; }
 
+.me-menu-box:hover,
+.me-menu-box:focus {
+  background-color: #F0F8FF;
+}
+
 .me-menu:hover,
 .me-menu:focus {
   text-decoration: none;
@@ -662,11 +666,6 @@ select.me-menu {
 
 select.me-menu option {
   text-transform: none; }
-
-#me-menu-edit-profile .me-menu,
-#me-menu-polls .me-menu,
-#me-menu-log-out .me-menu {
-  border-bottom-width: .2rem; }
 
 /****** Боковое меню ******/
 #menu-box {
@@ -742,6 +741,16 @@ select.menu {
 select.menu {
   padding-left: .7rem; }
 
+.menu-box:hover,
+.menu-box:focus {
+  background-color: #F0F8FF;
+}
+
+.menu:hover,
+.menu:focus {
+  text-decoration: none;
+}
+
 .menu .notice {
   color: #FFF;
   background-color: #7D80B8; }
@@ -808,8 +817,8 @@ select.menu {
 #sign-up {
   height: 15rem; }
 
-#log-in-header,
-#sign-up-header {
+#log-in-headline,
+#sign-up-headline {
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
   font-size: 1.5rem;
   font-weight: bold;
@@ -818,8 +827,8 @@ select.menu {
   color: #F0F8FF;
   background-color: #7D80B8; }
 
-.night #log-in-header,
-.night #sign-up-header {
+.night #log-in-headline,
+.night #sign-up-headline {
   color: #ECECEC;
   background-color: #212D3B; }
 
@@ -931,7 +940,7 @@ select.menu {
   background-color: #0E1621;
   box-shadow: none; }
 
-#log-out-header {
+#log-out-headline {
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
   font-size: 1.5rem;
   font-weight: bold;
@@ -940,7 +949,7 @@ select.menu {
   color: #F0F8FF;
   background-color: #7D80B8; }
 
-.night #log-in-header {
+.night #log-in-headline {
   color: #ECECEC;
   background-color: #212D3B; }
 
@@ -1905,7 +1914,7 @@ body.audioplayer .video-frame-box {
 #settings-back:focus {
   background-color: #F0F8FF;
 }
-#settings-header {
+#settings-headline {
 	padding: 0 1rem;
 	font-family: Basic, Emoji, Mono, sans-serif;
 	font-size: 1.5rem;

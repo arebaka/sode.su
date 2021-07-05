@@ -3,6 +3,8 @@ const pg     = require("pg");
 
 const { v4: uuidv4 } = require("uuid");
 
+const config = require("./config");
+
 const entityTables = {
     "user": {
         account: "users",
@@ -20,24 +22,22 @@ class DBHelper
     {
         this.pool = null;
 
-        this.params = {
-            host:     process.env.DBHOST || "localhost",
-            user:     process.env.DBUSER,
-            password: process.env.DBPASSWORD,
-            database: process.env.DBDATABASE,
-            port:     process.env.DBPORT || 5432,
-            max:      1
-        };
-
         this.tgSecretKey = crypto
             .createHash("sha256")
-            .update(process.env.BOT_TOKEN)
+            .update(config.bot.token)
             .digest();
     }
 
     async start()
     {
-        this.pool = new pg.Pool(this.params);
+        this.pool = new pg.Pool({
+            host:     config.db.host,
+            user:     config.db.user,
+            password: config.db.password,
+            database: config.db.database,
+            port:     config.db.port,
+            max:      1
+        });
 
         this.pool.on("error", async (err, client) => {
             console.error("PostgreSQL pool is down!", err);
@@ -77,7 +77,8 @@ class DBHelper
         return session.rows[0] ? true : false;
     }
 
-    async getUser(id) {
+    async getUser(id)
+    {
         let user = await this.pool.query(`
                 select * from ${entityTables["user"].account}
                 where id = $1
@@ -224,6 +225,11 @@ class DBHelper
     async setName(entityType, entityId, name)
     {
         await this.pool.query(`update ${entityTables[entityType].profile} set name = $1 where id = $2`, [name, entityId]);
+    }
+
+    async setBio(entityType, entityId, bio)
+    {
+        await this.pool.query(`update ${entityTables[entityType].profile} set bio = $1 where id = $2`, [bio, entityId]);
     }
 
     async setPrivacy(entityType, entityId, option, value)

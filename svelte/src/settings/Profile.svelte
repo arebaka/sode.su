@@ -11,6 +11,8 @@
         bio:      null
     };
 
+    document.title = dict.settings.profile.title;
+
     $: if (me) {
         fetch(`@${me.id}/${api.files.bio}`)
             .then(res => res.text())
@@ -136,7 +138,7 @@
     <form method="POST" action="{api.methods.settings.profile.all}" enctype="multipart/form-data"
             class="settings-form" id="settings-profile">
         <label class="settings-profile-option" id="settings-profile-username-box" class:error={responses.username}>
-            {dict.settings.profile.username.title}
+            {dict.settings.profile.username.label}
             <span class="settings-profile-option-descr" id="settings-profile-username-descr">
                 {dict.settings.profile.username.descr}
             </span>
@@ -152,7 +154,7 @@
             {/if}
         </label>
         <label class="settings-profile-option" id="settings-profile-name-box" class:error={responses.name}>
-            {dict.settings.profile.name.title}
+            {dict.settings.profile.name.label}
             <span class="settings-profile-option-descr" id="settings-profile-name-descr">
                 {dict.settings.profile.name.descr}
             </span>
@@ -168,7 +170,7 @@
             {/if}
         </label>
         <label class="settings-profile-option" id="settings-profile-bio-box" class:error={responses.bio}>
-            {dict.settings.profile.bio.title}
+            {dict.settings.profile.bio.label}
             <span class="settings-profile-option-descr" id="settings-profile-bio-descr">
                 {dict.settings.profile.bio.descr}
             </span>

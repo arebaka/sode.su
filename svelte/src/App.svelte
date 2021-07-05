@@ -234,7 +234,7 @@
 
 		<div id="log-in-box" class:open={ui.logIn.open} on:click={() => {ui.logIn.open = false}}>
 			<div id="log-in" on:click|stopPropagation>
-				<h1 id="log-in-header">{dict.log_in.title}</h1>
+				<h1 id="log-in-headline">{dict.log_in.headline}</h1>
 				<script async src="https://telegram.org/js/telegram-widget.js?15"
 					data-telegram-login="sodesu_bot" data-size="large" data-radius="0"
 					data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
@@ -243,7 +243,7 @@
 
 		<div id="log-out-box">
 			<div id="log-out">
-				<h1 id="log-out-header"></h1>
+				<h1 id="log-out-headline"></h1>
 				<p id="log-out-text"></p>
 				<button id="log-out-yes-button"></button>
 				<button id="log-out-no-button"></button>

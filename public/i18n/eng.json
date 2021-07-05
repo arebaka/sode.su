@@ -74,7 +74,7 @@
 			"no": "No"
 		},
 		"cookies": {
-			"title": "The site uses cookies",
+			"headline": "The site uses cookies",
 			"text": "By continuing to use the site, you agree to the conditions for the processing of pesonal data and <a href='https://www.termsfeed.com/blog/sample-cookies-policy-template'>the use of cookie files</a>."
 		},
 		"links": {
@@ -99,15 +99,15 @@
 		"spoiler": "Spoiler"
 	},
 	"log_in": {
-		"title": "Logging in",
+		"headline": "Logging in",
 		"errors": {
-			"title": "Logging in failed",
+			"headline": "Logging in failed",
 			"unauthorized": "Unauthorized.",
 			"invalid_data": "The request is invalid."
 		}
 	},
 	"log_out": {
-		"title": "Logging out",
+		"headline": "Logging out",
 		"text": "Log out of your account?<br />The session will be destroyed.",
 		"yes": "Yes",
 		"no": "No"
@@ -132,14 +132,16 @@
 	"settings": {
 		"back": "Back",
 		"index": {
-			"title": "Settings",
+			"title": "Settings – sode.su",
+			"headline": "Settings",
 			"descr": "Choose a section"
 		},
 		"profile": {
-			"title": "Profile",
+			"title": "Profile – sode.su",
+			"headline": "Profile",
 			"descr": "See information about your own profile as other users will see it",
 			"username": {
-				"title": "Username",
+				"label": "Username",
 				"descr": "Temporary stub",
 				"placeholder": "5..32 characters...",
 				"responses": {
@@ -152,7 +154,7 @@
 				}
 			},
 			"name": {
-				"title": "Name",
+				"label": "Name",
 				"descr": "Temporary stub",
 				"placeholder": "1..255 characters...",
 				"responses": {
@@ -163,7 +165,7 @@
 				}
 			},
 			"bio": {
-				"title": "Bio",
+				"label": "Bio",
 				"descr": "Temporary stub",
 				"placeholder": "In the future, it will be possible to use the SMU here...",
 				"responses": {
@@ -174,10 +176,11 @@
 			}
 		},
 		"privacy": {
-			"title": "Privacy",
+			"title": "Privacy – sode.su",
+			"headline": "Privacy",
 			"descr": "Manage your privacy",
 			"friendable": {
-				"title": "Who can add me as friend",
+				"label": "Who can add me as friend",
 				"private": "Nobody",
 				"protected": "Friend of friends",
 				"public": "Everybody",
@@ -189,7 +192,7 @@
 				}
 			},
 			"invitable": {
-				"title": "Who can invite me to the clubs",
+				"label": "Who can invite me to the clubs",
 				"private": "Nobody",
 				"protected": "Only friends",
 				"public": "Everybody",
@@ -201,7 +204,7 @@
 				}
 			},
 			"commentable": {
-				"title": "Who can comment the posts on my wall",
+				"label": "Who can comment the posts on my wall",
 				"private": "Nobody",
 				"protected": "Only friends",
 				"public": "Everybody",
@@ -213,17 +216,17 @@
 				}
 			},
 			"flags": {
-				"title": "Flags"
+				"headline": "Flags"
 			},
 			"searchable": {
-				"title": "Other users can find me through user search",
+				"label": "Other users can find me through user search",
 				"responses": {
 					"ok": "The flag has been changed successfully.",
 					"unauthorized": "Unauthorized!"
 				}
 			},
 			"anon_comments_only": {
-				"title": "Comments on my wall can only be posted anonymously",
+				"label": "Comments on my wall can only be posted anonymously",
 				"responses": {
 					"ok": "The flag has been changed successfully.",
 					"unauthorized": "Unauthorized!"

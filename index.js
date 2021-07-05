@@ -1,12 +1,12 @@
 const rl = require("serverline");
 
 const Server = require("./server");
+const config = require("./config");
 
 process.stdin.setEncoding("utf8");
 process.stderr.setEncoding("utf8");
 
-const PORT   = process.env.PORT || 3000;
-const server = new Server(PORT);
+const server = new Server(config.port);
 
 rl.init();
 rl.setCompletion(["stop", "reload"]);
@@ -30,9 +30,9 @@ rl.on("line", async line => {
 rl.on("SIGINT", rl => {
     rl.question("Confirm exit: ", answer =>
         answer.match(/^y(es)?$/i)
-                ? process.exit(0)
-                : rl.output.write("\x1B[1K> "
-            ))
+            ? process.exit(0)
+            : rl.output.write("\x1B[1K> ")
+    );
 });
 
 server.start();

@@ -15,6 +15,8 @@
         anon_comments_only: null
     };
 
+    document.title = dict.settings.privacy.title;
+
     function change(option)
     {
         responses[option] = null;
@@ -71,7 +73,7 @@
             class="settings-form" id="settings-privacy">
         {#each options as option}
             <label class="settings-privacy-box" id="settings-privacy-{option}-box" class:error={responses[option]}>
-                {dict.settings.privacy[option].title}
+                {dict.settings.privacy[option].label}
                 <select name="{option}" class="settings-privacy-option" id="settings-privacy-{option}"
                         bind:value={profile[option]} required on:change={() => { change(option) }}>
                     <option value="private" class="settings-privacy-{option}" selected={profile[option] == "private"}>
@@ -92,10 +94,10 @@
             </label>
         {/each}
         <fieldset id="settings-privacy-flags">
-            <legend id="settings-privacy-flags-legend">{dict.settings.privacy.flags.title}</legend>
+            <legend id="settings-privacy-flags-legend">{dict.settings.privacy.flags.headline}</legend>
             {#each flags as flag}
                 <label class="settings-privacy-flag-box" id="settings-privacy-{flag}-box">
-                    {dict.settings.privacy[flag].title}
+                    {dict.settings.privacy[flag].label}
                     <input type="checkbox" name="{flag}" class="settings-privacy-flag"
                         id="settings-privacy-{flag}" bind:checked={profile[flag]} required
                         on:change={() => { changeFlag(flag) }}/>
