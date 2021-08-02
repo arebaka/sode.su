@@ -1,0 +1,370 @@
+{
+	"version":   "1",
+	"host":      "https://sode.su",
+	"domain":    "sode.su",
+	"websocket": "wss://sode.su/ws",
+
+	"langs": {
+		"eng": {
+			"native": "English",
+			"code":   "eng",
+			"iso2":   "en"
+		},
+		"rus": {
+			"native": "Русский",
+			"code":   "rus",
+			"iso2":   "ru"
+		}
+	},
+
+	"uri_params": {
+		"post":  "p",
+		"image": "i",
+		"video": "v",
+		"music": "m"
+	},
+
+	"errors": {
+		"ok":             0,
+		"invalid_data":   1,
+		"unauthorized":   2,
+		"required":       3,
+		"too_short":      4,
+		"too_long":       5,
+		"already_in_use": 6,
+		"invalid_value":  7
+	},
+
+	"entities": {
+		"user": {
+			"prefix": "@"
+		},
+		"club": {
+			"prefix": "~"
+		}
+	},
+
+	"paths": {
+		"/":             "",
+		"robots.txt":    "robots.txt",
+		"api":           "api",
+		"emoji.json":    "emoji.json",
+		"manifest.json": "manifest.json",
+		"sitemap.xml":   "sitemap.xml",
+		"favicon.ico":   "favicon.ico",
+		"css": {
+			"*.css": "css/:1.css",
+			"fonts": {
+				"*.ttf": "css/fonts/:1.ttf"
+			}
+		},
+		"i18n": {
+			"*.json": "i18n/:1.json"
+		},
+		"img": {
+			"*.ico":  "img/:1.ico",
+			"*.svg":  "img/:1.svg",
+			"*.png":  "img/:1.png",
+			"*.jpeg": "img/:1.jpeg",
+			"*.gif":  "img/:1.gif",
+			"*.webp": "img/:1.webp"
+		},
+		"js": {
+			"*.js": "j/:1.js"
+		},
+		"layouts": {
+			"*.html": "layouts/:1.html"
+		},
+		"settings": {
+			"/":       "settings",
+			"profile": "settings/profile",
+			"privacy": "settings/privacy"
+		},
+		"@*": {
+			"/":            "@:1",
+			"profile.json": "@:1/profile.json",
+			"bio":          "@:1/bio",
+			"i":            {
+				"/": "@:1/i",
+				"@": {
+					"/":      "@:1/i/@",
+					"*.svg":  "@:1/i/@/:2.svg",
+					"*.png":  "@:1/i/@/:2.png",
+					"*.jpeg": "@:1/i/@/:2.jpeg",
+					"*.gif":  "@:1/i/@/:2.gif",
+					"*.webp": "@:1/i/@/:2.webp"
+				},
+				"*": {
+					"/":      "@:1/i/:2",
+					"*.svg":  "@:1/i/:2/:3.svg",
+					"*.png":  "@:1/i/:2/:3.png",
+					"*.jpeg": "@:1/i/:2/:3.jpeg",
+					"*.gif":  "@:1/i/:2/:3.gif",
+					"*.webp": "@:1/i/:2/:3.webp"
+				}
+			}
+		}
+	},
+
+	"types": {
+		"Status": {
+			"proto": "int",
+			"descr": "",
+			"enum":  [0, 1, 2, 3, 4, 5, 6, 7]
+		},
+		"User_Role": {
+			"proto": "str",
+			"descr": "",
+			"enum":  ["user", "moder", "admin"]
+		},
+		"Datetime": {
+			"proto":   "str",
+			"descr":   "",
+			"pattern": "/^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$/"
+		},
+		"Access": {
+			"proto": "str",
+			"descr": "",
+			"enum":  ["private", "protected", "public"]
+		},
+		"Username": {
+			"proto":      "str",
+			"descr":      "",
+			"min_length": 5,
+			"max_length": 32,
+			"pattern":    "^[A-Za-z][A-Za-z0-9\\-\\.]*$"
+		},
+		"Entity_Name": {
+			"proto":      "str",
+			"descr":      "",
+			"max_length": 255
+		},
+		"Bio": {
+			"proto":      "str",
+			"descr":      "",
+			"max_length": 15000
+		},
+
+		"Response": {
+			"descr": "",
+			"props": {
+				"status": {
+					"type":     "Status",
+					"nullable": false,
+					"descr":    ""
+				}
+			}
+		},
+		"Me": {
+			"descr": "",
+			"props": {
+				"role": {
+					"type":     "User_Role",
+					"nullable": false,
+					"descr":    ""
+				},
+				"registered_dt": {
+					"type":     "Datetime",
+					"nullable": false,
+					"descr":    ""
+				},
+				"id": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"searchable": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"cover": {
+					"type":     "str",
+					"nullable": true,
+					"descr":    ""
+				},
+				"avatar": {
+					"type":     "str",
+					"nullable": true,
+					"descr":    ""
+				},
+				"name": {
+					"type":     "str",
+					"nullable": false,
+					"descr":    ""
+				},
+				"friendable": {
+					"type":     "Access",
+					"nullable": false,
+					"descr":    ""
+				},
+				"invitable": {
+					"type":     "Access",
+					"nullable": false,
+					"descr":    ""
+				},
+				"commentable": {
+					"type":     "Access",
+					"nullable": false,
+					"descr":    ""
+				},
+				"anon_comments_only": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"last_post_index": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"pinned_post_index": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"username": {
+					"type":     "Username",
+					"nullable": false,
+					"descr":    ""
+				}
+			}
+		},
+		"Me_Response": {
+			"descr": "",
+			"props": {
+				"status": {
+					"type":     "Status",
+					"nullable": false,
+					"descr":    ""
+				},
+				"data": {
+					"type":     "Me",
+					"nullable": true,
+					"descr":    ""
+				}
+			}
+		},
+		"Auth_Response": {
+			"descr": "",
+			"props": {
+				"status": {
+					"type":     "Status",
+					"nullable": false,
+					"descr":    ""
+				},
+				"userid": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"new_user": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				}
+			}
+		}
+	},
+
+	"methods": {
+		"me": {
+			"path":    "api/me",
+			"descr":   "",
+			"params":  {},
+			"returns": "Me_Response"
+		},
+		"auth": {
+			"path":    "api/auth",
+			"descr":   "",
+			"params":  {
+				"id": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"first_name": {
+					"type":     "str",
+					"nullable": false,
+					"descr":    ""
+				},
+				"last_name": {
+					"type":     "str",
+					"nullable": true,
+					"descr":    ""
+				},
+				"username": {
+					"type":     "str",
+					"nullable": true,
+					"descr":    ""
+				},
+				"photo_url": {
+					"type":     "str",
+					"nullable": true,
+					"descr":    ""
+				},
+				"auth_date": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"hash": {
+					"type":     "str",
+					"nullable": false,
+					"descr":    ""
+				}
+			},
+			"returns": "Auth_Response"
+		},
+		"logout": {
+			"path":    "api/logout",
+			"descr":   "",
+			"params":  {},
+			"returns": "Response"
+		},
+		"set.profile": {
+			"path":    "api/set/profile",
+			"descr":   "",
+			"params":  {
+				"username": {
+					"type":     "Username",
+					"nullable": true,
+					"descr":    ""
+				},
+				"name": {
+					"type":     "Entity_Name",
+					"nullable": true,
+					"descr":    ""
+				},
+				"bio": {
+					"type":     "Bio",
+					"nullable": true,
+					"descr":    ""
+				}
+			},
+			"returns": "Response"
+		},
+		"set.privacy": {
+			"path":    "api/set/privacy",
+			"descr":   "",
+			"params":  {
+				"friendable": {
+					"type":     "bool",
+					"nullable": true,
+					"descr":    ""
+				},
+				"invitable": {
+					"type":     "bool",
+					"nullable": true,
+					"descr":    ""
+				},
+				"anon_comments_only": {
+					"type":     "bool",
+					"nullable": true,
+					"descr":    ""
+				}
+			},
+			"returns": "Response"
+		}
+	}
+}

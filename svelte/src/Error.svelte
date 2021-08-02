@@ -1,9 +1,9 @@
 <script type="text/javascript">
-    const titles = {
-        404: "Not Found"
-    };
+	const titles = {
+		404: "Not Found"
+	};
 
-    export let code;
+	export let code;
 </script>
 
 <p id="error-code">{code}</p>

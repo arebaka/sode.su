@@ -10,7 +10,7 @@ router.use((req, res, next) => {
 router.get("/:name.html", (req, res, next) => {
     res
         .type(".html")
-        .sendFile(path.resolve(`public/html${req.path}`), err => {
+        .sendFile(path.resolve(`public/layouts${req.path}`), err => {
             if (err) {
                 next(404);
             }

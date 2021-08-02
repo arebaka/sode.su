@@ -33,7 +33,7 @@
 	function logout()
 	{
 		if (getCookie("userid")) {
-			fetch(api.methods.logout, { method: "POST" }).then(() => {
+			fetch(api.methods.logout.path, { method: "POST" }).then(() => {
 				delCookie("userid");
 				document.getElementsByTagName("html")[0].classList.remove("authorized");
 				me = null;
@@ -43,7 +43,7 @@
 	}
 
 	window.onTelegramAuth = function(user) {
-		fetch(api.methods.auth, {
+		fetch(api.methods.auth.path, {
 				method:  "POST",
 				headers: { "Content-Type": "application/json" },
 				body:    JSON.stringify(user)
@@ -55,22 +55,21 @@
 					setCookie("userid", res.userid, 90);
 					ui.logIn.open = false;
 
-					fetch(api.methods.me, { method: "POST" })
+					fetch(api.methods.me.path, { method: "POST" })
 						.then(res => res.json())
-						.then(res => {
-							if (res.status == api.errors.ok) {
-								me = res.data;
-								navigate(res.new_user ? api.sections.settings + "/profile" : "@" + (me.username ? me.username : me.id));  // TODO clear hardcore from everything
+						.then(data => {
+							if (data.status == api.errors.ok) {
+								me = data.data;
+								navigate(res.new_user
+									? api.paths.settings.profile
+									: api.paths["@*"]["/"].replace(":1",
+										me.username ? me.username : me.id
+									));
 							}
 						});
 				}
 			});
 	}
-
-	const topnavTabs  = ["friends", "feed", "feedback", "clubs"];
-	const mediaTabs   = ["images", "videos", "music"];
-	const meMenuItems = ["settings", "themes", "bookmarks", "stickers", "polls", "moderation"];
-	const menuItems   = ["friends", "feed", "feedback", "clubs", "images", "videos", "music"];
 
 	let api;
 	let lang;
@@ -87,8 +86,16 @@
 		) : [];
 
 	let ui = {
+		topnav: {
+			tabs:  ["friends", "feed", "feedback", "clubs"],
+			media: ["images", "videos", "music"],
+		},
 		menu: {
-			open: false
+			open:  false,
+			items: ["friends", "feed", "feedback", "clubs", "images", "videos", "music"]
+		},
+		me: {
+			menu: ["settings", "themes", "bookmarks", "stickers", "polls", "moderation"]
 		},
 		logIn: {
 			open: false
@@ -101,9 +108,9 @@
 		}
 
 		setCookie("lang", lang, 10000);
-		document.getElementsByTagName("html")[0].setAttribute("lang", api.lang3to2[lang]);
+		document.getElementsByTagName("html")[0].setAttribute("lang", api.langs[lang].iso2);
 
-		fetch(api.paths.i18n + api.patterns.i18n.replace("*", lang))
+		fetch(api.paths.i18n["*.json"].replace(":1", lang))
 			.then(res => res.json())
 			.then(res => dict = res);
 	};
@@ -114,11 +121,18 @@
 			api  = res;
 			lang = params["lang"]
 				|| getCookie("lang")
-				|| api.lang2to3[navigator.language.substr(0, 2).toLowerCase()]
+				|| (() => {
+					let iso2 = navigator.language.substr(0, 2).toLowerCase();
+
+					for (let lang in api.langs) {
+						if (langs[lang].iso2 == iso2)
+							return lang;
+					}
+				})()
 				|| "eng";
 
 			if (getCookie("userid")) {
-				fetch(api.methods.me, { method: "POST" })
+				fetch(api.methods.me.path, { method: "POST" })
 					.then(res => res.json())
 					.then(res => {
 						if (res.status == api.errors.ok) {
@@ -139,7 +153,7 @@
 			</div>
 
 			<ul id="topnav">
-				{#each topnavTabs as tab}
+				{#each ui.topnav.tabs as tab}
 					<li class="topnav-box" id="topnav-{tab}">
 						<a href="{tab}" rel="bookmark" class="topnav" id="topnav-{tab}" use:link>
 							<p class="notice" data-counter="0"></p>
@@ -150,7 +164,7 @@
 				<li class="topnav-box" id="topnav-media">
 					<p class="topnav-label">{dict.topnav.media}</p>
 					<ul id="topnav-medias">
-						{#each mediaTabs as tab}
+						{#each ui.topnav.media as tab}
 							<li class="topnav-media-box">
 								<a href="{tab}" rel="bookmark" class="topnav-media" id="topnav-{tab}">
 									<p class="notice" data-counter="1">α</p>
@@ -163,9 +177,9 @@
 				<li class="topnav-box" id="topnav-language">
 					<p class="topnav-label">{dict.topnav.lang}</p>
 					<ul id="topnav-languages">
-						{#each Object.entries(api.langs) as [code, label]}
+						{#each Object.values(api.langs) as l}
 							<li class="topnav-language-box">
-								<p class="topnav-language" on:click={() => {lang = code}}>{label}</p>
+								<p class="topnav-language" on:click={() => {lang = l.code}}>{l.native}</p>
 							</li>
 						{/each}
 					</ul>
@@ -189,20 +203,26 @@
 				<nav id="me-menu-box">
 					<ul id="me-menu">
 						<li class="me-menu-box" id="me-menu-profile">
-							<a href="@{me.username ? me.username : me.id}" re="me" class="me-menu" use:link>{dict.me_menu.profile}</a>
+							<a href="@{me.username ? me.username : me.id}" rel="me" class="me-menu" use:link on:click={document.activeElement.blur}>
+								{dict.me_menu.profile}
+							</a>
 						</li>
-						{#each meMenuItems as item}
+						{#each ui.me.menu as item}
 							<li class="me-menu-box" id="me-menu-{item}">
-								<a href="{item}" rel="me" class="me-menu" use:link>{dict.me_menu[item]}</a>
+								<a href="{item}" rel="me" class="me-menu" use:link on:click={document.activeElement.blur}>
+									{dict.me_menu[item]}
+								</a>
 							</li>
 						{/each}
 						<li class="me-menu-box" id="me-menu-log-out">
-							<button class="me-menu" on:click={logout}>{dict.me_menu.log_out}</button>
+							<button class="me-menu" on:click={logout} on:click={document.activeElement.blur}>
+								{dict.me_menu.log_out}
+							</button>
 						</li>
 						<li class="me-menu-box" id="me-menu-language">
-							<select class="me-menu" bind:value={lang}>
-								{#each Object.entries(api.langs) as [code, label]}
-									<option class="me-menu-language" value="{code}" selected={code == lang}>{label}</option>
+							<select class="me-menu" bind:value={lang} on:change={document.activeElement.blur}>
+								{#each Object.values(api.langs) as l}
+									<option class="me-menu-language" value="{l}" selected={lang == l.code}>{l.native}</option>
 								{/each}
 							</select>
 						</li>
@@ -214,7 +234,7 @@
 		<nav id="menu-box" class:open={ui.menu.open} on:click={() => {ui.menu.open = !ui.menu.open}}>
 			<a href="/" rel="index" id="menu-logo"></a>
 			<ul id="menu" on:click|stopPropagation>
-				{#each menuItems as item}
+				{#each ui.menu.items as item}
 					<li class="menu-box" id="menu-{item}">
 						<a href="{item}" rel="bookmark" class="menu" use:link>
 							<p class="notice" data-counter="0"></p>
@@ -224,8 +244,8 @@
 				{/each}
 				<li class="menu-box" id="menu-language">
 					<select class="menu" bind:value={lang}>
-						{#each Object.entries(api.langs) as [code, label]}
-							<option class="menu-language" value="{code}" selected={code == lang}>{label}</option>
+						{#each Object.values(api.langs) as l}
+							<option class="menu-language" value="{l}" selected={lang == l.code}>{l.native}</option>
 						{/each}
 					</select>
 				</li>
@@ -254,11 +274,11 @@
 
 		<main id="container">
 			<Route path="/settings/*">
-				<Settings api={api} dict={dict} me={me}/>
+				<Settings api={api} dict={dict} bind:me={me}/>
 			</Route>
 			<Route path="/:entity" let:params>
 				{#if /^@([0-9]+)|([A-Za-z_][A-Za-z0-9_\-\.]*)$/.test(params.entity)}
-					<User api={api} dict={dict}/>
+					<User api={api} dict={dict} descriptor={params.entity.substring(1)}/>
 				{:else}
 					<Error code={404}/>
 				{/if}
@@ -269,7 +289,7 @@
 		</main>
 
 		<footer id="footer">
-			<p id="copyright"><small> Sode.su &copy; 2019-2021 </small></p>
+			<p id="copyright"><small> sode.su &copy; 2019-2021 </small></p>
 		</footer>
 	{:else}
 		<p class="preloader">Loading...</p>

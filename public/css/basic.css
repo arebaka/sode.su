@@ -337,7 +337,7 @@ body {
   height: 2.5rem;
   margin-right: .2rem;
   background-color: #FFF;
-  background-image: url("../../img/logo.png");
+  background-image: url("../../img/logo.svg");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat; }
@@ -1984,6 +1984,7 @@ body.audioplayer .video-frame-box {
   font-size: 1rem;
   line-height: 1.5rem;
   border: 1px solid #7D80B8;
+  resize: none;
 }
 .settings-privacy-box {
   display: block;

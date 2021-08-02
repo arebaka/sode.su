@@ -2,7 +2,6 @@ const path    = require("path");
 const express = require("express");
 const router  = express.Router();
 
-const api   = require("../api");
 const i18n  = require("../i18n");
 const cache = require("../cache");
 
@@ -12,7 +11,7 @@ router.use((req, res, next) => {
 });
 
 router.get("/:section?", (req, res, next) => {
-    if (req.params.section && !api.methods.settings[req.params.section])
+    if (req.params.section && !res.locals.api.paths.settings[req.params.section])
         return next(404);
 
     res

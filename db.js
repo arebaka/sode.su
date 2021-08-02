@@ -1,16 +1,17 @@
 const crypto = require("crypto");
 const pg     = require("pg");
 
+const { spawn }      = require("child_process");
 const { v4: uuidv4 } = require("uuid");
 
 const config = require("./config");
 
 const entityTables = {
-    "user": {
+    user: {
         account: "users",
         profile: "user_profiles"
     },
-    "club": {
+    club: {
         account: "clubs",
         profile: "club_profiles"
     }
@@ -26,6 +27,35 @@ class DBHelper
             .createHash("sha256")
             .update(config.bot.token)
             .digest();
+    }
+
+    async _getHash(data)
+    {
+        let hash = ""
+        let subp = await spawn("./hash");
+
+        return await new Promise((resolve, reject) => {
+            subp.stdout.on("data", data => hash += data.toString());
+            subp.on("close", () => resolve((new BigInt64Array([hash]))[0]));
+
+            subp.stdin.write(data);
+            subp.stdin.end();
+        });
+    }
+
+    async _getContent(text)
+    {
+        const hash = await this._getHash(text);
+
+        let content = await this.pool.query(`
+                insert into content (hash, text)
+                values ($1, $2)
+                on conflict (hash) do
+                update set hash = $1
+                returning id, hash
+            `, [hash, text]);
+
+        return content.rows[0] ? content.rows[0] : null;
     }
 
     async start()
@@ -73,24 +103,21 @@ class DBHelper
 
     async hasSession(userId, sessionKey)
     {
-        let session = await this.pool.query("select * from sessions where user_id = $1 and key = $2", [userId, sessionKey]);
+        let session = await this.pool.query(
+            "select * from sessions where user_id = $1 and key = $2",
+            [userId, sessionKey]);
+
         return session.rows[0] ? true : false;
     }
 
     async getUser(id)
     {
-        let user = await this.pool.query(`
+        const user = await this.pool.query(`
                 select * from ${entityTables["user"].account}
                 where id = $1
-            `, [
-                id
-            ]);
+            `, [id]);
 
-        user = user.rows[0];
-        if (!user)
-            return null;
-
-        return user;
+        return user.rows[0] ? user.rows[0] : null;
     }
 
     async getMe(id)
@@ -99,9 +126,7 @@ class DBHelper
                 select u.role, u.registered_dt, up.* from ${entityTables["user"].account} u
                 join ${entityTables["user"].profile} up on up.id = u.id
                 where u.id = $1
-            `, [
-                id
-            ]);
+            `, [id]);
 
         user = user.rows[0];
         if (!user)
@@ -119,9 +144,7 @@ class DBHelper
         let profile = await this.pool.query(`
                 select * from ${entityTables[entityType].profile}
                 where ${isNaN(entityId) ? "alias" : "id"} = $1
-            `, [
-                entityId
-            ]);
+            `, [entityId]);
 
         profile = profile.rows[0];
         if (!profile)
@@ -136,29 +159,28 @@ class DBHelper
 
     async getBio(entityType, entityId)
     {
-        let bio = await this.pool.query(`
+        const bio = await this.pool.query(`
                 select c.text from content c
                 join ${entityTables[entityType].profile} p on p.bio_id = c.id
                 where p.${isNaN(entityId) ? "alias" : "id"} = $1
-            `, [
-                entityId
-            ]);
+            `, [entityId]);
 
-        bio = bio.rows[0];
-        if (!bio)
-            return null;
-
-        return bio.text;
+        return bio.rows[0] ? bio.rows[0].text : null;
     }
 
     async authUser(id, authDT, sessionKey, ip, useragent)
     {
         authDT = new Date(authDT * 1000).toUTCString();
-        await this.pool.query("update users set auth_dt = $1 where id = $2", [authDT, id]);
+        await this.pool.query(
+            "update users set auth_dt = $1 where id = $2",
+            [authDT, id]);
+
         let session;
 
         if (sessionKey) {
-            session = await this.pool.query("select key from sessions where user_id = $1 and key = $2", [id, sessionKey]);
+            session = await this.pool.query(
+                "select key from sessions where user_id = $1 and key = $2",
+                [id, sessionKey]);
             session = session.rows[0];
         }
         else {
@@ -190,20 +212,19 @@ class DBHelper
 
     async createUser(id, username, name, authDT)
     {
-        await this.pool.query("insert into entities default values");
-
-        let entityId = await this.pool.query("select last_value from entities_id_seq");
-        entityId = entityId.rows[0].last_value;
+        const entityId = await this.pool.query("insert into entities default values returning id");
 
         await this.pool.query(`
-                insert into ${entityTables["user"].account} (id, entity_id, tg_id, tg_username, auth_dt, salt)
+                insert into ${entityTables["user"].account}
+                (id, entity_id, tg_id, tg_username, auth_dt, salt)
                 values ($1, $2, $3, $4, $5, $6)
             `, [
-                id, entityId, id, username, new Date(authDT * 1000).toUTCString(), this.makeSalt(32)
+                id, entityId.rows[0].id, id, username, new Date(authDT * 1000).toUTCString(), this.makeSalt(32)
             ]);
 
         await this.pool.query(`
-                insert into ${entityTables["user"].profile} (id, cover_image_id, avatar_image_id, bio_id, name)
+                insert into ${entityTables["user"].profile}
+                (id, cover_image_id, avatar_image_id, bio_id, name)
                 values ($1, $2, $3, $4, $5)
             `, [
                 id, null, null, 1, name
@@ -212,29 +233,53 @@ class DBHelper
 
     async destroySession(userId, key)
     {
-        await this.pool.query("delete from sessions where user_id = $1 and key = $2", [userId, key]);
+        await this.pool.query(
+            "delete from sessions where user_id = $1 and key = $2",
+            [userId, key]);
     }
 
     async setAlias(entityType, entityId, alias)
     {
-        if (!alias)
-            return await this.pool.query(`update ${entityTables[entityType].profile} set alias = null where id = $1`, [entityId]);
-        await this.pool.query(`update ${entityTables[entityType].profile} set alias = $1 where id = $2`, [alias, entityId]);
+        alias
+            ? await this.pool.query(`
+                    update ${entityTables[entityType].profile}
+                    set alias = $1 where id = $2`,
+                [alias, entityId])
+            : await this.pool.query(`
+                    update ${entityTables[entityType].profile}
+                    set alias = null where id = $1`,
+                [entityId]);
     }
 
     async setName(entityType, entityId, name)
     {
-        await this.pool.query(`update ${entityTables[entityType].profile} set name = $1 where id = $2`, [name, entityId]);
+        await this.pool.query(`
+                update ${entityTables[entityType].profile}
+                set name = $1 where id = $2`,
+            [name, entityId]);
     }
 
     async setBio(entityType, entityId, bio)
     {
-        await this.pool.query(`update ${entityTables[entityType].profile} set bio = $1 where id = $2`, [bio, entityId]);
+        bio
+            ? await this.pool.query(`
+                    update ${entityTables[entityType].profile}
+                    set bio_id = $1 where id = $2`,
+                [
+                    (await this._getContent(bio)).id, entityId
+                ])
+            : await this.pool.query(`
+                    update ${entityTables[entityType].profile}
+                    set bio_id = 1 where id = $1
+                `, [entityId]);
     }
 
     async setPrivacy(entityType, entityId, option, value)
     {
-        await this.pool.query(`update ${entityTables[entityType].profile} set ${option} = $1 where id = $2`, [value, entityId])
+        await this.pool.query(`
+                update ${entityTables[entityType].profile}
+                set ${option} = $1 where id = $2`,
+            [value, entityId]);
     }
 }
 

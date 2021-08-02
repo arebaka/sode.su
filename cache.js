@@ -1,3 +1,4 @@
+const path       = require("path");
 const fs         = require("fs");
 const handlebars = require("handlebars");
 
@@ -9,7 +10,7 @@ class Cache
 
     load()
     {
-        this.page = handlebars.compile(fs.readFileSync("page.hbs").toString("utf-8"));
+        this.page = handlebars.compile(fs.readFileSync(path.resolve("page.hbs"), "utf-8"));
     }
 }
 

@@ -3,40 +3,36 @@ const crypto  = require("crypto");
 const express = require("express");
 const router  = express.Router();
 
-const api = require("../api");
-const db  = require("../db");
-
-const settingsRouter = require("./api/settings");
+const db  = require("../../db");
 
 router.use((req, res, next) => {
     res.set("Cache-Control", "public, max-age=0");
     next();
 });
 
-router.use("/set", settingsRouter);
+router.use("/set", require("./settings.js"));
 
 router.post("/me", async (req, res, next) => {
     try {
         if (!res.locals.authorized)
             return res
                 .status(401)
-                .json({ status: api.errors.unauthorized });
+                .json({ status: res.locals.api.errors.unauthorized });
 
         const user = await db.getMe(req.cookies.userid);
 
-        if (!user)
-            return res
+        user
+            ? res
+                .status(200)
+                .json({ status: res.locals.api.errors.ok, data: user })
+            : res
                 .status(401)
-                .json({ status: api.errors.unauthorized });
-
-        res
-            .status(200)
-            .json({ status: api.errors.ok, data: user });
+                .json({ status: res.locals.api.errors.unauthorized });
     }
     catch (err) {
         res
             .status(400)
-            .json({ status: api.errors.invalid_data });
+            .json({ status: res.locals.api.errors.invalid_data });
     }
 });
 
@@ -50,8 +46,7 @@ router.post("/auth", async (req, res, next) => {
             dataCheck.push(key + '=' + req.body[key]);
         }
         dataCheck.sort();
-        dataCheck = dataCheck
-            .join('\n');
+        dataCheck = dataCheck.join('\n');
 
         if (crypto.createHmac("sha256", db.tgSecretKey).update(dataCheck).digest("hex") === hash) {
             let   status;
@@ -67,15 +62,15 @@ router.post("/auth", async (req, res, next) => {
 
             const session = await db.authUser(
                 req.body.id, req.body.auth_date, req.cookies.session,
-                req.connection.remoteAddress, req.useragent.source
+                res.locals.ip, req.useragent.source
             );
 
             return res
                 .status(status)
                 // will keep the session for 90 days
-                .set("Set-Cookie", `session=${session}; path=/; domain=${api.domain}; max-age=${90 * 24 * 60 * 60}; samesite=lax; secure httponly`)
+                .set("Set-Cookie", `session=${session}; path=/; domain=${res.locals.api.domain}; max-age=${90 * 24 * 60 * 60}; samesite=lax; secure`)
                 .json({
-                    status:   api.errors.ok,
+                    status:   res.locals.api.errors.ok,
                     userid:   req.body.id,
                     new_user: status == 201
                 });
@@ -83,12 +78,12 @@ router.post("/auth", async (req, res, next) => {
 
         res
             .status(401)
-            .json({ status: api.errors.unauthorized });
+            .json({ status: res.locals.api.errors.unauthorized });
     }
     catch (err) {
         res
             .status(400)
-            .json({ status: api.errors.invalid_data });
+            .json({ status: res.locals.api.errors.invalid_data });
     }
 });
 
@@ -97,19 +92,19 @@ router.post("/logout", async (req, res, next) => {
         if (!res.locals.authorized)
             return res
                 .status(401)
-                .json({ status: api.errors.unauthorized });
+                .json({ status: res.locals.api.errors.unauthorized });
 
         await db.destroySession(req.cookies.userid, req.cookies.session);
 
         res
             .status(200)
-            .set("Set-Cookie", `session=; path=/; domain=${api.domain}; max-age=0; samesite=lax; secure httponly`)
-            .json({ status: api.errors.ok });
+            .set("Set-Cookie", `session=; path=/; domain=${res.locals.api.domain}; max-age=0; samesite=lax; secure`)
+            .json({ status: res.locals.api.errors.ok });
     }
     catch (err) {
         res
             .status(400)
-            .json({ status: api.errors.invalid_data });
+            .json({ status: res.locals.api.errors.invalid_data });
     }
 });
 

@@ -115,6 +115,7 @@
 	"index": {},
 	"profile": {
 		"user": {
+			"title": "{{name}} | sode.su",
 			"default": {
 				"name": "Анон",
 				"bio": "Образец биографии."

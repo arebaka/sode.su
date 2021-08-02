@@ -3,7 +3,6 @@ const express = require("express");
 const router  = express.Router();
 
 const db    = require("../db");
-const api   = require("../api");
 const i18n  = require("../i18n");
 const cache = require("../cache");
 
@@ -12,32 +11,65 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get("/:entityType(@|~):entityId/profile.json", async (req, res, next) => {
-    const profile = await db.getProfile(api.entities[req.params.entityType], req.params.entityId);
+router.get("/:prefix(@|~):descriptor/profile.json", async (req, res, next) => {
+    let entityType;
+
+    for (let i in res.locals.api.entities) {
+        if (res.locals.api.entities[i].prefix == req.params.prefix) {
+            entityType = i;
+            break;
+        }
+    }
+    if (!entityType)
+        return next(404);
+
+    const profile = await db.getProfile(entityType, req.params.descriptor);
     if (!profile)
         return next(404);
 
-    return res.json(profile);
+    res.json(profile);
 });
 
-router.get("/:entityType(@|~):entityId/bio.smu", async (req, res, next) => {
-    const bio = await db.getBio(api.entities[req.params.entityType], req.params.entityId);
+router.get("/:prefix(@|~):descriptor/bio", async (req, res, next) => {
+    let entityType;
+
+    for (let i in res.locals.api.entities) {
+        if (res.locals.api.entities[i].prefix == req.params.prefix) {
+            entityType = i;
+            break;
+        }
+    }
+    if (!entityType)
+        return next(404);
+
+    const bio = await db.getBio(entityType, req.params.descriptor);
 
     if (bio === null)
         return next(404);
 
-    return res
+    res
         .type("text")
         .send(bio);
 });
 
-router.get("/:entityType(@|~):entityId", async (req, res, next) => {
-    const profile = await db.getProfile(api.entities[req.params.entityType], req.params.entityId);
+router.get("/:prefix(@|~):descriptor", async (req, res, next) => {
+    let entityType;
+
+    for (let i in res.locals.api.entities) {
+        if (res.locals.api.entities[i].prefix == req.params.prefix) {
+            entityType = i;
+            break;
+        }
+    }
+    if (!entityType)
+        return next(404);
+
+    const profile = await db.getProfile(entityType, req.params.descriptor);
 
     if (!profile)
         return next(404);
-    if (!isNaN(req.params.entityId) && profile.username)
-        return res.redirect(req.path.replace(req.params.entityId, profile.username));
+    if (!isNaN(req.params.descriptor) && profile.username)
+        return res.redirect(req.path.replace(req.params.descriptor, profile.username));
 
     res
         .type(".html")
@@ -49,7 +81,9 @@ router.get("/:entityType(@|~):entityId", async (req, res, next) => {
             canonical: req.hostname + req.path,
             type:      "profile",
             title:     i18n[res.locals.clientLang].user.title.replace(
-                "{{name}}", profile.name ? profile.name : i18n[res.locals.clientLang].user.default.name
+                "{{name}}", profile.name
+                    ? profile.name
+                    : i18n[res.locals.clientLang].user.default.name
             )
         }));
 });

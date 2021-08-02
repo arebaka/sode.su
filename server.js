@@ -7,21 +7,13 @@ const helmet       = require("helmet");
 const compression  = require("compression");
 const logger       = require("morgan");
 
-const indexRouter    = require("./routes");
-const i18nRouter     = require("./routes/i18n");
-const imgRouter      = require("./routes/img");
-const cssRouter      = require("./routes/css");
-const layoutRouter   = require("./routes/layouts");
-const jsRouter       = require("./routes/js");
-const entityRouter   = require("./routes/entities");
-const settingsRouter = require("./routes/settings");
-const apiRouter      = require("./routes/api");
-
 const config = require("./config")
 const db     = require("./db");
 const api    = require("./api");
 const i18n   = require("./i18n");
 const cache  = require("./cache");
+const router = require("./routes");
+
 
 
 
@@ -29,18 +21,20 @@ class Server
 {
     constructor(port)
     {
-        this.port   = port;
-        this.db     = db;
-
-        this.app = express();
+        this.port = port;
+        this.db   = db;
+        this.app  = express();
 
         this.app.use(cookieParser());
         this.app.use(useragent.express());
         this.app.use(helmet());
         this.app.use(compression());
-        this.app.use(logger("common", {
-            skip: (req, res) => req.method == "GET" && res.statusCode < 400
-        }));
+        this.app.use((req, res, next) => {
+            res.locals.ip = req.header("x-real-ip") || req.ip;
+            logger(res.locals.ip + ' - [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+                skip: (req, res) => req.method == "GET" && res.statusCode < 400
+            })(req, res, next);
+        });
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
 
@@ -54,12 +48,13 @@ class Server
 
         this.app.use(async (req, res, next) => {
             res.locals.clientLang = req.query["lang"] || req.cookies["lang"];
-            if (!i18n[res.locals.clientLang]){
+            if (!i18n[res.locals.clientLang]) {
                 res.locals.clientLang = "eng";
             }
+            res.locals.api = api[req.header("X-API-Version")] || api[0];
 
-            res.set("Server", "Desu");
-            res.set("X-API-Version", "0");
+            res.set("Server",        "Desu");
+            res.set("X-API-Version", res.locals.api.version);
 
             res.locals.authorized = req.cookies.userid && req.cookies.session
                     && await db.hasSession(req.cookies.userid, req.cookies.session)
@@ -70,15 +65,14 @@ class Server
 
         this.app.get(/.+\/$/, (req, res, next) => res.redirect(req.url.slice(0, -1)));
 
-        this.app.use("/i18n",     i18nRouter);
-        this.app.use("/img",      imgRouter);
-        this.app.use("/css",      cssRouter);
-        this.app.use("/layouts",  layoutRouter);
-        this.app.use("/js",       jsRouter);
-        this.app.use("/settings", settingsRouter);
-        this.app.use("/",         entityRouter);
-        this.app.use("/",         indexRouter);
-        this.app.use("/api",      apiRouter);
+        this.app.use("/i18n",     router.i18n);
+        this.app.use("/img",      router.img);
+        this.app.use("/css",      router.css);
+        this.app.use("/layouts",  router.layouts);
+        this.app.use("/js",       router.js);
+        this.app.use("/settings", router.settings);
+        this.app.use("/",         router.root);
+        this.app.use("/api",      router.api);
 
         this.app.all(/.*/, (req, res, next) => next(404));
 
@@ -128,10 +122,8 @@ class Server
     async reload()
     {
         console.log("Reload the server...");
-
         cache.load();
         await this.db.restart();
-
         console.log("Server reloaded.");
     }
 }

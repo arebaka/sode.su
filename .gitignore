@@ -11,3 +11,4 @@ audios/*
 thumbs/*
 
 public/js/bundle.js
+api.js.old

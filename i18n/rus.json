@@ -1,0 +1,28 @@
+{
+	"meta": {
+		"lang":            "ru",
+		"separator":       ", ",
+		"super_separator": "; "
+	},
+	"errors": {
+		"404": {
+			"title": "404 – sode.su",
+			"descr": "Not Found"
+		}
+	},
+	"index": {
+		"title": "sode.su – антисоциальная сеть",
+		"descr": "Социальная сеть с крутой разметкой и кастомными темами оформления для думеров и прочих аутистов."
+	},
+	"settings": {
+		"title": "Настройки – sode.su",
+		"descr": ""
+	},
+	"user": {
+		"title": "{{name}} | sode.su",
+		"descr": "Любимый пользователь антисоциальной сети sode.su",
+		"default": {
+			"name": "Анон"
+		}
+	}
+}

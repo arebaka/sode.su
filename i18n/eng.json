@@ -1,0 +1,28 @@
+{
+	"meta": {
+		"lang":            "en",
+		"separator":       ", ",
+		"super_separator": "; "
+	},
+	"errors": {
+		"404": {
+			"title": "404 – sode.su",
+			"descr": "Not Found"
+		}
+	},
+	"index": {
+		"title": "sode.su – an antisocial network",
+		"descr": "A social network with cool markup and custom themes for doomers and other autists."
+	},
+	"settings": {
+		"title": "Settings – sode.su",
+		"descr": ""
+	},
+	"user": {
+		"title": "{{name}} | sode.su",
+		"descr": "A favorite user of sode.su antisotial network",
+		"default": {
+			"name": "Anon"
+		}
+	}
+}
