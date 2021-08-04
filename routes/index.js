@@ -5,6 +5,7 @@ module.exports = {
     css:      require("./css"),
     layouts:  require("./layouts"),
     js:       require("./js"),
+    policy:   require("./policy"),
     settings: require("./settings"),
     api:      require("./api")
 };

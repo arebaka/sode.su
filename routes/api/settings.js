@@ -34,17 +34,17 @@ router.post("/profile", async (req, res, next) => {
             } else if (req.body.name.length > res.locals.api.types.Entity_Name.max_length) {
                 status = res.locals.api.errors.too_long;
             } else {
-                await db.setName("user", req.cookies.userid, req.body.name);
+                await db.setName("user", req.cookies.userid, req.body.name, req.cookies.userid);
             }
         }
 
         if (typeof req.body.bio == "string") {
             if (!req.body.bio) {
-                await db.setBio("user", req.cookies.userid, null);
+                await db.setBio("user", req.cookies.userid, "", req.cookies.userid);
             } else if (req.body.bio.length > res.locals.api.types.Bio.max_length) {
                 status = res.locals.api.errors.too_long;
             } else {
-                await db.setBio("user", req.cookies.userid, req.body.bio);
+                await db.setBio("user", req.cookies.userid, req.body.bio, req.cookies.userid);
             }
         }
 

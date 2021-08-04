@@ -25,18 +25,13 @@ class Server
         this.db   = db;
         this.app  = express();
 
-        this.app.use(cookieParser());
-        this.app.use(useragent.express());
-        this.app.use(helmet());
-        this.app.use(compression());
-        this.app.use((req, res, next) => {
-            res.locals.ip = req.header("x-real-ip") || req.ip;
-            logger(res.locals.ip + ' - [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
-                skip: (req, res) => req.method == "GET" && res.statusCode < 400
-            })(req, res, next);
-        });
-        this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: true }));
+        this.app
+            .use(cookieParser())
+            .use(useragent.express())
+            .use(helmet())
+            .use(compression())
+            .use(express.json())
+            .use(express.urlencoded({ extended: true }));
 
         this.app.use(helmet.contentSecurityPolicy({
             useDefaults: true,
@@ -47,6 +42,7 @@ class Server
         }}));
 
         this.app.use(async (req, res, next) => {
+            res.locals.ip         = req.header("x-real-ip") || req.ip;
             res.locals.clientLang = req.query["lang"] || req.cookies["lang"];
             if (!i18n[res.locals.clientLang]) {
                 res.locals.clientLang = "eng";
@@ -57,22 +53,29 @@ class Server
             res.set("X-API-Version", res.locals.api.version);
 
             res.locals.authorized = req.cookies.userid && req.cookies.session
-                    && await db.hasSession(req.cookies.userid, req.cookies.session)
-                ? true : false;
+                && await db.hasSession(req.cookies.userid, req.cookies.session);
 
-            next();
+            logger(
+                res.locals.ip.padEnd(15, ' ') + " [:date[iso]] "
+                    + (res.locals.authorized ? req.cookies.userid.padStart(11, ' ') : "           ")
+                    + ' ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
+            {
+                skip: (req, res) => req.method == "GET" && res.statusCode < 400
+            })(req, res, next);
         });
 
         this.app.get(/.+\/$/, (req, res, next) => res.redirect(req.url.slice(0, -1)));
 
-        this.app.use("/i18n",     router.i18n);
-        this.app.use("/img",      router.img);
-        this.app.use("/css",      router.css);
-        this.app.use("/layouts",  router.layouts);
-        this.app.use("/js",       router.js);
-        this.app.use("/settings", router.settings);
-        this.app.use("/",         router.root);
-        this.app.use("/api",      router.api);
+        this.app
+            .use("/i18n",     router.i18n)
+            .use("/img",      router.img)
+            .use("/css",      router.css)
+            .use("/layouts",  router.layouts)
+            .use("/js",       router.js)
+            .use("/policy",   router.policy)
+            .use("/settings", router.settings)
+            .use("/",         router.root)
+            .use("/api",      router.api);
 
         this.app.all(/.*/, (req, res, next) => next(404));
 

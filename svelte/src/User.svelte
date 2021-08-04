@@ -22,7 +22,7 @@
 
 	$: if (profile) {
 		document.title = dict.profile.user.title
-			.replace("{{name}}", profile.name);
+			.replace("{{name}}", profile.name || dict.profile.user.default.name);
 	}
 
 	function escapeText(text)
@@ -45,7 +45,7 @@
 				alt="" id="profile-cover" />
 		{/if}
 
-		<h1 id="profile-name">{profile.name ? profile.name : dict.profile.user.default.name}</h1>
+		<h1 id="profile-name">{profile.name || dict.profile.user.default.name}</h1>
 
 		{#if profile.avatar}
 			<img src="{api.paths["@*"].i["@"] + '/' + profile.avatar}"

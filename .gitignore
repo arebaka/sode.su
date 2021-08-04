@@ -1,14 +1,20 @@
-node_modules
 package-lock.json
-debug
 
-.idea
-.vscode
+node_modules/
+debug/
+
+.idea/
+.vscode/
 
 images/*
 videos/*
 audios/*
 thumbs/*
+logs/*
 
 public/js/bundle.js
 api.js.old
+
+public/policy/*
+
+!/**/.gitkeep

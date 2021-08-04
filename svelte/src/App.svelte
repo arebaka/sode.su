@@ -125,7 +125,7 @@
 					let iso2 = navigator.language.substr(0, 2).toLowerCase();
 
 					for (let lang in api.langs) {
-						if (langs[lang].iso2 == iso2)
+						if (api.langs[lang].iso2 == iso2)
 							return lang;
 					}
 				})()
@@ -193,12 +193,12 @@
 
 		{#if me}
 			<div id="me">
-				<p id="me-name">{me.name}</p>
+				<p id="me-name">{me.name || dict.profile.user.default.name}</p>
 				<p id="me-username">{me.username ? "@" + me.username : ""}</p>
 				{#if me.avatar}
 					<img src="" alt="" id="me-avatar" />
 				{:else}
-					<p id="me-avatar">{me.name[0]}</p>
+					<p id="me-avatar">{me.name[0] || dict.profile.user.default.name[0]}</p>
 				{/if}
 				<nav id="me-menu-box">
 					<ul id="me-menu">

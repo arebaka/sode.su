@@ -48,37 +48,36 @@ router.post("/auth", async (req, res, next) => {
         dataCheck.sort();
         dataCheck = dataCheck.join('\n');
 
-        if (crypto.createHmac("sha256", db.tgSecretKey).update(dataCheck).digest("hex") === hash) {
-            let   status;
-            const user = await db.getUser(req.body.id);
-
-            if (user) {
-                status = 200;
-            }
-            else {
-                await db.createUser(req.body.id, req.body.username, req.body.first_name, req.body.auth_date);
-                status = 201;
-            }
-
-            const session = await db.authUser(
-                req.body.id, req.body.auth_date, req.cookies.session,
-                res.locals.ip, req.useragent.source
-            );
-
+        if (crypto.createHmac("sha256", db.tgSecretKey).update(dataCheck).digest("hex") !== hash)
             return res
-                .status(status)
-                // will keep the session for 90 days
-                .set("Set-Cookie", `session=${session}; path=/; domain=${res.locals.api.domain}; max-age=${90 * 24 * 60 * 60}; samesite=lax; secure`)
-                .json({
-                    status:   res.locals.api.errors.ok,
-                    userid:   req.body.id,
-                    new_user: status == 201
-                });
+                .status(401)
+                .json({ status: res.locals.api.errors.unauthorized });
+
+        let   status;
+        const user = await db.getUser(req.body.id);
+
+        if (user) {
+            status = 200;
+        }
+        else {
+            await db.createUser(req.body.id, req.body.username, req.body.first_name, req.body.auth_date);
+            status = 201;
         }
 
-        res
-            .status(401)
-            .json({ status: res.locals.api.errors.unauthorized });
+        const session = await db.authUser(
+            req.body.id, req.body.auth_date, req.cookies.session,
+            res.locals.ip, req.useragent.source
+        );
+
+        return res
+            .status(status)
+            // will keep the session for 90 days
+            .set("Set-Cookie", `session=${session}; path=/; domain=${res.locals.api.domain}; max-age=${90 * 24 * 60 * 60}; samesite=lax; secure`)
+            .json({
+                status:   res.locals.api.errors.ok,
+                userid:   req.body.id,
+                new_user: status == 201
+            });
     }
     catch (err) {
         res
@@ -102,6 +101,7 @@ router.post("/logout", async (req, res, next) => {
             .json({ status: res.locals.api.errors.ok });
     }
     catch (err) {
+        console.error(err);
         res
             .status(400)
             .json({ status: res.locals.api.errors.invalid_data });
