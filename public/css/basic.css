@@ -281,7 +281,7 @@ html.dark body {
   color: #7D80B8; }
 
 html.dark #preloader {
-  color: #CECECE; }
+  color: #ECECEC; }
 
 .preloader, .ring-preloader {
   display: block;
@@ -472,7 +472,7 @@ html.dark .topnav-language {
   text-decoration: none; }
 
 html.dark .topnav-media-label {
-  color: #CECECE; }
+  color: #ECECEC; }
 
 .notice {
   float: right;
@@ -489,7 +489,7 @@ html.dark .topnav-media-label {
 
 html.dark .notice {
   color: #212D3B;
-  background-color: #CECECE; }
+  background-color: #ECECEC; }
 
 .notice[data-counter="0"] {
   display: none; }
@@ -594,7 +594,7 @@ html.dark #sign-up-button {
   color: #FFF; }
 
 html.dark #me-name {
-  color: #CECECE; }
+  color: #ECECEC; }
 
 #me-username {
   clear: left;
@@ -785,7 +785,7 @@ html.dark .menu-box:focus {
 
 html.dark .menu .notice {
   color: #212D3B;
-  background-color: #CECECE; }
+  background-color: #ECECEC; }
 
 #menu-friends,
 #menu-chats,
@@ -1917,6 +1917,12 @@ html.dark #footer {
   box-shadow: 0 -2px 2px rgba(0,0,0,.15),
     0 2px 2px rgba(0,0,0,0.15);
 }
+html.dark #settings {
+  color: #ECECEC;
+  background-color: #0E1621;
+  border: 2px solid #212D3B;
+  box-shadow: none;
+}
 #settings-back {
   display: block;
   float: left;
@@ -1938,9 +1944,16 @@ html.dark #footer {
   line-height: 3rem;
   color: #7D80B8;
 }
+html.dark #settings-back::before {
+  color: #ECECEC;
+}
 #settings-back:hover,
 #settings-back:focus {
   background-color: #F0F8FF;
+}
+html.dark #settings-back:hover,
+html.dark #settings-back:focus {
+  background-color: #17212B;
 }
 #settings-headline {
 	padding: 0 1rem;
@@ -1951,11 +1964,17 @@ html.dark #footer {
 	color: #7D80B8;
 	text-align: left;
 }
+html.dark #settings-headline {
+  color: #0C0;
+}
 #settings-descr {
   padding: 1rem .5rem;
   font-family: Basic, Emoji, Mono, sans-serif;
   font-size: 1rem;
   background-color: #F0F8FF;
+}
+html.dark #settings-descr {
+  background-color: #17212B;
 }
 .settings-section {
   display: block;
@@ -1968,20 +1987,30 @@ html.dark #footer {
   cursor: pointer;
   transition: all .2s ease 0s;
 }
+html.dark .settings-section {
+  color: #ECECEC;
+}
 .settings-section:hover,
 .settings-section:focus {
   background-color: #F0F8FF;
   text-decoration: none;
 }
+html.dark .settings-section:hover,
+html.dark .settings-section:focus {
+  background-color: #17212B;
+}
 .settings-section:visited {
   color: #7D80B8;
+}
+html.dark .settings-section:visited {
+  color: #ECECEC;
 }
 .settings-form {
   padding: 0 .5rem;
 }
 .settings-profile-option {
   display: block;
-  margin: .5rem 0;
+  margin: 1rem 0;
   font-size: 1rem;
   line-height: 1.5rem;
 }
@@ -1996,7 +2025,14 @@ html.dark #footer {
   width: 10rem;
   font-size: 1rem;
   line-height: 1.5rem;
+  color: #000;
+  background: none;
   border: 1px solid #7D80B8;
+}
+html.dark #settings-profile-username,
+html.dark #settings-profile-name {
+  color: #ECECEC;
+  border-color: #212D3B;
 }
 #settings-profile-username:before {
   content: "@";
@@ -2011,8 +2047,14 @@ html.dark #footer {
   font-family: Basic;
   font-size: 1rem;
   line-height: 1.5rem;
+  color: #000;
+  background: none;
   border: 1px solid #7D80B8;
   resize: none;
+}
+html.dark #settings-profile-bio {
+  color: #ECECEC;
+  border-color: #212D3B;
 }
 .settings-privacy-box {
   display: block;
@@ -2025,6 +2067,10 @@ html.dark #footer {
 .settings-privacy-box:focus {
   background-color: #F0F8FF;
 }
+html.dark .settings-privacy-box:hover,
+html.dark .settings-privacy-box:focus {
+  background-color: #17212B;
+}
 .settings-privacy-option {
   display: block;
   float: right;
@@ -2035,14 +2081,22 @@ html.dark #footer {
   background: none;
   cursor: pointer;
 }
+html.dark .settings-privacy-option {
+  color: #84F;
+}
 #settings-privacy-flags-legend {
   display: block;
+  padding-top: 1rem;
   width: 100%;
   font-size: 1rem;
   font-weight: bold;
   line-height: 2rem;
   color: #7D80B8;
-  border-top: 1px solid #7D80B8;
+  border-top: 2px solid #7D80B8;
+}
+html.dark #settings-privacy-flags-legend {
+  color: #0C0;
+  border-color: #212D3B;
 }
 .settings-privacy-flag-box {
   display: block;
@@ -2058,7 +2112,7 @@ html.dark #footer {
   display: block;
   width: 100%;
   font-size: .8rem;
-  color: #080;
+  color: #0C0;
 }
 .error .settings-response {
   color: #C00;
