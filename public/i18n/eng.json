@@ -44,7 +44,14 @@
 		"videos": "Videos",
 		"music": "Music",
 		"lang": "Language",
-		"log_in": "Log in"
+		"log_in": "Log in",
+		"view": "View",
+		"views": {
+			"light_square": "Light Square",
+			"light_circle": "Light Circle",
+			"dark_circle": "Dark Circle",
+			"dark_square": "Dark Square"
+		}
 	},
 	"menu": {
 		"home": "Home",

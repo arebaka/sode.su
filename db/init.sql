@@ -434,6 +434,7 @@ ALTER TABLE public.sessions             ADD CONSTRAINT sessions_user_id_fk      
 ALTER TABLE public.sessions             ADD CONSTRAINT sessions_useragent_id_fk            FOREIGN KEY (useragent_id)      REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.friends              ADD CONSTRAINT friends_offerer_id_fk               FOREIGN KEY (offerer_id)        REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.friends              ADD CONSTRAINT friends_acceptor_id_fk              FOREIGN KEY (acceptor_id)       REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.user_profiles        ADD CONSTRAINT user_profiles_id_fk                 FOREIGN KEY (id)                REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.user_profiles        ADD CONSTRAINT user_profiles_cover_image_id_fk     FOREIGN KEY (cover_image_id)    REFERENCES public.images(id)       ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.user_profiles        ADD CONSTRAINT user_profiles_avatar_image_id_fk    FOREIGN KEY (avatar_image_id)   REFERENCES public.images(id)       ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.user_profiles        ADD CONSTRAINT user_profiles_name_id_fk            FOREIGN KEY (name_id)           REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;

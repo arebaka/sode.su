@@ -86,9 +86,11 @@
 		) : [];
 
 	let ui = {
+		view: null,
 		topnav: {
 			tabs:  ["friends", "feed", "feedback", "clubs"],
 			media: ["images", "videos", "music"],
+			views: ["light_square", "light_circle", "dark_circle", "dark_square"]
 		},
 		menu: {
 			open:  false,
@@ -113,13 +115,36 @@
 		fetch(api.paths.i18n["*.json"].replace(":1", lang))
 			.then(res => res.json())
 			.then(res => dict = res);
-	};
+	}
+
+	$: if (ui.view) {
+		let classlist = document.getElementsByTagName("html")[0].classList;
+		classlist.remove("light", "square", "dark", "circle");
+
+		switch (ui.view) {
+			case "light_square":
+				classlist.add("light", "square");
+			break;
+			case "light_circle":
+				classlist.add("light", "circle");
+			break;
+			case "dark_circle":
+				classlist.add("dark", "circle");
+			break;
+			case "dark_square":
+				classlist.add("dark", "square");
+			break;
+		}
+
+		setCookie("view", ui.view, 10000);
+	}
 
 	fetch("api")
 		.then(res => res.json())
 		.then(res => {
-			api  = res;
-			lang = params["lang"]
+			api     = res;
+			ui.view = getCookie("view") || "light_square";
+			lang    = params["lang"]
 				|| getCookie("lang")
 				|| (() => {
 					let iso2 = navigator.language.substr(0, 2).toLowerCase();
@@ -164,12 +189,22 @@
 				<li class="topnav-box" id="topnav-media">
 					<p class="topnav-label">{dict.topnav.media}</p>
 					<ul id="topnav-medias">
-						{#each ui.topnav.media as tab}
+						{#each ui.topnav.media as section}
 							<li class="topnav-media-box">
-								<a href="{tab}" rel="bookmark" class="topnav-media" id="topnav-{tab}">
+								<a href="{section}" rel="bookmark" class="topnav-media" id="topnav-{section}">
 									<p class="notice" data-counter="1">α</p>
-									<p class="topnav-media-label">{dict.topnav[tab]}</p>
+									<p class="topnav-media-label">{dict.topnav[section]}</p>
 								</a>
+							</li>
+						{/each}
+					</ul>
+				</li>
+				<li class="topnav-box" id="topnav-view">
+					<p class="topnav-label">{dict.topnav.view}</p>
+					<ul id="topnav-views">
+						{#each ui.topnav.views.filter(i => i != ui.view) as view}
+							<li class="topnav-view-box">
+								<p class="topnav-view" on:click={() => {ui.view = view}}>{dict.topnav.views[view]}</p>
 							</li>
 						{/each}
 					</ul>
@@ -177,7 +212,7 @@
 				<li class="topnav-box" id="topnav-language">
 					<p class="topnav-label">{dict.topnav.lang}</p>
 					<ul id="topnav-languages">
-						{#each Object.values(api.langs) as l}
+						{#each Object.values(api.langs).filter(i => i.code != lang) as l}
 							<li class="topnav-language-box">
 								<p class="topnav-language" on:click={() => {lang = l.code}}>{l.native}</p>
 							</li>
@@ -219,10 +254,17 @@
 								{dict.me_menu.log_out}
 							</button>
 						</li>
+						<li class="me-menu-box" id="me-menu-view">
+							<select class="me-menu" bind:value={ui.view} on:change={document.activeElement.blur}>
+								{#each Object.values(ui.topnav.views) as v}
+									<option class="me-menu-view" value="{v}" selected={ui.view == v}>{dict.topnav.views[v]}</option>
+								{/each}
+							</select>
+						</li>
 						<li class="me-menu-box" id="me-menu-language">
 							<select class="me-menu" bind:value={lang} on:change={document.activeElement.blur}>
 								{#each Object.values(api.langs) as l}
-									<option class="me-menu-language" value="{l}" selected={lang == l.code}>{l.native}</option>
+									<option class="me-menu-language" value="{l.code}" selected={lang == l.code}>{l.native}</option>
 								{/each}
 							</select>
 						</li>

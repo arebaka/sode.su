@@ -301,12 +301,14 @@ class DBHelper
                 new Date(authDT * 1000).toUTCString(), this.makeSalt(32)
             ]);
 
+        const nameId = await this._getContent(name, 0);
+
         await this.pool.query(`
                 insert into ${this.entityTables["user"].profile}
                 (id, cover_image_id, avatar_image_id, name_id)
                 values ($1, $2, $3, $4)
             `, [
-                id, null, null, name
+                id, null, null, nameId.id
             ]);
     }
 

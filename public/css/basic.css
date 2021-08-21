@@ -69,7 +69,7 @@ p {
   color: #000;
   word-wrap: break-word; }
 
-.night p {
+html.dark p {
   color: #ECECEC; }
 
 a {
@@ -77,7 +77,7 @@ a {
   color: #40C;
   text-decoration: none; }
 
-.night a {
+html.dark a {
   color: #84F; }
 
 a:hover, a:focus {
@@ -86,7 +86,7 @@ a:hover, a:focus {
 a:visited {
   color: #40C; }
 
-.night a:visited {
+html.dark a:visited {
   color: #ECECEC; }
 
 h1, h2, h3 {
@@ -95,7 +95,7 @@ h1, h2, h3 {
   color: #000;
   word-wrap: break-word; }
 
-.night h1, .night h2, .night h3 {
+html.dark h1, html.dark h2, html.dark h3 {
   color: #ECECEC; }
 
 h1 {
@@ -139,7 +139,7 @@ mark {
   background-color: #AAA;
   border-radius: 2px; }
 
-.night mark {
+html.dark mark {
   color: #444;
   background-color: #444; }
 
@@ -147,7 +147,7 @@ mark:hover, mark:focus {
   color: #000;
   background: none; }
 
-.night mark:hover, .night mark:focus {
+html.dark mark:hover, html.dark mark:focus {
   color: #ECECEC; }
 
 mark .image {
@@ -166,7 +166,7 @@ mark .image:hover, mark .image:focus {
   color: #080;
   cursor: cell; }
 
-.night .reply {
+html.dark .reply {
   color: #0C0; }
 
 .reference,
@@ -182,8 +182,8 @@ mark .image:hover, mark .image:focus {
   border: 1px solid #7D80B8;
   box-shadow: 0 0 2px #7D80B8; }
 
-.night .reference,
-.night .comment.reference {
+html.dark .reference,
+html.dark .comment.reference {
   color: #ECECEC;
   background-color: #0E1621;
   border-color: #212D3B;
@@ -194,7 +194,7 @@ blockquote {
   color: #080;
   border-left: 0.2rem solid #080; }
 
-.night blockquote {
+html.dark blockquote {
   color: #0C0;
   border-color: #0C0; }
 
@@ -210,7 +210,7 @@ button {
   cursor: pointer;
   transition: all 0.2s ease 0s; }
 
-.night .button {
+html.dark .button {
   color: #ECECEC;
   background-color: #212D3B; }
 
@@ -226,7 +226,7 @@ button {
 .mention {
   color: #080; }
 
-.night .mention {
+html.dark .mention {
   color: #0C0; }
 
 .hashtag {
@@ -237,7 +237,7 @@ body {
   color: #000;
   background-color: #FFF; }
 
-.night body {
+html.dark body {
   color: #ECECEC;
   background-color: #0E1621; }
 
@@ -280,7 +280,7 @@ body {
   line-height: 100vh;
   color: #7D80B8; }
 
-.night #preloader {
+html.dark #preloader {
   color: #CECECE; }
 
 .preloader, .ring-preloader {
@@ -312,7 +312,7 @@ body {
   min-height: calc(100vh - 7rem);
   background-color: #FFF; }
 
-.night #container {
+html.dark #container {
   background-color: #0E1621; }
 
 /****** Основная навигация ******/
@@ -326,7 +326,7 @@ body {
   height: 2.5rem;
   background-color: #7D80B8; }
 
-.night #topnav-box {
+html.dark #topnav-box {
   background-color: #212D3B; }
 
 #topnav-logo {
@@ -342,7 +342,7 @@ body {
   background-position: center;
   background-repeat: no-repeat; }
 
-.night #topnav-logo {
+html.dark #topnav-logo {
   background-color: #0E1621;
   border-color: #212D3B; }
 
@@ -356,6 +356,7 @@ body {
 
 .topnav,
 #topnav-media .topnav-label,
+#topnav-view .topnav-label,
 #topnav-language .topnav-label {
   display: block;
   float: left;
@@ -366,14 +367,17 @@ body {
   border-right: 0.2rem solid #7D80B8;
   transition: all 0.2s ease 0s; }
 
-.night .topnav,
-.night #topnav-media .topnav-label,
-.night #topnav-language .topnav-label {
+html.dark .topnav,
+html.dark #topnav-media .topnav-label,
+html.dark #topnav-view .topnav-label,
+html.dark #topnav-language .topnav-label {
   border-color: #212D3B; }
 
 .topnav:hover, .topnav:focus,
 #topnav-media .topnav-label:hover,
 #topnav-media .topnav-label:focus,
+#topnav-view .topnav-label:hover,
+#topnav-view .topnav-label:focus,
 #topnav-language .topnav-label:hover,
 #topnav-language .topnav-label:focus {
   text-decoration: none;
@@ -385,6 +389,7 @@ body {
 
 .topnav-label,
 .topnav-media-label,
+.topnav-view,
 .topnav-language {
   min-width: 7rem;
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
@@ -394,10 +399,11 @@ body {
   line-height: 2.2rem;
   color: #FFF; }
 
-.night .topnav-label {
+html.dark .topnav-label {
   color: #ECECEC; }
 
 #topnav-media .topnav-label:after,
+#topnav-view .topnav-label:after,
 #topnav-language .topnav-label:after {
   content: "▼";
   float: right;
@@ -408,6 +414,7 @@ body {
   color: #FFF; }
 
 #topnav-medias,
+#topnav-views,
 #topnav-languages {
   position: absolute;
   top: 2.4rem;
@@ -415,6 +422,7 @@ body {
   width: 11rem; }
 
 .topnav-media,
+.topnav-view,
 .topnav-language {
   display: block;
   width: 100%;
@@ -429,34 +437,42 @@ body {
   transition: all 0.2s ease 0s;
   cursor: pointer; }
 
-.night .topnav-media,
-.night .topnav-language {
+html.dark .topnav-media,
+html.dark .topnav-view,
+html.dark .topnav-language {
   background-color: #212D3B; }
 
-.topnav-media:hover, .topnav-media:focus,
+.topnav-media:hover,
+.topnav-media:focus,
+.topnav-view:hover,
+.topnav-view:focus
 .topnav-language:hover,
 .topnav-language:focus {
   border-left: 0.2rem solid #FFF;
   border-right: 0.2rem solid #FFF; }
 
 #topnav-media:hover #topnav-medias,
-#topnav-media:hover #topnav-languages, #topnav-media:focus #topnav-medias,
+#topnav-media:hover #topnav-languages,
+#topnav-media:focus #topnav-medias,
 #topnav-media:focus #topnav-languages,
 #topnav-language:hover #topnav-medias,
 #topnav-language:hover #topnav-languages,
 #topnav-language:focus #topnav-medias,
-#topnav-language:focus #topnav-languages {
+#topnav-language:focus #topnav-languages,
+#topnav-view:hover #topnav-views,
+#topnav-view:focus #topnav-views {
   display: block; }
 
 .topnav-language[selected],
 .topnav.active {
   display: none; }
 
-.topnav-media:hover, .topnav-media:focus {
+.topnav-media:hover,
+.topnav-media:focus {
   text-decoration: none; }
 
-.night .topnav-media-label {
-  color: #0E1621; }
+html.dark .topnav-media-label {
+  color: #CECECE; }
 
 .notice {
   float: right;
@@ -471,13 +487,15 @@ body {
   border-bottom-right-radius: .3rem;
   transition: all 0.2s ease 0s; }
 
-.night .notice {
-  color: #212D3B; }
+html.dark .notice {
+  color: #212D3B;
+  background-color: #CECECE; }
 
 .notice[data-counter="0"] {
   display: none; }
 
-.topnav:hover .notice, .topnav:focus .notice,
+.topnav:hover .notice,
+.topnav:focus .notice,
 .topnav-media:hover .notice,
 .topnav-media:focus .notice {
   border-top-left-radius: .3rem;
@@ -541,7 +559,7 @@ body {
   color: #7D80B8;
   background: linear-gradient(45deg, #FFF 93%, #7D80B8 93%, #7D80B8 100%); }
 
-.night #sign-up-button {
+html.dark #sign-up-button {
   color: #212D3B;
   background: linear-gradient(45deg, #ECECEC 93%, #212D3B 93%, #212D3B 100%); }
 
@@ -575,8 +593,8 @@ body {
   line-height: 1rem;
   color: #FFF; }
 
-.night #me-name {
-  color: #0E1621; }
+html.dark #me-name {
+  color: #CECECE; }
 
 #me-username {
   clear: left;
@@ -601,22 +619,22 @@ body {
   background-color: #FFF;
   content: "100"; }
 
-.night #me-avatar {
+html.dark #me-avatar {
   background-color: #0E1621;
   border-color: #212D3B; }
 
 #me-menu-box {
   position: absolute;
   top: 2.4rem;
-  right: -16rem;
-  width: 15.4rem;
+  right: -18.4rem;
+  width: 18.4rem;
   background-color: #FFF;
   border-bottom: 0.2rem solid #7D80B8;
   border-left: 0.2rem solid #7D80B8;
   transition: all 0.2s ease 0s;
   cursor: pointer; }
 
-.night #me-menu-box {
+html.dark #me-menu-box {
   background-color: #0E1621;
   border-color: #212D3B; }
 
@@ -629,7 +647,7 @@ body {
 
 .me-menu {
   display: block;
-  width: 15rem;
+  width: 18rem;
   padding: 0 1rem;
   font: 0.9rem/1.5rem Mono, Emoji, monospace, Basic, sans-serif;
   font-size: 1.2rem;
@@ -643,13 +661,18 @@ body {
   border-bottom: 1px solid #7D80B8;
   cursor: pointer; }
 
-.night .me-menu {
+html.dark .me-menu {
   color: #ECECEC;
   border-color: #212D3B; }
 
 .me-menu-box:hover,
 .me-menu-box:focus {
   background-color: #F0F8FF;
+}
+
+html.dark .me-menu-box:hover,
+html.dark .me-menu-box:focus {
+  background-color: #212D3B;
 }
 
 .me-menu:hover,
@@ -678,8 +701,8 @@ select.me-menu option {
   background: rgba(100, 100, 100, 0.5);
   transition: all .3s ease 0s; }
 
-.night #menu-box {
-  background: rgba(50, 50, 100, 0.5); }
+html.dark #menu-box {
+  background: rgba(80, 80, 100, 0.5); }
 
 #menu-box.open {
   display: block;
@@ -692,7 +715,7 @@ select.me-menu option {
   height: 100%;
   background-color: #FFF; }
 
-.night #menu {
+html.dark #menu {
   background-color: #0E1621; }
 
 #menu-logo {
@@ -706,7 +729,7 @@ select.me-menu option {
   background-repeat: no-repeat;
   border-bottom: 1px solid #7D80B8; }
 
-.night #menu-logo {
+html.dark #menu-logo {
   background-color: #0E1621;
   background-image: url("../../img/menu-head-300-night.png");
   border-color: #212D3B; }
@@ -715,7 +738,7 @@ select.me-menu option {
   display: block;
   border-bottom: 1px solid #7D80B8; }
 
-.night .menu-box {
+html.dark .menu-box {
   border-color: #212D3B; }
 
 .menu:hover .menu-label, .menu:focus .menu-label {
@@ -734,8 +757,8 @@ select.menu {
   text-transform: uppercase;
   color: #000; }
 
-.night .menu-label,
-.night select.menu {
+html.dark .menu-label,
+html.dark select.menu {
   color: #ECECEC; }
 
 select.menu {
@@ -744,6 +767,11 @@ select.menu {
 .menu-box:hover,
 .menu-box:focus {
   background-color: #F0F8FF;
+}
+
+html.dark .menu-box:hover,
+html.dark .menu-box:focus {
+  background-color: #212D3B;
 }
 
 .menu:hover,
@@ -755,9 +783,9 @@ select.menu {
   color: #FFF;
   background-color: #7D80B8; }
 
-.night .menu .notice {
-  color: #0E1621;
-  background-color: #212D3B; }
+html.dark .menu .notice {
+  color: #212D3B;
+  background-color: #CECECE; }
 
 #menu-friends,
 #menu-chats,
@@ -779,8 +807,8 @@ select.menu {
   height: 100%;
   background: rgba(100, 100, 100, 0.5); }
 
-.night #log-in-box,
-.night #sign-up-box {
+html.dark #log-in-box,
+html.dark #sign-up-box {
   background: rgba(50, 50, 100, 0.5); }
 
 #log-in-box.open {
@@ -801,8 +829,8 @@ select.menu {
   border-bottom-right-radius: 2px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.15); }
 
-.night #log-in,
-.night #sign-up {
+html.dark #log-in,
+html.dark #sign-up {
   background-color: #0E1621;
   box-shadow: none; }
 
@@ -827,8 +855,8 @@ select.menu {
   color: #F0F8FF;
   background-color: #7D80B8; }
 
-.night #log-in-headline,
-.night #sign-up-headline {
+html.dark #log-in-headline,
+html.dark #sign-up-headline {
   color: #ECECEC;
   background-color: #212D3B; }
 
@@ -858,8 +886,8 @@ select.menu {
   background-color: #FFF;
   border: 1px solid #7D80B8; }
 
-.night .log-in-field,
-.night .sign-up-field {
+html.dark .log-in-field,
+html.dark .sign-up-field {
   color: #ECECEC;
   background-color: #000; }
 
@@ -881,8 +909,8 @@ select.menu {
   background-color: #7D80B8;
   cursor: pointer; }
 
-.night #log-in-submit,
-.night #sign-up-submit {
+html.dark #log-in-submit,
+html.dark #sign-up-submit {
   background-color: #212D3B; }
 
 #log-in-sign-up,
@@ -893,8 +921,8 @@ select.menu {
   line-height: 1rem;
   color: #000; }
 
-.night #log-in-sign-up,
-.night #sign-up-log-in {
+html.dark #log-in-sign-up,
+html.dark #sign-up-log-in {
   color: #ECECEC; }
 
 #log-in-sign-up-button,
@@ -918,7 +946,7 @@ select.menu {
   height: 100%;
   background: rgba(100, 100, 100, 0.5); }
 
-.night #log-out-box {
+html.dark #log-out-box {
   background: rgba(50, 50, 100, 0.5); }
 
 #log-out {
@@ -936,7 +964,7 @@ select.menu {
   border-bottom-right-radius: 2px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.15); }
 
-.night #log-out {
+html.dark #log-out {
   background-color: #0E1621;
   box-shadow: none; }
 
@@ -949,7 +977,7 @@ select.menu {
   color: #F0F8FF;
   background-color: #7D80B8; }
 
-.night #log-in-headline {
+html.dark #log-in-headline {
   color: #ECECEC;
   background-color: #212D3B; }
 
@@ -1028,7 +1056,7 @@ select.menu {
   .comment:last-child {
     border-bottom: 1px solid #7D80B8; }
 
-.night .comment {
+html.dark .comment {
   border-color: #212D3B; }
 
 .comment-author-avatar-box,
@@ -1060,9 +1088,9 @@ select.menu {
   .comment-author-name:visited {
     color: #080; }
 
-.night .comment-author-name {
+html.dark .comment-author-name {
   color: #0C0; }
-  .night .comment-author-name:visited {
+  html.dark .comment-author-name:visited {
     color: #0C0; }
 
 .comment-number {
@@ -1075,7 +1103,7 @@ select.menu {
   color: #080;
   cursor: pointer; }
 
-.night .comment-index {
+html.dark .comment-index {
   color: #0C0; }
 
 .comment-datetime {
@@ -1086,7 +1114,7 @@ select.menu {
   font: bold 0.9rem/1rem Digits, Emoji, Mono, monospace, Basic, sans-serif;
   color: #080; }
 
-.night .comment-datetime {
+html.dark .comment-datetime {
   color: #0C0; }
 
 .comment:hover .comment-datetime, .comment:focus .comment-datetime {
@@ -1123,9 +1151,9 @@ select.menu {
     visibility: visible;
     opacity: 1; }
 
-.night .comment-author-info,
-.night .image-owner-info,
-.night .video-owner-info {
+html.dark .comment-author-info,
+html.dark .image-owner-info,
+html.dark .video-owner-info {
   background-color: #000;
   border-color: #212D3B;
   box-shadow: none; }
@@ -1229,117 +1257,117 @@ select.menu {
   .video-owner-info-website:visited {
     color: #40C; }
 
-.night .comment-author-info-alias,
-.night .image-owner-info-alias,
-.night .video-owner-info-alias {
+html.dark .comment-author-info-alias,
+html.dark .image-owner-info-alias,
+html.dark .video-owner-info-alias {
   color: #0C0; }
-.night .comment-author-info-location-box,
-.night .comment-author-info-languages-box,
-.night .comment-author-info-website-box,
-.night .image-owner-info-location-box,
-.night .image-owner-info-languages-box,
-.night .image-owner-info-website-box,
-.night .video-owner-info-location-box,
-.night .video-owner-info-languages-box,
-.night .video-owner-info-website-box {
+html.dark .comment-author-info-location-box,
+html.dark .comment-author-info-languages-box,
+html.dark .comment-author-info-website-box,
+html.dark .image-owner-info-location-box,
+html.dark .image-owner-info-languages-box,
+html.dark .image-owner-info-website-box,
+html.dark .video-owner-info-location-box,
+html.dark .video-owner-info-languages-box,
+html.dark .video-owner-info-website-box {
   color: #0C0; }
-  .night .comment-author-info-location-box.not-spesified .comment-author-info-location,
-  .night .comment-author-info-location-box.not-spesified .comment-author-info-languages,
-  .night .comment-author-info-location-box.not-spesified .comment-author-info-website,
-  .night .comment-author-info-location-box.not-spesified .image-owner-author-info-location,
-  .night .comment-author-info-location-box.not-spesified .image-owner-info-languages,
-  .night .comment-author-info-location-box.not-spesified .image-owner-info-website,
-  .night .comment-author-info-location-box.not-spesified .video-owner-info-location,
-  .night .comment-author-info-location-box.not-spesified .video-owner-info-languages,
-  .night .comment-author-info-location-box.not-spesified .video-owner-info-website,
-  .night .comment-author-info-languages-box.not-spesified .comment-author-info-location,
-  .night .comment-author-info-languages-box.not-spesified .comment-author-info-languages,
-  .night .comment-author-info-languages-box.not-spesified .comment-author-info-website,
-  .night .comment-author-info-languages-box.not-spesified .image-owner-author-info-location,
-  .night .comment-author-info-languages-box.not-spesified .image-owner-info-languages,
-  .night .comment-author-info-languages-box.not-spesified .image-owner-info-website,
-  .night .comment-author-info-languages-box.not-spesified .video-owner-info-location,
-  .night .comment-author-info-languages-box.not-spesified .video-owner-info-languages,
-  .night .comment-author-info-languages-box.not-spesified .video-owner-info-website,
-  .night .comment-author-info-website-box.not-spesified .comment-author-info-location,
-  .night .comment-author-info-website-box.not-spesified .comment-author-info-languages,
-  .night .comment-author-info-website-box.not-spesified .comment-author-info-website,
-  .night .comment-author-info-website-box.not-spesified .image-owner-author-info-location,
-  .night .comment-author-info-website-box.not-spesified .image-owner-info-languages,
-  .night .comment-author-info-website-box.not-spesified .image-owner-info-website,
-  .night .comment-author-info-website-box.not-spesified .video-owner-info-location,
-  .night .comment-author-info-website-box.not-spesified .video-owner-info-languages,
-  .night .comment-author-info-website-box.not-spesified .video-owner-info-website,
-  .night .image-owner-info-location-box.not-spesified .comment-author-info-location,
-  .night .image-owner-info-location-box.not-spesified .comment-author-info-languages,
-  .night .image-owner-info-location-box.not-spesified .comment-author-info-website,
-  .night .image-owner-info-location-box.not-spesified .image-owner-author-info-location,
-  .night .image-owner-info-location-box.not-spesified .image-owner-info-languages,
-  .night .image-owner-info-location-box.not-spesified .image-owner-info-website,
-  .night .image-owner-info-location-box.not-spesified .video-owner-info-location,
-  .night .image-owner-info-location-box.not-spesified .video-owner-info-languages,
-  .night .image-owner-info-location-box.not-spesified .video-owner-info-website,
-  .night .image-owner-info-languages-box.not-spesified .comment-author-info-location,
-  .night .image-owner-info-languages-box.not-spesified .comment-author-info-languages,
-  .night .image-owner-info-languages-box.not-spesified .comment-author-info-website,
-  .night .image-owner-info-languages-box.not-spesified .image-owner-author-info-location,
-  .night .image-owner-info-languages-box.not-spesified .image-owner-info-languages,
-  .night .image-owner-info-languages-box.not-spesified .image-owner-info-website,
-  .night .image-owner-info-languages-box.not-spesified .video-owner-info-location,
-  .night .image-owner-info-languages-box.not-spesified .video-owner-info-languages,
-  .night .image-owner-info-languages-box.not-spesified .video-owner-info-website,
-  .night .image-owner-info-website-box.not-spesified .comment-author-info-location,
-  .night .image-owner-info-website-box.not-spesified .comment-author-info-languages,
-  .night .image-owner-info-website-box.not-spesified .comment-author-info-website,
-  .night .image-owner-info-website-box.not-spesified .image-owner-author-info-location,
-  .night .image-owner-info-website-box.not-spesified .image-owner-info-languages,
-  .night .image-owner-info-website-box.not-spesified .image-owner-info-website,
-  .night .image-owner-info-website-box.not-spesified .video-owner-info-location,
-  .night .image-owner-info-website-box.not-spesified .video-owner-info-languages,
-  .night .image-owner-info-website-box.not-spesified .video-owner-info-website,
-  .night .video-owner-info-location-box.not-spesified .comment-author-info-location,
-  .night .video-owner-info-location-box.not-spesified .comment-author-info-languages,
-  .night .video-owner-info-location-box.not-spesified .comment-author-info-website,
-  .night .video-owner-info-location-box.not-spesified .image-owner-author-info-location,
-  .night .video-owner-info-location-box.not-spesified .image-owner-info-languages,
-  .night .video-owner-info-location-box.not-spesified .image-owner-info-website,
-  .night .video-owner-info-location-box.not-spesified .video-owner-info-location,
-  .night .video-owner-info-location-box.not-spesified .video-owner-info-languages,
-  .night .video-owner-info-location-box.not-spesified .video-owner-info-website,
-  .night .video-owner-info-languages-box.not-spesified .comment-author-info-location,
-  .night .video-owner-info-languages-box.not-spesified .comment-author-info-languages,
-  .night .video-owner-info-languages-box.not-spesified .comment-author-info-website,
-  .night .video-owner-info-languages-box.not-spesified .image-owner-author-info-location,
-  .night .video-owner-info-languages-box.not-spesified .image-owner-info-languages,
-  .night .video-owner-info-languages-box.not-spesified .image-owner-info-website,
-  .night .video-owner-info-languages-box.not-spesified .video-owner-info-location,
-  .night .video-owner-info-languages-box.not-spesified .video-owner-info-languages,
-  .night .video-owner-info-languages-box.not-spesified .video-owner-info-website,
-  .night .video-owner-info-website-box.not-spesified .comment-author-info-location,
-  .night .video-owner-info-website-box.not-spesified .comment-author-info-languages,
-  .night .video-owner-info-website-box.not-spesified .comment-author-info-website,
-  .night .video-owner-info-website-box.not-spesified .image-owner-author-info-location,
-  .night .video-owner-info-website-box.not-spesified .image-owner-info-languages,
-  .night .video-owner-info-website-box.not-spesified .image-owner-info-website,
-  .night .video-owner-info-website-box.not-spesified .video-owner-info-location,
-  .night .video-owner-info-website-box.not-spesified .video-owner-info-languages,
-  .night .video-owner-info-website-box.not-spesified .video-owner-info-website {
+  html.dark .comment-author-info-location-box.not-spesified .comment-author-info-location,
+  html.dark .comment-author-info-location-box.not-spesified .comment-author-info-languages,
+  html.dark .comment-author-info-location-box.not-spesified .comment-author-info-website,
+  html.dark .comment-author-info-location-box.not-spesified .image-owner-author-info-location,
+  html.dark .comment-author-info-location-box.not-spesified .image-owner-info-languages,
+  html.dark .comment-author-info-location-box.not-spesified .image-owner-info-website,
+  html.dark .comment-author-info-location-box.not-spesified .video-owner-info-location,
+  html.dark .comment-author-info-location-box.not-spesified .video-owner-info-languages,
+  html.dark .comment-author-info-location-box.not-spesified .video-owner-info-website,
+  html.dark .comment-author-info-languages-box.not-spesified .comment-author-info-location,
+  html.dark .comment-author-info-languages-box.not-spesified .comment-author-info-languages,
+  html.dark .comment-author-info-languages-box.not-spesified .comment-author-info-website,
+  html.dark .comment-author-info-languages-box.not-spesified .image-owner-author-info-location,
+  html.dark .comment-author-info-languages-box.not-spesified .image-owner-info-languages,
+  html.dark .comment-author-info-languages-box.not-spesified .image-owner-info-website,
+  html.dark .comment-author-info-languages-box.not-spesified .video-owner-info-location,
+  html.dark .comment-author-info-languages-box.not-spesified .video-owner-info-languages,
+  html.dark .comment-author-info-languages-box.not-spesified .video-owner-info-website,
+  html.dark .comment-author-info-website-box.not-spesified .comment-author-info-location,
+  html.dark .comment-author-info-website-box.not-spesified .comment-author-info-languages,
+  html.dark .comment-author-info-website-box.not-spesified .comment-author-info-website,
+  html.dark .comment-author-info-website-box.not-spesified .image-owner-author-info-location,
+  html.dark .comment-author-info-website-box.not-spesified .image-owner-info-languages,
+  html.dark .comment-author-info-website-box.not-spesified .image-owner-info-website,
+  html.dark .comment-author-info-website-box.not-spesified .video-owner-info-location,
+  html.dark .comment-author-info-website-box.not-spesified .video-owner-info-languages,
+  html.dark .comment-author-info-website-box.not-spesified .video-owner-info-website,
+  html.dark .image-owner-info-location-box.not-spesified .comment-author-info-location,
+  html.dark .image-owner-info-location-box.not-spesified .comment-author-info-languages,
+  html.dark .image-owner-info-location-box.not-spesified .comment-author-info-website,
+  html.dark .image-owner-info-location-box.not-spesified .image-owner-author-info-location,
+  html.dark .image-owner-info-location-box.not-spesified .image-owner-info-languages,
+  html.dark .image-owner-info-location-box.not-spesified .image-owner-info-website,
+  html.dark .image-owner-info-location-box.not-spesified .video-owner-info-location,
+  html.dark .image-owner-info-location-box.not-spesified .video-owner-info-languages,
+  html.dark .image-owner-info-location-box.not-spesified .video-owner-info-website,
+  html.dark .image-owner-info-languages-box.not-spesified .comment-author-info-location,
+  html.dark .image-owner-info-languages-box.not-spesified .comment-author-info-languages,
+  html.dark .image-owner-info-languages-box.not-spesified .comment-author-info-website,
+  html.dark .image-owner-info-languages-box.not-spesified .image-owner-author-info-location,
+  html.dark .image-owner-info-languages-box.not-spesified .image-owner-info-languages,
+  html.dark .image-owner-info-languages-box.not-spesified .image-owner-info-website,
+  html.dark .image-owner-info-languages-box.not-spesified .video-owner-info-location,
+  html.dark .image-owner-info-languages-box.not-spesified .video-owner-info-languages,
+  html.dark .image-owner-info-languages-box.not-spesified .video-owner-info-website,
+  html.dark .image-owner-info-website-box.not-spesified .comment-author-info-location,
+  html.dark .image-owner-info-website-box.not-spesified .comment-author-info-languages,
+  html.dark .image-owner-info-website-box.not-spesified .comment-author-info-website,
+  html.dark .image-owner-info-website-box.not-spesified .image-owner-author-info-location,
+  html.dark .image-owner-info-website-box.not-spesified .image-owner-info-languages,
+  html.dark .image-owner-info-website-box.not-spesified .image-owner-info-website,
+  html.dark .image-owner-info-website-box.not-spesified .video-owner-info-location,
+  html.dark .image-owner-info-website-box.not-spesified .video-owner-info-languages,
+  html.dark .image-owner-info-website-box.not-spesified .video-owner-info-website,
+  html.dark .video-owner-info-location-box.not-spesified .comment-author-info-location,
+  html.dark .video-owner-info-location-box.not-spesified .comment-author-info-languages,
+  html.dark .video-owner-info-location-box.not-spesified .comment-author-info-website,
+  html.dark .video-owner-info-location-box.not-spesified .image-owner-author-info-location,
+  html.dark .video-owner-info-location-box.not-spesified .image-owner-info-languages,
+  html.dark .video-owner-info-location-box.not-spesified .image-owner-info-website,
+  html.dark .video-owner-info-location-box.not-spesified .video-owner-info-location,
+  html.dark .video-owner-info-location-box.not-spesified .video-owner-info-languages,
+  html.dark .video-owner-info-location-box.not-spesified .video-owner-info-website,
+  html.dark .video-owner-info-languages-box.not-spesified .comment-author-info-location,
+  html.dark .video-owner-info-languages-box.not-spesified .comment-author-info-languages,
+  html.dark .video-owner-info-languages-box.not-spesified .comment-author-info-website,
+  html.dark .video-owner-info-languages-box.not-spesified .image-owner-author-info-location,
+  html.dark .video-owner-info-languages-box.not-spesified .image-owner-info-languages,
+  html.dark .video-owner-info-languages-box.not-spesified .image-owner-info-website,
+  html.dark .video-owner-info-languages-box.not-spesified .video-owner-info-location,
+  html.dark .video-owner-info-languages-box.not-spesified .video-owner-info-languages,
+  html.dark .video-owner-info-languages-box.not-spesified .video-owner-info-website,
+  html.dark .video-owner-info-website-box.not-spesified .comment-author-info-location,
+  html.dark .video-owner-info-website-box.not-spesified .comment-author-info-languages,
+  html.dark .video-owner-info-website-box.not-spesified .comment-author-info-website,
+  html.dark .video-owner-info-website-box.not-spesified .image-owner-author-info-location,
+  html.dark .video-owner-info-website-box.not-spesified .image-owner-info-languages,
+  html.dark .video-owner-info-website-box.not-spesified .image-owner-info-website,
+  html.dark .video-owner-info-website-box.not-spesified .video-owner-info-location,
+  html.dark .video-owner-info-website-box.not-spesified .video-owner-info-languages,
+  html.dark .video-owner-info-website-box.not-spesified .video-owner-info-website {
     color: #000;
     pointer-events: none; }
-.night .comment-author-info-location,
-.night .comment-author-info-languages,
-.night .image-owner-info-location,
-.night .image-owner-info-languages,
-.night .video-owner-info-location,
-.night .video-owner-info-languages {
+html.dark .comment-author-info-location,
+html.dark .comment-author-info-languages,
+html.dark .image-owner-info-location,
+html.dark .image-owner-info-languages,
+html.dark .video-owner-info-location,
+html.dark .video-owner-info-languages {
   color: #ECECEC; }
-.night .comment-author-info-website-box,
-.night .image-owner-info-website-box,
-.night .video-owner-info-website-box {
+html.dark .comment-author-info-website-box,
+html.dark .image-owner-info-website-box,
+html.dark .video-owner-info-website-box {
   color: #84F; }
-  .night .comment-author-info-website-box:visited,
-  .night .image-owner-info-website-box:visited,
-  .night .video-owner-info-website-box:visited {
+  html.dark .comment-author-info-website-box:visited,
+  html.dark .image-owner-info-website-box:visited,
+  html.dark .video-owner-info-website-box:visited {
     color: #84F; }
 
 .comment-report-button,
@@ -1399,11 +1427,11 @@ select.menu {
   overflow: visible;
   max-height: none; }
 
-.night .comment-deploy-toggle:hover, .night .comment-deploy-toggle:focus {
+html.dark .comment-deploy-toggle:hover, html.dark .comment-deploy-toggle:focus {
   background-color: #212D3B; }
-  .night .comment-deploy-toggle:hover:after, .night .comment-deploy-toggle:focus:after {
+  html.dark .comment-deploy-toggle:hover:after, html.dark .comment-deploy-toggle:focus:after {
     color: #0E1621; }
-.night .comment-deploy-toggle:after {
+html.dark .comment-deploy-toggle:after {
   color: #212D3B; }
 
 .comment-replies {
@@ -1512,11 +1540,11 @@ select.menu {
 .new-comment-submit[disabled="disabled"] {
   background-image: url("../../img/loading-ring.svg"); }
 
-.night .new-comment-text {
+html.dark .new-comment-text {
   color: #ECECEC;
   background-color: #000;
   border-color: #212D3B; }
-.night .new-comment-author {
+html.dark .new-comment-author {
   color: #ECECEC; }
 
 /****** Панель разметки ******/
@@ -1596,17 +1624,17 @@ select.menu {
   color: #AAA;
   background-color: #AAA; }
 
-.night .rich {
+html.dark .rich {
   color: #ECECEC;
   background-color: #000;
   border-color: #212D3B; }
-  .night .rich:hover, .night .rich:focus {
+  html.dark .rich:hover, html.dark .rich:focus {
     background-color: #0E1621; }
-  .night .rich:before {
+  html.dark .rich:before {
     color: #ECECEC; }
-.night .rich-quote:before {
+html.dark .rich-quote:before {
   color: #0C0; }
-.night .rich-spoiler:before {
+html.dark .rich-spoiler:before {
   color: #444;
   background-color: #444; }
 
@@ -1791,29 +1819,29 @@ select.menu {
   color: #FFF;
   background-color: #7D80B8; }
 
-.night .image-frame-box,
-.night .video-frame-box {
+html.dark .image-frame-box,
+html.dark .video-frame-box {
   background: rgba(50, 50, 100, 0.5); }
-.night .image-frame,
-.night .video-frame {
+html.dark .image-frame,
+html.dark .video-frame {
   background-color: #0E1621;
   border-color: #212D3B;
   box-shadow: none; }
-.night .image-descr,
-.night .video-descr {
+html.dark .image-descr,
+html.dark .video-descr {
   border-color: #7D80B8; }
-.night .image-owner-name,
-.night .video-owner-name {
+html.dark .image-owner-name,
+html.dark .video-owner-name {
   color: #0C0; }
-  .night .image-owner-name:visited,
-  .night .video-owner-name:visited {
+  html.dark .image-owner-name:visited,
+  html.dark .video-owner-name:visited {
     color: #0C0; }
-.night .image-show-more-comments-button,
-.night .image-show-all-comments-button,
-.night .video-show-more-comments-button,
-.night .video-show-all-comments-button,
-.night .image-show-more-comments-number,
-.night .video-show-more-comments-number {
+html.dark .image-show-more-comments-button,
+html.dark .image-show-all-comments-button,
+html.dark .video-show-more-comments-button,
+html.dark .video-show-all-comments-button,
+html.dark .image-show-more-comments-number,
+html.dark .video-show-more-comments-number {
   color: #ECECEC;
   background-color: #212D3B; }
 
@@ -1848,7 +1876,7 @@ body.audioplayer .video-frame-box {
   clear: both;
   border-top: 2px solid #7D80B8; }
 
-.night #footer {
+html.dark #footer {
   border-color: #212D3B; }
 
 .audioplayer #footer {
@@ -1857,8 +1885,7 @@ body.audioplayer .video-frame-box {
 #copyright {
   padding: 1.5rem;
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
-  text-align: center;
-  color: #000; }
+  text-align: center; }
 
 .authorized #topnav-friends,
 .authorized #topnav-chats,
@@ -1873,6 +1900,7 @@ body.audioplayer .video-frame-box {
 .authorized #menu-music {
   display: block; }
 .authorized #topnav-help,
+.authorized #topnav-view,
 .authorized #topnav-language,
 .authorized #auth,
 .authorized #menu-help,
