@@ -7,6 +7,9 @@ const { spawn }      = require("child_process");
 const { v4: uuidv4 } = require("uuid");
 
 const config = require("../config");
+const media  = require("../media");
+const api    = require("../api");
+const { image } = require("../media");
 
 class DBHelper
 {
@@ -35,25 +38,9 @@ class DBHelper
         };
     }
 
-    async _getHash(data)
-    {
-        let hash = ""
-        let subp = await spawn(path.resolve(config.hashApp));
-
-        return await new Promise((resolve, reject) => {
-            subp.stdout.on("data", data => hash += data.toString());
-            subp.on("close", () => resolve((new BigInt64Array([hash]))[0]));
-
-            if (typeof data == "string") {
-                subp.stdin.write(data);
-            }
-            subp.stdin.end();
-        });
-    }
-
     async _getArtifact(type, string)
     {
-        const hash = await this._getHash(string);
+        const hash = await this.hash(string);
 
         const content = await this.pool.query(`
                 insert into content (hash, uploader_id, text)
@@ -76,7 +63,7 @@ class DBHelper
 
     async _getContent(text, uploaderId)
     {
-        const hash = await this._getHash(text);
+        const hash = await this.hash(text);
 
         const content = await this.pool.query(`
                 insert into content (hash, uploader_id, text)
@@ -108,6 +95,36 @@ class DBHelper
         return content.rows[0];
     }
 
+    async _getMedia(buffer, format, size, uploaderId)
+    {
+        const hash  = await this.hash(buffer);
+
+        const id = await this.pool.query(`
+                insert into media (hash, format, uploader_id, size)
+                values ($1, $2, $3, $4)
+                on conflict (hash) do
+                update set hash = $1
+                returning id, hash
+            `, [
+                hash, format, uploaderId, size
+            ]);
+
+        return id.rows[0];
+    }
+
+    async _getImage(buffer, uploaderId)
+    {
+        let image = await media.image.get(buffer);
+        if (!image)
+            return null;
+
+        image.media = await this._getMedia(image.buffer, image.format, image.size, uploaderId);
+
+        await media.image.save(image.buffer, image.media.hash, image.format), image.width, image.height;
+
+        return image;
+    }
+
     async start()
     {
         const sql = fs.readFileSync(path.resolve("db/init.sql"), "utf8").split(';');
@@ -127,7 +144,7 @@ class DBHelper
                 .catch(err => {});
         }
     
-        await this._getHash("");
+        await this.hash("");
         await this.createUser(0, "anon", "Anon", 3828481200)
             .catch(err => {});
     }
@@ -141,6 +158,22 @@ class DBHelper
     {
         await this.stop();
         await this.start();
+    }
+
+    async hash(data)
+    {
+        let hash = ""
+        let subp = await spawn(path.resolve(config.hashApp));
+
+        return await new Promise((resolve, reject) => {
+            subp.stdout.on("data", data => hash += data.toString());
+            subp.on("close", () => resolve((new BigInt64Array([hash]))[0]));
+
+            if (typeof data == "string") {
+                subp.stdin.write(data);
+            }
+            subp.stdin.end();
+        });
     }
 
     makeSalt(length)
@@ -288,7 +321,7 @@ class DBHelper
         return session;
     }
 
-    async createUser(id, username, name, authDT)
+    async createUser(id, username, name, authDT, avatar)
     {
         const entityId = await this.pool.query("insert into entities default values returning id");
 
@@ -301,14 +334,24 @@ class DBHelper
                 new Date(authDT * 1000).toUTCString(), this.makeSalt(32)
             ]);
 
-        const nameId = await this._getContent(name, 0);
+        await this.pool.query(`
+                insert into albums (owner_id, index)
+                values ($1, $2)
+            `, [
+                entityId.rows[0].id, 0
+            ]);
+
+        const nameId   = await this._getContent(name, 0);
+        const avatarId = avatar 
+            ? await this.addImage(avatar, "user", id, "user", id, 0, null, id)
+            : null;
 
         await this.pool.query(`
                 insert into ${this.entityTables["user"].profile}
                 (id, cover_image_id, avatar_image_id, name_id)
                 values ($1, $2, $3, $4)
             `, [
-                id, null, null, nameId.id
+                id, null, avatarId, nameId.id
             ]);
     }
 
@@ -319,21 +362,70 @@ class DBHelper
             [userId, key]);
     }
 
+    async setAvatar(entityType, entityId, hash, format)
+    {
+        if (!hash && !format) {
+            await this.pool.query(`
+                    update ${this.entityTables[entityType].profile} p
+                    set avatar_id = null
+                    where p.id = $1
+                `, [entityId]);
+
+            return true;
+        }
+
+        const imageId = await this.pool.query(`
+                select i.id as id
+                from images i
+                join albums a on a.id = i.album_id
+                join entities e on e.id = a.owner_id
+                join ${this.entityTables[entityType].account} u on u.entity_id = e.id
+                join media m on m.id = i.media_id
+                where u.id = $1
+                and a.index = 0
+                and m.hash = $2
+                and m.format = $3
+            `, [
+                entityId, (new BigInt64Array([hash]))[0], format
+            ]);
+        if (!image.rows[0])
+            return false;
+
+        await this.pool.query(`
+                update ${this.entityTables[entityType].profile} p
+                set avatar_id = $1
+                where p.id = $2
+            `, [
+                image.rows[0].id, entityId
+            ]);
+
+        return true;
+    }
+
     async setAlias(entityType, entityId, alias)
     {
-        alias
-            ? await this.pool.query(`
+        if (alias) {
+            await this.pool.query(`
                     update ${this.entityTables[entityType].profile}
-                    set alias = $1 where id = $2`,
-                [alias, entityId])
-            : await this.pool.query(`
-                    update ${this.entityTables[entityType].profile}
-                    set alias = null where id = $1`,
-                [entityId]);
+                    set alias = $1 where id = $2
+                    returning id`,
+                [alias, entityId]);
+
+            return true;
+        }
+
+        const id = await this.pool.query(`
+                update ${this.entityTables[entityType].profile}
+                set alias = null where id = $1
+                on conflict (alias) do nothing
+                returning id`,
+            [entityId]);
+
+        return id.rows[0] ? true : false;
     }
 
     async setName(entityType, entityId, name, userId)
-    {console.log(userId);
+    {
         const nameId = await this._getContent(name, userId);
 
         await this.pool.query(`
@@ -360,6 +452,38 @@ class DBHelper
                 update ${this.entityTables[entityType].profile}
                 set ${option} = $1 where id = $2`,
             [value, entityId]);
+    }
+
+    async addImage(buffer, ownerType, ownerId, albumOwnerType, albumOwnerId, albumIndex, descr, uploaderId)
+    {
+        const album = await this.pool.query(`
+                select a.id as id
+                from albums a
+                join entities e on e.id = a.owner_id
+                join ${this.entityTables[albumOwnerType].account} u on u.entity_id = e.id
+                where u.id = $1
+                and a.index = $2
+            `, [
+                albumOwnerId, albumIndex
+            ]);
+
+        if (!album.rows[0])
+            return null;
+
+        const data    = await this._getImage(buffer, uploaderId);
+        const descrId = descr ? await this._getContent(descr, uploaderId) : 1;
+        if (!data)
+            return null;
+
+        const image = await this.pool.query(`
+                insert into images (album_id, media_id, owner_id, descr_id, width, height)
+                values ($1, $2, (select entity_id from ${this.entityTables[ownerType].account} where id = $3), $4, $5, $6)
+                returning id
+            `, [
+                album.rows[0].id, data.media.id, ownerId, descrId, data.width, data.height
+            ]);
+
+        return image.rows[0].id;
     }
 }
 

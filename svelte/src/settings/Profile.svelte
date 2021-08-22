@@ -56,8 +56,8 @@
 
 		if (me.name == profile.name)
 			return;
-		if (!profile.name)
-			return responses.name = api.errors.required;
+		if (!profile.name.length)
+			return responses.name = api.errors.missing_param;
 		if (profile.name.length > api.types.Entity_Name.max_length)
 			return responses.name = api.errors.too_long;
 
@@ -120,8 +120,8 @@
 		profile.name   = name;
 		responses.name = null;
 
-		if (!profile.name)
-			return responses.name = api.errors.required;
+		if (!profile.name.length)
+			return responses.name = api.errors.missing_param;
 		if (profile.name.length > api.types.Entity_Name.max_length)
 			return responses.name = api.errors.too_long;
 	}

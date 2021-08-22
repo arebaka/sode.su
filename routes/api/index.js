@@ -1,6 +1,7 @@
 const path    = require("path");
 const crypto  = require("crypto");
 const express = require("express");
+const https   = require("https");
 const router  = express.Router();
 
 const db  = require("../../db");
@@ -60,7 +61,25 @@ router.post("/auth", async (req, res, next) => {
             status = 200;
         }
         else {
-            await db.createUser(req.body.id, req.body.username, req.body.first_name, req.body.auth_date);
+            const avatar = req.body.photo_url
+                ? await new Promise((resolve, reject) => {
+                    https.get(req.body.photo_url, result => {
+                        if (result.statusCode == 302 && result.headers.location) {
+                            https.get(result.headers.location, result => {
+                                let chunks = [];
+
+                                result.on("data", chunk => {
+                                    chunks.push(chunk);
+                                });
+                                result.on("end", () => {
+                                    resolve(Buffer.concat(chunks));
+                                });
+                            })
+                        }
+                    });
+                }) : null;
+
+            await db.createUser(req.body.id, req.body.username, req.body.first_name, req.body.auth_date, avatar);
             status = 201;
         }
 
@@ -101,7 +120,6 @@ router.post("/logout", async (req, res, next) => {
             .json({ status: res.locals.api.errors.ok });
     }
     catch (err) {
-        console.error(err);
         res
             .status(400)
             .json({ status: res.locals.api.errors.invalid_data });

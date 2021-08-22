@@ -12,9 +12,18 @@
     "express-useragent": "^1.0.15",
     "handlebars": "^4.7.7",
     "helmet": "^4.6.0",
+    "image-size": "^1.0.0",
+    "imagemin": "^7.0.0",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-mozjpeg": "^9.0.0",
+    "imagemin-pngquant": "^9.0.2",
+    "imagemin-svgo": "^9.0.0",
+    "imagemin-webp": "^6.0.0",
+    "mmmagic": "^0.5.3",
     "morgan": "^1.10.0",
     "pg": "^8.6.0",
     "serverline": "^1.5.0",
+    "sharp": "^0.29.0",
     "uuid": "^8.3.2"
   }
 }

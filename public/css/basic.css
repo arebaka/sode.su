@@ -2112,9 +2112,15 @@ html.dark #settings-privacy-flags-legend {
   display: block;
   width: 100%;
   font-size: .8rem;
-  color: #0C0;
+  color: #080;
 }
 .error .settings-response {
+  color: #800;
+}
+html.dark .settings-response {
+  color: #0C0;
+}
+html.dark .error .settings-response {
   color: #C00;
 }
 .error #settings-profile-username,

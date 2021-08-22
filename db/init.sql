@@ -75,7 +75,10 @@ CREATE TYPE public.poll_type AS ENUM (
 );
 
 CREATE TABLE IF NOT EXISTS public.entities (
-    id bigserial NOT NULL PRIMARY KEY
+    id bigserial NOT NULL PRIMARY KEY,
+    last_album_index bigint DEFAULT 0 NOT NULL,
+    last_playlist_index bigint DEFAULT 0 NOT NULL,
+    last_videolib_index bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.content (
@@ -134,14 +137,14 @@ CREATE TABLE IF NOT EXISTS public.prohibited_media (
     id bigserial NOT NULL PRIMARY KEY,
     type public.file_format NOT NULL,
     hash bigint NOT NULL,
-    reason_id bigint NOT NULL
+    reason_id bigint DEFAULT 1 NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.media (
     id bigserial NOT NULL PRIMARY KEY,
     hash bigint NOT NULL,
     format public.file_format NOT NULL,
-    uploader_id bigint NOT NULL,
+    uploader_id bigint DEFAULT 0 NOT NULL,
     uploaded_dt timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     size integer NOT NULL
 );
@@ -390,7 +393,7 @@ CREATE INDEX IF NOT EXISTS polls_closing_dt_index                 ON public.poll
 CREATE INDEX IF NOT EXISTS polls_multiple_answers_index           ON public.polls                USING btree (multiple_answers);
 CREATE INDEX IF NOT EXISTS poll_options_index_index               ON public.poll_options         USING btree (index);
 
-ALTER TABLE public.content              ADD CONSTRAINT content_uploader_id_fk              FOREIGN KEY (uploader_id)       REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE public.content              ADD CONSTRAINT content_uploader_id_fk              FOREIGN KEY (uploader_id)       REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.artifacts            ADD CONSTRAINT artifacts_string_id_fk              FOREIGN KEY (string_id)         REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.artifacts_in_content ADD CONSTRAINT artifacts_in_content_content_id_fk  FOREIGN KEY (content_id)        REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.artifacts_in_content ADD CONSTRAINT artifacts_in_content_artifact_id_fk FOREIGN KEY (artifact_id)       REFERENCES public.artifacts(id)    ON UPDATE CASCADE ON DELETE CASCADE;
@@ -398,8 +401,8 @@ ALTER TABLE public.bans                 ADD CONSTRAINT bans_entity_id_fk        
 ALTER TABLE public.bans                 ADD CONSTRAINT bans_reason_id_fk                   FOREIGN KEY (reason_id)         REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.blacklist            ADD CONSTRAINT blacklist_issuer_id_fk              FOREIGN KEY (issuer_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.blacklist            ADD CONSTRAINT blacklist_issued_id_fk              FOREIGN KEY (issued_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE public.prohibited_media     ADD CONSTRAINT prohibited_media_reason_id_fk       FOREIGN KEY (reason_id)         REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE RESTRICT;
-ALTER TABLE public.media                ADD CONSTRAINT media_uploader_id_fk                FOREIGN KEY (uploader_id)       REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE public.prohibited_media     ADD CONSTRAINT prohibited_media_reason_id_fk       FOREIGN KEY (reason_id)         REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;
+ALTER TABLE public.media                ADD CONSTRAINT media_uploader_id_fk                FOREIGN KEY (uploader_id)       REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.albums               ADD CONSTRAINT albums_owner_id_fk                  FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.albums               ADD CONSTRAINT albums_descr_id_fk                  FOREIGN KEY (descr_id)          REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.albums               ADD CONSTRAINT albums_poster_image_id_fk           FOREIGN KEY (poster_image_id)   REFERENCES public.images(id)       ON UPDATE CASCADE ON DELETE SET DEFAULT;
@@ -449,5 +452,5 @@ ALTER TABLE public.poll_options         ADD CONSTRAINT poll_options_text_id_fk  
 ALTER TABLE public.quizzes              ADD CONSTRAINT quizzes_id_fk                       FOREIGN KEY (id)                REFERENCES public.polls(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.quizzes              ADD CONSTRAINT quizzes_correct_option_id_fk        FOREIGN KEY (correct_option_id) REFERENCES public.poll_options(id) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.quizzes              ADD CONSTRAINT quizzes_explanation_id_fk           FOREIGN KEY (explanation_id)    REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE public.poll_answers         ADD CONSTRAINT poll_answers_user_id_fk             FOREIGN KEY (user_id)           REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE public.poll_answers         ADD CONSTRAINT poll_answers_user_id_fk             FOREIGN KEY (user_id)           REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.poll_answers         ADD CONSTRAINT poll_answers_option_id_fk           FOREIGN KEY (option_id)         REFERENCES public.poll_options(id) ON UPDATE CASCADE ON DELETE CASCADE;

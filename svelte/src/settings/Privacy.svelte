@@ -23,7 +23,7 @@
 		if (me[option] == profile[option]) return;
 
 		if (!profile[option]) {
-			responses[option] = api.errors.required;
+			responses[option] = api.errors.missing_param;
 		}
 
 		if (!responses[option]) {

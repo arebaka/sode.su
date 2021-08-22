@@ -158,7 +158,7 @@
 					"unauthorized": "Unauthorized!",
 					"too_short": "Username is too short! Minimum 5 characters!",
 					"too_long": "Username is too long! Maximum 32 characters!",
-					"already_in_use": "Username is already in use!"
+					"conflict": "Username is already in use!"
 				}
 			},
 			"name": {
@@ -168,7 +168,7 @@
 				"responses": {
 					"ok": "Name has been changed successfully.",
 					"unauthorized": "Unauthorized!",
-					"required": "Name is required!",
+					"missing_param": "Name is required!",
 					"too_long": "Name is too long! Maximum 255 characters!"
 				}
 			},
@@ -195,7 +195,7 @@
 				"responses": {
 					"ok": "The value has been changed successfully.",
 					"unauthorized": "Unauthorized!",
-					"required": "Value is required!",
+					"missing_param": "Value is required!",
 					"invalid_value": "Invalid value!"
 				}
 			},
@@ -207,7 +207,7 @@
 				"responses": {
 					"ok": "The value has been changed successfully.",
 					"unauthorized": "Unauthorized!",
-					"required": "Value is required!",
+					"missing_param": "Value is required!",
 					"invalid_value": "Invalid value!"
 				}
 			},
@@ -219,7 +219,7 @@
 				"responses": {
 					"ok": "The value has been changed successfully.",
 					"unauthorized": "Unauthorized!",
-					"required": "Value is required!",
+					"missing_param": "Value is required!",
 					"invalid_value": "Invalid value!"
 				}
 			},
