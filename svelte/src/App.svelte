@@ -4,6 +4,7 @@
 	import User     from "./User.svelte";
 	import Error    from "./Error.svelte";
 	import Settings from "./Settings.svelte";
+	import Friends  from "./Friends.svelte";
 
 	function setCookie(key, value, days)
 	{
@@ -182,7 +183,7 @@
 
 			<ul id="topnav">
 				{#each ui.topnav.tabs as tab}
-					<li class="topnav-box" id="topnav-{tab}">
+					<li class="topnav-box" id="topnav-{tab}-box">
 						<a href="{tab}" rel="bookmark" class="topnav" id="topnav-{tab}" use:link>
 							<p class="notice" data-counter="0"></p>
 							<p class="topnav-label">{dict.topnav[tab]}</p>
@@ -234,7 +235,11 @@
 				<p id="me-name">{me.name || dict.profile.user.default.name}</p>
 				<p id="me-username">{me.username ? "@" + me.username : ""}</p>
 				{#if me.avatar}
-					<img src="" alt="" id="me-avatar" />
+					<img src="{api.paths["@*"].i["0"]["*." + me.avatar.split('.')[1]]
+							.replace(":1", me.id)
+							.replace(":2", me.avatar.split('.')[0])
+							+ "?thumb=100"}"
+						alt="" id="me-avatar" />
 				{:else}
 					<p id="me-avatar">{me.name[0] || dict.profile.user.default.name[0]}</p>
 				{/if}
@@ -320,6 +325,9 @@
 		<main id="container">
 			<Route path="/settings/*">
 				<Settings api={api} dict={dict} bind:me={me}/>
+			</Route>
+			<Route path="/friends/*">
+				<Friends api={api} dict={dict} bind:me={me}/>
 			</Route>
 			<Route path="/:entity" let:params>
 				{#if /^@([0-9]+)|([A-Za-z_][A-Za-z0-9_\-\.]*)$/.test(params.entity)}

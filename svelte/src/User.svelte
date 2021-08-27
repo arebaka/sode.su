@@ -1,7 +1,36 @@
 <script type="text/javascript">
 	import Error from "./Error.svelte";
 
-	const profileButtons = ["chat", "friend", "theme", "images", "videos", "music"];
+	const profileButtons = {
+		chat: {
+			handler: () => {}
+		},
+		friend: {
+			handler: () => {
+				fetch(api.methods["friends.add"].path, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body:   JSON.stringify({ target: profile.id })
+				})
+				.then(res => res.json())
+				.then(res => console.log);
+			}
+		},
+		theme: {
+			handler: () => {}
+		},
+		images: {
+			handler: () => {}
+		},
+		videos: {
+			handler: () => {}
+		},
+		music: {
+			handler: () => {}
+		}
+	};
 
 	export let api;
 	export let dict;
@@ -60,8 +89,10 @@
 		{/if}
 
 		<div id="profile-buttons">
-			{#each profileButtons as button}
-				<button class="profile-button" id="profile-{button}">{dict.profile.user.buttons[button]}</button>
+			{#each Object.keys(profileButtons) as button}
+				<button class="profile-button" id="profile-{button}" on:click={profileButtons[button].handler}>
+					{dict.profile.user.buttons[button]}
+				</button>
 			{/each}
 		</div>
 

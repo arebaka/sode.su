@@ -242,7 +242,7 @@ class DBHelper
                 join ${this.entityTables["user"].profile} up on up.id = u.id
                 left join images i_c on i_c.id = up.cover_image_id
                 left join media m_c on m_c.id = i_c.media_id
-                left join images i_a on i_a.id = up.cover_image_id
+                left join images i_a on i_a.id = up.avatar_image_id
                 left join media m_a on m_a.id = i_a.media_id
                 join content c on c.id = up.name_id
                 where u.id = $1
@@ -252,6 +252,7 @@ class DBHelper
         if (!user)
             return null;
 
+        user.id     = parseInt(user.id);
         user.cover  = user.cover_hash  ? (new BigUint64Array([user.cover_hash]))[0]  + '.' + user.cover_format  : null;
         user.avatar = user.avatar_hash ? (new BigUint64Array([user.avatar_hash]))[0] + '.' + user.avatar_format : null;
 
@@ -290,6 +291,7 @@ class DBHelper
         if (!profile)
             return null;
 
+        profile.id     = parseInt(profile.id);
         profile.cover  = profile.cover_hash  ? (new BigUint64Array([profile.cover_hash]))[0]  + '.' + profile.cover_format  : null;
         profile.avatar = profile.avatar_hash ? (new BigUint64Array([profile.avatar_hash]))[0] + '.' + profile.avatar_format : null;
 
@@ -302,6 +304,44 @@ class DBHelper
         return profile;
     }
 
+    async getProfiles(type, ids)
+    {
+        const queries = {
+            user: `
+                select up.id as id, up.alias as username, up.searchable,
+                    up.friendable, up.invitable, up.commentable,
+                    up.anon_comments_only, up.last_post_index, up.pinned_post_index,
+                    m_c.hash as cover_hash, m_c.format as cover_format,
+                    m_a.hash as avatar_hash, m_a.format as avatar_format,
+                    c.text as name
+                from ${this.entityTables["user"].profile} up
+                left join images i_c on i_c.id = up.cover_image_id
+                left join media m_c on m_c.id = i_c.media_id
+                left join images i_a on i_a.id = up.avatar_image_id
+                left join media m_a on m_a.id = i_a.media_id
+                join content c on c.id = up.name_id
+                where up.id = any($1::bigint[])
+            `,
+            club: ``
+        };
+        let profiles = await this.pool.query(queries[type], [ids]);
+        profiles = profiles.rows;
+
+        for (let i in profiles) {
+            profiles[i].id     = parseInt(profiles[i].id);
+            profiles[i].cover  = profiles[i].cover_hash  ? (new BigUint64Array([profiles[i].cover_hash]))[0]  + '.' + profiles[i].cover_format  : null;
+            profiles[i].avatar = profiles[i].avatar_hash ? (new BigUint64Array([profiles[i].avatar_hash]))[0] + '.' + profiles[i].avatar_format : null;
+    
+            profiles[i].cover_hash
+                = profiles[i].cover_format
+                = profiles[i].avatar_hash
+                = profiles[i].avatar_format
+                = undefined;
+        }
+
+        return profiles;
+    }
+
     async getBio(entityType, entityId)
     {
         const bio = await this.pool.query(`
@@ -312,6 +352,44 @@ class DBHelper
             `, [entityId]);
 
         return bio.rows[0] ? bio.rows[0].text : null;
+    }
+
+    async getFriends(userId, type)
+    {
+        const queries = {
+            mutual: `
+                select f1.offerer_id as id
+                from friends f1
+                join friends f2
+                on f2.offerer_id = f1.acceptor_id
+                and f2.acceptor_id = f1.offerer_id
+                where f1.acceptor_id = $1
+                order by f1.since_dt desc`,
+            incoming: `
+                select offerer_id as id
+                from friends
+                where acceptor_id = $1
+                and offerer_id not in (
+                    select acceptor_id
+                    from friends
+                    where offerer_id = $1
+                )
+                order by since_dt desc`,
+            outcoming: `
+                select acceptor_id as id
+                from friends
+                where offerer_id = $1
+                and acceptor_id not in (
+                    select offerer_id
+                    from friends
+                    where acceptor_id = $1
+                )
+                order by since_dt desc`
+        };
+
+        const res = await this.pool.query(queries[type], [userId]);
+
+        return res.rows.map(i => i.id);
     }
 
     async getImage(entityType, entityId, albumIndex, hash, format)
@@ -333,10 +411,10 @@ class DBHelper
 
         let image = await this.pool.query(`
                 select m.hash as hash, m.format as format,
-                m.uploader_id as uploader_id, m.uploaded_dt as uploaded_dt,
-                m.size as size, u.id as owner_user_id, ${/*c.id as owner_club_id,*/""}
-                ct.text as descr, i.saved_dt as saved_dt, i.last_comment_index as last_comment_index,
-                i.width as width, i.height as height
+                    m.uploader_id as uploader_id, m.uploaded_dt as uploaded_dt,
+                    m.size as size, u.id as owner_user_id, ${/*c.id as owner_club_id,*/""}
+                    ct.text as descr, i.saved_dt as saved_dt, i.last_comment_index as last_comment_index,
+                    i.width as width, i.height as height
                 from media m
                 join images i on i.media_id = m.id
                 join entities e on e.id = i.owner_id
@@ -441,6 +519,25 @@ class DBHelper
         await this.pool.query(
             "delete from sessions where user_id = $1 and key = $2",
             [userId, key]);
+    }
+
+    async friend(offererId, acceptorId)
+    {
+        const target = await this.pool.query("select id from users where id = $1", [acceptorId]);
+        if (!target.rows[0])
+            return null;
+
+        const friendship = await this.pool.query(`
+                insert into friends (offerer_id, acceptor_id)
+                values ($1, $2)
+                on conflict (offerer_id, acceptor_id) do
+                update set offerer_id = $1
+                returning id, since_dt
+            `, [
+                offererId, acceptorId
+            ]);
+
+        return friendship.rows[0];
     }
 
     async setAvatar(entityType, entityId, hash, format)

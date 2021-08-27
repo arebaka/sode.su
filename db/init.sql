@@ -330,6 +330,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS prohibited_media_hash_uindex ON public.prohibi
 CREATE UNIQUE INDEX IF NOT EXISTS media_hash_uindex            ON public.media                USING btree (hash);
 CREATE UNIQUE INDEX IF NOT EXISTS users_entity_id_uindex       ON public.users                USING btree (entity_id);
 CREATE UNIQUE INDEX IF NOT EXISTS users_tg_id_uindex           ON public.users                USING btree (tg_id);
+CREATE UNIQUE INDEX IF NOT EXISTS friends_uindex               ON public.friends              USING btree (offerer_id , acceptor_id);
 CREATE UNIQUE INDEX IF NOT EXISTS user_profiles_alias_uindex   ON public.user_profiles        USING btree (lower((alias)::text));
 
 CREATE INDEX IF NOT EXISTS content_uploaded_dt_index              ON public.content              USING btree (uploaded_dt);

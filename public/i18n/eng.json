@@ -241,5 +241,35 @@
 				}
 			}
 		}
+	},
+	"friends": {
+		"mutual": {
+			"title": "Friends – sode.su",
+			"label": "Friends",
+			"descr": "Your friends are displayed here. Friendship is a mutual subscription to each other.",
+			"empty": "You have no friends.",
+			"buttons": {
+				"negative": "Remove"
+			}
+		},
+		"incoming": {
+			"title": "Followers – sode.su",
+			"label": "Followers",
+			"descr": "Your followers are displayed here. You can mutually subscribe to them to create a friendships.",
+			"empty": "You have no followers.",
+			"buttons": {
+				"positive": "Accept",
+				"negative": "Reject"
+			}
+		},
+		"outcoming": {
+			"title": "Following – sode.su",
+			"label": "Following",
+			"descr": "Here are displayed the users to whom you are subscribed without mutual friendship.",
+			"empty": "You follow nobody.",
+			"buttons": {
+				"negative": "Revoke"
+			}
+		}
 	}
 }

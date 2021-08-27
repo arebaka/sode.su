@@ -11,7 +11,8 @@ router.use((req, res, next) => {
     next();
 });
 
-router.use("/set", require("./settings.js"));
+router.use("/set",     require("./settings"));
+router.use("/friends", require("./friends"));
 
 router.post("/me", async (req, res, next) => {
     try {
@@ -119,6 +120,54 @@ router.post("/logout", async (req, res, next) => {
             .status(200)
             .set("Set-Cookie", `session=; path=/; domain=${res.locals.api.domain}; max-age=0; samesite=lax; secure`)
             .json({ status: res.locals.api.errors.ok });
+    }
+    catch (err) {
+        res
+            .status(400)
+            .json({ status: res.locals.api.errors.invalid_data });
+    }
+});
+
+router.post("/entities", async (req, res, next) => {
+    try {
+        if (typeof req.body != "object" || !Array.isArray(req.body))
+            return next(400);
+
+        let lists = {
+            user: [],
+            club: []
+        };
+        let result = {};
+        let parts;
+        let entities;
+
+        for (let descriptor of req.body) {
+            parts = descriptor.split('/');
+
+            if (parts.length != 2 || !/^[1-9][0-9]*$/.test(parts[1]))
+                return next(400);
+
+            switch (parts[0]) {
+            case "user":
+            case "club":
+                lists[parts[0]].push(parts[1]);
+            break;
+            default: break;
+            }
+        }
+
+        for (let i in lists) {
+            if (lists[i].length) {
+                entities = await db.getProfiles(i, lists[i]);
+                for (let entity of entities) {
+                    result[i + '/' + entity.id] = entity;
+                }
+            }
+        }
+
+        res
+            .status(200)
+            .json({ status: 200, data: result });
     }
     catch (err) {
         res

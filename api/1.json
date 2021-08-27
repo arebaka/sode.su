@@ -81,6 +81,11 @@
 			"profile": "settings/profile",
 			"privacy": "settings/privacy"
 		},
+		"friends": {
+			"mutual":    "friends/mutual",
+			"incoming":  "friends/incoming",
+			"outcoming": "friends/outcoming"
+		},
 		"@*": {
 			"/":            "@:1",
 			"profile.json": "@:1/profile.json",
@@ -348,6 +353,12 @@
 			"params":  {},
 			"returns": "Response"
 		},
+		"entities": {
+			"path":    "api/entities",
+			"descr":   "",
+			"params":  "Serialized_Entity[]",
+			"returns": "//TODO"
+		},
 		"set.profile": {
 			"path":    "api/set/profile",
 			"descr":   "",
@@ -419,6 +430,36 @@
 				}
 			},
 			"returns": ""
+		},
+		"friends.mutual": {
+			"path":    "api/friends/mutual",
+			"descr":   "",
+			"params":  {},
+			"returns": "uint64[]"
+		},
+		"friends.incoming": {
+			"path":    "api/friends/incoming",
+			"descr":   "",
+			"params":  {},
+			"returns": "uint64[]"
+		},
+		"friends.outcoming": {
+			"path":    "api/friends/outcoming",
+			"descr":   "",
+			"params":  {},
+			"returns": "uint64[]"
+		},
+		"friends.add": {
+			"path":    "api/friends/add",
+			"descr":   "",
+			"params":  {
+				"target": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				}
+			},
+			"returns": "Response"
 		}
 	}
 }

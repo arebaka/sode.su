@@ -2133,6 +2133,196 @@ html.dark .error .settings-response {
   border-color: #C00;
 }
 
+.subnav-box {
+  position: relative;
+  margin: 1rem auto 0;
+  width: 100%;
+  max-width: 1140px;
+  height: 2.5rem;
+  background-color: #7D80B8;
+  box-shadow: 0 -2px 2px rgba(0,0,0,.15),
+    0 2px 2px rgba(0,0,0,0.15);
+}
+html.dark .subnav-box {
+  background-color: #212D3B;
+  box-shadow: none;
+}
+.subnav {
+  float: left;
+}
+.subnav-item-box {
+  display: block;
+  float: left;
+}
+.subnav-item {
+  display: block;
+  float: left;
+  min-width: 7rem;
+  max-width: 9rem;
+  height: 2.2rem;
+  font-family: Basic;
+  font-size: .9rem;
+  font-weight: bold;
+  line-height: 2.2rem;
+  text-align: center;
+  color: #FFF;
+  border-left: 0.2rem solid #7D80B8;
+  border-right: 0.2rem solid #7D80B8;
+  transition: all 0.2s ease 0s;
+}
+.subnav-item:visited {
+  color: #FFF;
+}
+html.dark .subnav-item {
+  border-color: #212D3B;
+}
+.subnav-item:hover,
+.subnav-item:focus {
+  text-decoration: none;
+  border-color: #FFF;
+  transform: translateY(0.3rem);
+}
+.subnav-item:active {
+  transform: scaleX(0.95);
+}
+.subnav-item.active {
+  color: #7D80B8;
+  background-color: #F0F8FF;
+  transform: translateY(0.3rem);
+}
+html.dark .subnav-item.active {
+  background-color: #17212B;
+}
+
+#friends {
+  position: relative;
+  overflow: hidden;
+  max-width: 1140px;
+  margin: 0 auto 1rem;
+  color: #000;
+  background-color: #FFF;
+  box-shadow: 0 -2px 2px rgba(0,0,0,.15),
+    0 2px 2px rgba(0,0,0,0.15);
+}
+html.dark #friends {
+  color: #ECECEC;
+  background-color: #0E1621;
+  border: 2px solid #212D3B;
+  border-top: none;
+  box-shadow: none;  
+}
+#friends-descr {
+  padding: 1rem .5rem;
+  font-family: Basic, Emoji, Mono, sans-serif;
+  font-size: 1rem;
+  background-color: #F0F8FF;
+}
+html.dark #friends-descr {
+  background-color: #17212B;
+}
+#friends-empty {
+  margin: .5rem;
+}
+.friends-user-box {
+  width: 100%;
+}
+.friends-user {
+  display: block;
+  clear: both;
+  margin-top: .5rem;
+  width: 100%;
+  height: 2.5rem;
+  border-bottom: 1px solid #7D80B8;
+}
+.friends-user:last-of-type {
+  margin-bottom: .5rem;
+  border-bottom: none;
+}
+.friends-user-avatar {
+  display: block;
+  float: left;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-family: Mono;
+  font-size: 2.5rem;
+  line-height: 2.5rem;
+  text-align: center;
+  color: #7D80B8;
+  background-color: #FFF;
+}
+html.dark .friends-user-avatar {
+  background-color: #0E1621;
+  border-color: #212D3B;
+}
+.friends-user-name {
+  float: right;
+  width: calc(100% - 3rem);
+  height: 1.25rem;
+  font-family: Basic;
+  font-size: 1.2rem;
+  line-height: 1.25rem;
+  text-align: left;
+  color: #7D80B8;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.friends-user-username {
+  float: right;
+  width: calc(100% - 3rem);
+  height: 1.25rem;
+  font-family: Mono;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  text-align: left;
+  color: #000;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.friends-user-button {
+  display: block;
+  float: left;
+  margin-top: .3rem;
+  margin-right: .5rem;
+  padding: 0 .5rem;
+  height: 1.2rem;
+  font-family: Buttons;
+  font-size: .9rem;
+  line-height: 1.2rem;
+  text-transform: lowercase;
+  background: none;
+  transition: all .2s ease 0s;
+}
+.friends-user-button-positive {
+  color: #080;
+}
+.friends-user-button-negative {
+  color: #800;
+}
+html.dark .friends-user-button-positive {
+  color: #0C0;
+}
+html.dark .friends-user-button-negative {
+  color: #C00;
+}
+.friends-user-button-positive:hover,
+.friends-user-button-positive:focus {
+  background-color: #8F8;
+}
+.friends-user-button-negative:hover,
+.friends-user-button-negative:focus {
+  background-color: #F88;
+}
+html.dark .friends-user-button-positive:hover,
+html.dark .friends-user-button-positive:focus {
+  background-color: #040;
+}
+html.dark .friends-user-button-negative:hover,
+html.dark .friends-user-button-negative:focus {
+  background-color: #400;
+}
+
 /****** Респонсивность ******/
 @media screen and (max-width: 1140px) {
   #preloader {
