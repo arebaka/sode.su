@@ -1,29 +1,28 @@
 const path    = require("path");
+const fs      = require("fs");
 const express = require("express");
 const router  = express.Router();
 
 const db    = require("../db");
 const i18n  = require("../i18n");
 const cache = require("../cache");
+const media = require("../media");
 
-router.use((req, res, next) => {
+router.get("/:prefix(@|~):descriptor*", async (req, res, next) => {
     res.set("Cache-Control", "public, max-age=0");
-    next();
-});
-
-router.get("/:prefix(@|~):descriptor/profile.json", async (req, res, next) => {
-    let entityType;
 
     for (let i in res.locals.api.entities) {
         if (res.locals.api.entities[i].prefix == req.params.prefix) {
-            entityType = i;
+            res.locals.entityType = i;
             break;
         }
     }
-    if (!entityType)
-        return next(404);
 
-    const profile = await db.getProfile(entityType, req.params.descriptor);
+    await next();
+});
+
+router.get("/:prefix(@|~):descriptor/profile.json", async (req, res, next) => {
+    const profile = await db.getProfile(res.locals.entityType, req.params.descriptor);
     if (!profile)
         return next(404);
 
@@ -31,18 +30,7 @@ router.get("/:prefix(@|~):descriptor/profile.json", async (req, res, next) => {
 });
 
 router.get("/:prefix(@|~):descriptor/bio", async (req, res, next) => {
-    let entityType;
-
-    for (let i in res.locals.api.entities) {
-        if (res.locals.api.entities[i].prefix == req.params.prefix) {
-            entityType = i;
-            break;
-        }
-    }
-    if (!entityType)
-        return next(404);
-
-    const bio = await db.getBio(entityType, req.params.descriptor);
+    const bio = await db.getBio(res.locals.entityType, req.params.descriptor);
 
     if (bio === null)
         return next(404);
@@ -53,18 +41,7 @@ router.get("/:prefix(@|~):descriptor/bio", async (req, res, next) => {
 });
 
 router.get("/:prefix(@|~):descriptor", async (req, res, next) => {
-    let entityType;
-
-    for (let i in res.locals.api.entities) {
-        if (res.locals.api.entities[i].prefix == req.params.prefix) {
-            entityType = i;
-            break;
-        }
-    }
-    if (!entityType)
-        return next(404);
-
-    const profile = await db.getProfile(entityType, req.params.descriptor);
+    const profile = await db.getProfile(res.locals.entityType, req.params.descriptor);
 
     if (!profile)
         return next(404);
@@ -86,6 +63,22 @@ router.get("/:prefix(@|~):descriptor", async (req, res, next) => {
                     : i18n[res.locals.clientLang].user.default.name
             )
         }));
+});
+
+router.get("/:prefix(@|~):descriptor/i/:album/:hash.:format", async (req, res, next) => {
+    const image = await db.getImage(
+        res.locals.entityType, req.params.descriptor, req.params.album, req.params.hash, req.params.format
+    );
+    if (!image)
+        return next(404);
+
+    res.type('.' + image.format);
+
+    fs.stat(path.resolve(`thumbs/${req.query.thumb}/${req.params.hash}.${req.params.format}`), (err, data) => {
+        if (err)
+            return res.sendFile(path.resolve(`images/${req.params.hash}.${req.params.format}`));
+        res.sendFile(path.resolve(`thumbs/${req.query.thumb}/${req.params.hash}.${req.params.format}`));
+    });
 });
 
 module.exports = router;

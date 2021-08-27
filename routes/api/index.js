@@ -20,7 +20,8 @@ router.post("/me", async (req, res, next) => {
                 .status(401)
                 .json({ status: res.locals.api.errors.unauthorized });
 
-        const user = await db.getMe(req.cookies.userid);
+        let user = await db.getMe(req.cookies.userid);
+        user.registered_dt = db.formatDT(user.registered_dt);
 
         user
             ? res

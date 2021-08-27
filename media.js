@@ -3,6 +3,7 @@ const fs        = require("fs");
 const mmm       = require("mmmagic");
 const imageSize = require("image-size");
 const sharp     = require("sharp");
+const imagemin  = require("imagemin");
 
 const minSvgo     = require("imagemin-svgo");
 const minPngquant = require("imagemin-pngquant");
@@ -54,7 +55,7 @@ async function getImage(buffer)
     });
     if (!format)
         return null;
-console.dir(imagemin);
+
     const normalized = await imagemin.buffer(buffer, {
         plugins: plugins[format]
     });

@@ -176,6 +176,25 @@ class DBHelper
         });
     }
 
+    formatDT(datetime)
+    {
+        const dt = {
+            year:    datetime.getFullYear(),
+            month:   datetime.getMonth() + 1,
+            day :    datetime.getDate(),
+            hours:   datetime.getHours(),
+            minutes: datetime.getMinutes(),
+            seconds: datetime.getSeconds()
+        };
+
+        return "" + dt.year + '-'
+            + (dt.month   < 10 ? '0' : "") + dt.month   + '-'
+            + (dt.day     < 10 ? '0' : "") + dt.day     + ' '
+            + (dt.hours   < 10 ? '0' : "") + dt.hours   + ':'
+            + (dt.minutes < 10 ? '0' : "") + dt.minutes + ':'
+            + (dt.seconds < 10 ? '0' : "") + dt.seconds;
+    }
+
     makeSalt(length)
     {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -233,8 +252,14 @@ class DBHelper
         if (!user)
             return null;
 
-        user.cover  = user.cover_hash  ? user.cover_hash  + '.' + user.cover_format  : null;
-        user.avatar = user.avatar_hash ? user.avatar_hash + '.' + user.avatar_format : null;
+        user.cover  = user.cover_hash  ? (new BigUint64Array([user.cover_hash]))[0]  + '.' + user.cover_format  : null;
+        user.avatar = user.avatar_hash ? (new BigUint64Array([user.avatar_hash]))[0] + '.' + user.avatar_format : null;
+
+        user.cover_hash
+            = user.cover_format
+            = user.avatar_hash
+            = user.avatar_format
+            = undefined;
 
         return user;
     }
@@ -243,7 +268,8 @@ class DBHelper
     {
         const queries = {
             user: `
-                select up.alias as username, up.searchable, up.friendable, up.invitable, up.commentable,
+                select up.id as id, up.alias as username, up.searchable,
+                    up.friendable, up.invitable, up.commentable,
                     up.anon_comments_only, up.last_post_index, up.pinned_post_index,
                     m_c.hash as cover_hash, m_c.format as cover_format,
                     m_a.hash as avatar_hash, m_a.format as avatar_format,
@@ -251,7 +277,7 @@ class DBHelper
                 from ${this.entityTables["user"].profile} up
                 left join images i_c on i_c.id = up.cover_image_id
                 left join media m_c on m_c.id = i_c.media_id
-                left join images i_a on i_a.id = up.cover_image_id
+                left join images i_a on i_a.id = up.avatar_image_id
                 left join media m_a on m_a.id = i_a.media_id
                 join content c on c.id = up.name_id
                 where up.${/^\d+$/.test(entityId) ? "id" : "alias"} = $1
@@ -264,8 +290,14 @@ class DBHelper
         if (!profile)
             return null;
 
-        profile.cover  = profile.cover_hash  ? profile.cover_hash  + '.' + profile.cover_format  : null;
-        profile.avatar = profile.avatar_hash ? profile.avatar_hash + '.' + profile.avatar_format : null;
+        profile.cover  = profile.cover_hash  ? (new BigUint64Array([profile.cover_hash]))[0]  + '.' + profile.cover_format  : null;
+        profile.avatar = profile.avatar_hash ? (new BigUint64Array([profile.avatar_hash]))[0] + '.' + profile.avatar_format : null;
+
+        profile.cover_hash
+            = profile.cover_format
+            = profile.avatar_hash
+            = profile.avatar_format
+            = undefined;
 
         return profile;
     }
@@ -280,6 +312,55 @@ class DBHelper
             `, [entityId]);
 
         return bio.rows[0] ? bio.rows[0].text : null;
+    }
+
+    async getImage(entityType, entityId, albumIndex, hash, format)
+    {
+        const album = await this.pool.query(`
+                select a.id as id from albums a
+                join entities e on e.id = a.owner_id
+                join ${this.entityTables[entityType].account} u
+                on u.entity_id = e.id
+                join ${this.entityTables[entityType].profile} p
+                on p.id = u.id
+                where p.${/^\d+$/.test(entityId) ? "id" : "alias"} = $1
+                and a.index = $2
+            `, [
+                entityId, albumIndex
+            ]);
+        if (!album.rows[0])
+            return null;
+
+        let image = await this.pool.query(`
+                select m.hash as hash, m.format as format,
+                m.uploader_id as uploader_id, m.uploaded_dt as uploaded_dt,
+                m.size as size, u.id as owner_user_id, ${/*c.id as owner_club_id,*/""}
+                ct.text as descr, i.saved_dt as saved_dt, i.last_comment_index as last_comment_index,
+                i.width as width, i.height as height
+                from media m
+                join images i on i.media_id = m.id
+                join entities e on e.id = i.owner_id
+                left join ${this.entityTables.user.account} u
+                on u.entity_id = e.id
+                ${/*left join ${this.entityTables.club.account} c
+                on c.entity_id = e.id*/""}
+                left join content ct on ct.id = i.descr_id
+                where i.album_id = $1
+                and m.hash = $2
+                and m.format = $3
+            `, [
+                album.rows[0].id, (new BigInt64Array([hash]))[0], format
+            ]);
+
+        image = image.rows[0];
+        if (!image)
+            return null;
+
+        image.owner = image.owner_user_id ? "user/" + image.owner_user_id : "club/" + image.club_user_id;
+        delete image.owner_user_id;
+        delete image.owner_club_id;
+
+        return image;
     }
 
     async authUser(id, authDT, sessionKey, ip, useragent)

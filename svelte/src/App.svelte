@@ -97,7 +97,10 @@
 			items: ["friends", "feed", "feedback", "clubs", "images", "videos", "music"]
 		},
 		me: {
-			menu: ["settings", "themes", "bookmarks", "stickers", "polls", "moderation"]
+			menu: {
+				open:  false,
+				items: ["settings", "themes", "bookmarks", "stickers", "polls", "moderation"]
+			}
 		},
 		logIn: {
 			open: false
@@ -174,7 +177,7 @@
 		<nav id="topnav-box">
 			<a href="/" rel="index" id="topnav-logo"></a>
 			<div id="menu-button-box">
-				<button class="topnav-button" id="menu-button" on:click={() => { ui.menu.open = !ui.menu.open }}></button>
+				<button class="topnav-button" id="menu-button" on:click={() => {ui.menu.open = !ui.menu.open}}></button>
 			</div>
 
 			<ul id="topnav">
@@ -227,7 +230,7 @@
 		</div>
 
 		{#if me}
-			<div id="me">
+			<div id="me" on:click={() => {ui.me.menu.open = !ui.me.menu.open}}>
 				<p id="me-name">{me.name || dict.profile.user.default.name}</p>
 				<p id="me-username">{me.username ? "@" + me.username : ""}</p>
 				{#if me.avatar}
@@ -235,42 +238,42 @@
 				{:else}
 					<p id="me-avatar">{me.name[0] || dict.profile.user.default.name[0]}</p>
 				{/if}
-				<nav id="me-menu-box">
-					<ul id="me-menu">
-						<li class="me-menu-box" id="me-menu-profile">
-							<a href="@{me.username ? me.username : me.id}" rel="me" class="me-menu" use:link on:click={document.activeElement.blur}>
-								{dict.me_menu.profile}
+			</div>
+			<nav id="me-menu-box" class:open={ui.me.menu.open} on:click={() => {ui.me.menu.open = !ui.me.menu.open}}>
+				<ul id="me-menu">
+					<li class="me-menu-box" id="me-menu-profile">
+						<a href="@{me.username ? me.username : me.id}" rel="me" class="me-menu" use:link on:click={document.activeElement.blur}>
+							{dict.me_menu.profile}
+						</a>
+					</li>
+					{#each ui.me.menu.items as item}
+						<li class="me-menu-box" id="me-menu-{item}">
+							<a href="{item}" rel="me" class="me-menu" use:link on:click={document.activeElement.blur}>
+								{dict.me_menu[item]}
 							</a>
 						</li>
-						{#each ui.me.menu as item}
-							<li class="me-menu-box" id="me-menu-{item}">
-								<a href="{item}" rel="me" class="me-menu" use:link on:click={document.activeElement.blur}>
-									{dict.me_menu[item]}
-								</a>
-							</li>
-						{/each}
-						<li class="me-menu-box" id="me-menu-log-out">
-							<button class="me-menu" on:click={logout} on:click={document.activeElement.blur}>
-								{dict.me_menu.log_out}
-							</button>
-						</li>
-						<li class="me-menu-box" id="me-menu-view">
-							<select class="me-menu" bind:value={ui.view} on:change={document.activeElement.blur}>
-								{#each Object.values(ui.topnav.views) as v}
-									<option class="me-menu-view" value="{v}" selected={ui.view == v}>{dict.topnav.views[v]}</option>
-								{/each}
-							</select>
-						</li>
-						<li class="me-menu-box" id="me-menu-language">
-							<select class="me-menu" bind:value={lang} on:change={document.activeElement.blur}>
-								{#each Object.values(api.langs) as l}
-									<option class="me-menu-language" value="{l.code}" selected={lang == l.code}>{l.native}</option>
-								{/each}
-							</select>
-						</li>
-					</ul>
-				</nav>
-			</div>
+					{/each}
+					<li class="me-menu-box" id="me-menu-log-out">
+						<button class="me-menu" on:click={logout} on:click={document.activeElement.blur}>
+							{dict.me_menu.log_out}
+						</button>
+					</li>
+					<li class="me-menu-box" id="me-menu-view" on:click|stopPropagation>
+						<select class="me-menu" bind:value={ui.view} on:change={document.activeElement.blur}>
+							{#each Object.values(ui.topnav.views) as v}
+								<option class="me-menu-view" value="{v}" selected={ui.view == v}>{dict.topnav.views[v]}</option>
+							{/each}
+						</select>
+					</li>
+					<li class="me-menu-box" id="me-menu-language" on:click|stopPropagation>
+						<select class="me-menu" bind:value={lang} on:change={document.activeElement.blur}>
+							{#each Object.values(api.langs) as l}
+								<option class="me-menu-language" value="{l.code}" selected={lang == l.code}>{l.native}</option>
+							{/each}
+						</select>
+					</li>
+				</ul>
+			</nav>
 		{/if}
 
 		<nav id="menu-box" class:open={ui.menu.open} on:click={() => {ui.menu.open = !ui.menu.open}}>
@@ -320,7 +323,7 @@
 			</Route>
 			<Route path="/:entity" let:params>
 				{#if /^@([0-9]+)|([A-Za-z_][A-Za-z0-9_\-\.]*)$/.test(params.entity)}
-					<User api={api} dict={dict} descriptor={params.entity.substring(1)}/>
+					<User api={api} dict={dict} me={me} descriptor={params.entity.substring(1)}/>
 				{:else}
 					<Error code={404}/>
 				{/if}
