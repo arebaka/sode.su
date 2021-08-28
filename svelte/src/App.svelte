@@ -208,7 +208,7 @@
 					<ul id="topnav-views">
 						{#each ui.topnav.views.filter(i => i != ui.view) as view}
 							<li class="topnav-view-box">
-								<p class="topnav-view" on:click={() => {ui.view = view}}>{dict.topnav.views[view]}</p>
+								<p class="topnav-view" on:click={() => {ui.view = view}}>{dict.views[view]}</p>
 							</li>
 						{/each}
 					</ul>
@@ -244,34 +244,34 @@
 					<p id="me-avatar">{me.name[0] || dict.profile.user.default.name[0]}</p>
 				{/if}
 			</div>
-			<nav id="me-menu-box" class:open={ui.me.menu.open} on:click={() => {ui.me.menu.open = !ui.me.menu.open}}>
+			<nav id="me-menu-box" class:open={ui.me.menu.open} on:click={() => {ui.me.menu.open = false}}>
 				<ul id="me-menu">
 					<li class="me-menu-box" id="me-menu-profile">
-						<a href="@{me.username ? me.username : me.id}" rel="me" class="me-menu" use:link on:click={document.activeElement.blur}>
+						<a href="@{me.username ? me.username : me.id}" rel="me" class="me-menu" use:link>
 							{dict.me_menu.profile}
 						</a>
 					</li>
 					{#each ui.me.menu.items as item}
 						<li class="me-menu-box" id="me-menu-{item}">
-							<a href="{item}" rel="me" class="me-menu" use:link on:click={document.activeElement.blur}>
+							<a href="{item}" rel="me" class="me-menu" use:link>
 								{dict.me_menu[item]}
 							</a>
 						</li>
 					{/each}
 					<li class="me-menu-box" id="me-menu-log-out">
-						<button class="me-menu" on:click={logout} on:click={document.activeElement.blur}>
+						<button class="me-menu" on:click={logout}>
 							{dict.me_menu.log_out}
 						</button>
 					</li>
 					<li class="me-menu-box" id="me-menu-view" on:click|stopPropagation>
-						<select class="me-menu" bind:value={ui.view} on:change={document.activeElement.blur}>
+						<select class="me-menu" bind:value={ui.view}>
 							{#each Object.values(ui.topnav.views) as v}
-								<option class="me-menu-view" value="{v}" selected={ui.view == v}>{dict.topnav.views[v]}</option>
+								<option class="me-menu-view" value="{v}" selected={ui.view == v}>{dict.views[v]}</option>
 							{/each}
 						</select>
 					</li>
 					<li class="me-menu-box" id="me-menu-language" on:click|stopPropagation>
-						<select class="me-menu" bind:value={lang} on:change={document.activeElement.blur}>
+						<select class="me-menu" bind:value={lang}>
 							{#each Object.values(api.langs) as l}
 								<option class="me-menu-language" value="{l.code}" selected={lang == l.code}>{l.native}</option>
 							{/each}
@@ -281,17 +281,24 @@
 			</nav>
 		{/if}
 
-		<nav id="menu-box" class:open={ui.menu.open} on:click={() => {ui.menu.open = !ui.menu.open}}>
+		<nav id="menu-box" class:open={ui.menu.open} on:click={() => {ui.menu.open = false}}>
 			<a href="/" rel="index" id="menu-logo"></a>
 			<ul id="menu" on:click|stopPropagation>
 				{#each ui.menu.items as item}
 					<li class="menu-box" id="menu-{item}">
-						<a href="{item}" rel="bookmark" class="menu" use:link>
+						<a href="{item}" rel="bookmark" class="menu" use:link on:click={() => {ui.menu.open = false}}>
 							<p class="notice" data-counter="0"></p>
 							<p class="menu-label">{dict.menu[item]}</p>
 						</a>
 					</li>
 				{/each}
+				<li class="menu-box" id="menu-view">
+					<select class="menu" bind:value={ui.view}>
+						{#each Object.values(ui.topnav.views) as v}
+							<option class="menu-view" value="{v}" selected={ui.view == v}>{dict.views[v]}</option>
+						{/each}
+					</select>
+				</li>
 				<li class="menu-box" id="menu-language">
 					<select class="menu" bind:value={lang}>
 						{#each Object.values(api.langs) as l}

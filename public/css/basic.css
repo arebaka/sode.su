@@ -759,7 +759,8 @@ select.menu {
   text-align: left;
   line-height: 2rem;
   text-transform: uppercase;
-  color: #000; }
+  color: #000;
+  background: none; }
 
 html.dark .menu-label,
 html.dark select.menu {
@@ -1908,6 +1909,7 @@ html.dark #footer {
 .authorized #topnav-language,
 .authorized #auth,
 .authorized #menu-help,
+.authorized #menu-view,
 .authorized #menu-language {
   display: none; }
 
@@ -2038,6 +2040,14 @@ html.dark #settings-profile-name {
   color: #ECECEC;
   border-color: #212D3B;
 }
+#settings-profile-username:focus,
+#settings-profile-name:focus {
+  outline: 1px solid #7D80B8;
+}
+html.dark #settings-profile-username:focus,
+html.dark #settings-profile-name:focus {
+  outline-color: #212D3B;
+}
 #settings-profile-username:before {
   content: "@";
   font-family: Basic;
@@ -2059,6 +2069,12 @@ html.dark #settings-profile-name {
 html.dark #settings-profile-bio {
   color: #ECECEC;
   border-color: #212D3B;
+}
+#settings-profile-bio:focus {
+  outline: 1px solid #7D80B8;
+}
+html.dark #settings-profile-bio:focus {
+  outline-color: #212D3B;
 }
 .settings-privacy-box {
   display: block;
@@ -2135,10 +2151,10 @@ html.dark .error .settings-response {
 
 .subnav-box {
   position: relative;
+  overflow: hidden;
   margin: 1rem auto 0;
   width: 100%;
   max-width: 1140px;
-  height: 2.5rem;
   background-color: #7D80B8;
   box-shadow: 0 -2px 2px rgba(0,0,0,.15),
     0 2px 2px rgba(0,0,0,0.15);
@@ -2179,7 +2195,7 @@ html.dark .subnav-item {
 .subnav-item:hover,
 .subnav-item:focus {
   text-decoration: none;
-  border-color: #FFF;
+  border-color: #F0F8FF;
   transform: translateY(0.3rem);
 }
 .subnav-item:active {
@@ -2191,6 +2207,7 @@ html.dark .subnav-item {
   transform: translateY(0.3rem);
 }
 html.dark .subnav-item.active {
+  color: #ECECEC;
   background-color: #17212B;
 }
 
@@ -2201,15 +2218,14 @@ html.dark .subnav-item.active {
   margin: 0 auto 1rem;
   color: #000;
   background-color: #FFF;
-  box-shadow: 0 -2px 2px rgba(0,0,0,.15),
-    0 2px 2px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 2px rgba(0,0,0,0.15);
 }
 html.dark #friends {
   color: #ECECEC;
   background-color: #0E1621;
   border: 2px solid #212D3B;
   border-top: none;
-  box-shadow: none;  
+  box-shadow: none;
 }
 #friends-descr {
   padding: 1rem .5rem;
@@ -2229,12 +2245,20 @@ html.dark #friends-descr {
 .friends-user {
   display: block;
   clear: both;
+  overflow: hidden;
   margin-top: .5rem;
   width: 100%;
-  height: 2.5rem;
+  text-decoration: none;
   border-bottom: 1px solid #7D80B8;
 }
-.friends-user:last-of-type {
+html.dark .friends-user {
+  border-bottom: 2px solid #212D3B;
+}
+.friends-user:hover,
+.friends-user:focus {
+  text-decoration: none;
+}
+.friends-user-box:last-of-type .friends-user {
   margin-bottom: .5rem;
   border-bottom: none;
 }
@@ -2283,13 +2307,13 @@ html.dark .friends-user-avatar {
 .friends-user-button {
   display: block;
   float: left;
-  margin-top: .3rem;
+  margin-top: .5rem;
   margin-right: .5rem;
   padding: 0 .5rem;
-  height: 1.2rem;
+  height: 1.5rem;
   font-family: Buttons;
   font-size: .9rem;
-  line-height: 1.2rem;
+  line-height: 1.5rem;
   text-transform: lowercase;
   background: none;
   transition: all .2s ease 0s;
@@ -2298,7 +2322,7 @@ html.dark .friends-user-avatar {
   color: #080;
 }
 .friends-user-button-negative {
-  color: #800;
+  color: #C00;
 }
 html.dark .friends-user-button-positive {
   color: #0C0;
@@ -2321,6 +2345,47 @@ html.dark .friends-user-button-positive:focus {
 html.dark .friends-user-button-negative:hover,
 html.dark .friends-user-button-negative:focus {
   background-color: #400;
+}
+.friends-user-note {
+  display: block;
+  clear: both;
+  padding: .5rem;
+  width: 100%;
+  height: 2.5rem;
+  font-family: Basic;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #000;
+  background: none;
+  resize: none;
+}
+html.dark .friends-user-note {
+  color: #ECECEC;
+}
+.friends-user-note:focus {
+  outline: 1px dotted #7D80B8;
+}
+html.dark .friends-user-note:focus {
+  outline-color: #212D3B;
+}
+.friends-user-note-response {
+  display: block;
+  padding: 0 .5rem;
+  width: 100%;
+  font-size: .8rem;
+  color: #080;
+}
+.error .friends-user-note-response {
+  color: #800;
+}
+html.dark .friends-user-note-response {
+  color: #0C0;
+}
+html.dark .error .friends-user-note-response {
+  color: #C00;
+}
+.error .friends-user-note {
+  border-color: #C00;
 }
 
 /****** Респонсивность ******/
@@ -2372,6 +2437,18 @@ html.dark .friends-user-button-negative:focus {
   #audioplayer-volume-control {
     width: calc(15% + 2rem); } }
 @media screen and (max-width: 500px) {
+  .subnav-box {
+    margin-top: 0; }
+
+  .subnav-box,
+  #settings,
+  #friends,
+  html.dark .subnav-box,
+  html.dark #settings,
+  html.dark #friends {
+    border: none;
+    box-shadow: none; }
+
   #audioplayer-play-button {
     margin: 0; }
 

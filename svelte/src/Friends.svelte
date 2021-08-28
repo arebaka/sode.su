@@ -15,17 +15,17 @@
 	let ui = {
 		active: location.pathname.split('friends/')[1]
 	};
-	if (!ui.active) {
+	if (!ui.active || tabs.indexOf(ui.active) == -1) {
 		ui.active = "mutual";
 		navigate(api.paths.friends[ui.active]);
 	}
 
 	let list;
-	let users;
+	let friends;
 
 	$: if (ui.active) {
+		list           = {};
 		document.title = dict.friends[ui.active].title;
-		users = {};
 
 		fetch(api.methods["friends." + ui.active].path, {
 			method: "POST"
@@ -39,19 +39,30 @@
 	};
 
 	$: if (list) {
-		if (list.length) {
+		if (Object.keys(list).length) {
+			let map = {};
+			for (let friend of list) {
+				map[friend.id] = friend;
+			}
+
 			fetch(api.methods.entities.path, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify(list.map(id => "user/" + id))
+				body: JSON.stringify(list.map(u => "user/" + u.id))
 			})
 			.then(res => res.json())
-			.then(res => { users = res.data })
+			.then(res => {
+				for (let id in map) {
+					map[id] = {...map[id], ...res.data["user/" + id]};
+				}
+
+				friends = map;
+			});
 		}
 		else {
-			users = {};
+			friends = {};
 		}
 	};
 </script>
@@ -72,15 +83,15 @@
 <Router>
 	<div id="friends" data-active={ui.active}>
 		<p id="friends-descr">{dict.friends[ui.active].descr}</p>
-		{#if users}
+		{#if friends}
 			<ul id="friends-list">
 				<Route path="/:category" let:params>
 					{#if params.category == "mutual"}
-						<Mutual api={api} dict={dict} bind:me={me} bind:ui={ui} users={users}/>
+						<Mutual api={api} dict={dict} bind:me={me} bind:ui={ui} list={friends}/>
 					{:else if params.category == "incoming"}
-						<Incoming api={api} dict={dict} bind:me={me} bind:ui={ui} users={users}/>
+						<Incoming api={api} dict={dict} bind:me={me} bind:ui={ui} list={friends}/>
 					{:else if params.category == "outcoming"}
-						<Outcoming api={api} dict={dict} bind:me={me} bind:ui={ui} users={users}/>
+						<Outcoming api={api} dict={dict} bind:me={me} bind:ui={ui} list={friends}/>
 					{:else}
 						<Error code={404}/>
 					{/if}

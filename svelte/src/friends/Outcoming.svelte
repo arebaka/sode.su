@@ -5,28 +5,28 @@
 	export let dict;
 	export let me;
 	export let ui;
-	export let users;
+	export let list;
 
 	ui.active = "outcoming";
 </script>
 
 <Router>
-	{#if Object.keys(users).length}
-		{#each Object.keys(users) as u}
+	{#if Object.keys(list).length}
+		{#each Object.keys(list) as u}
 			<li class="friends-user-box">
-				<a class="friends-user" href="{api.paths["@*"]["/"].replace(":1", users[u].username || users[u].id)}" use:link>
-					{#if users[u].avatar}
+				<a class="friends-user" href="{api.paths["@*"]["/"].replace(":1", list[u].username || u)}" use:link>
+					{#if list[u].avatar}
 						<img class="friends-user-avatar"
-							src="{api.paths["@*"].i["0"]["*." + users[u].avatar.split('.')[1]]
-								.replace(":1", users[u].id)
-								.replace(":2", users[u].avatar.split('.')[0])
+							src="{api.paths["@*"].i["0"]["*." + list[u].avatar.split('.')[1]]
+								.replace(":1", u)
+								.replace(":2", list[u].avatar.split('.')[0])
 								+ "?thumb=100"}"
 							alt=""/>
 					{:else}
-						<p class="friends-user-avatar">{users[u].name[0] || dict.profile.user.default.name[0]}</p>
+						<p class="friends-user-avatar">{list[u].name[0] || dict.profile.user.default.name[0]}</p>
 					{/if}
-					<p class="friends-user-name">{users[u].name || dict.profile.user.default.name}</p>
-					<p class="friends-user-username">@{users[u].username || users[u].id}</p>
+					<p class="friends-user-name">{list[u].name || dict.profile.user.default.name}</p>
+					<p class="friends-user-username">@{list[u].username || u}</p>
 					<button class="friends-user-button friends-user-button-negative" on:click|preventDefault|stopPropagation>
 						{dict.friends[ui.active].buttons.negative}
 					</button>

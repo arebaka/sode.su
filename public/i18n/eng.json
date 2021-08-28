@@ -33,6 +33,12 @@
 		"ron": "Romanian"
 	},
 	"preloader": "Loading...",
+	"views": {
+		"light_square": "Light Square",
+		"light_circle": "Light Circle",
+		"dark_circle": "Dark Circle",
+		"dark_square": "Dark Square"
+	},
 	"topnav": {
 		"home": "Home",
 		"friends": "Friends",
@@ -45,13 +51,7 @@
 		"music": "Music",
 		"lang": "Language",
 		"log_in": "Log in",
-		"view": "View",
-		"views": {
-			"light_square": "Light Square",
-			"light_circle": "Light Circle",
-			"dark_circle": "Dark Circle",
-			"dark_square": "Dark Square"
-		}
+		"view": "View"
 	},
 	"menu": {
 		"home": "Home",
@@ -250,6 +250,14 @@
 			"empty": "You have no friends.",
 			"buttons": {
 				"negative": "Remove"
+			},
+			"note": {
+				"placeholder": "Note about friend...",
+				"responses": {
+					"ok": "The note was recorded successfully.",
+					"unauthorized": "Unauthorized!",
+					"too_long": "The note is too long! Maximum 1500 characters!"
+				}
 			}
 		},
 		"incoming": {
@@ -260,6 +268,14 @@
 			"buttons": {
 				"positive": "Accept",
 				"negative": "Reject"
+			},
+			"note": {
+				"placeholder": "Note about follower...",
+				"responses": {
+					"ok": "The note was recorded successfully.",
+					"unauthorized": "Unauthorized!",
+					"too_long": "The note is too long! Maximum 1500 characters!"
+				}
 			}
 		},
 		"outcoming": {
@@ -269,6 +285,14 @@
 			"empty": "You follow nobody.",
 			"buttons": {
 				"negative": "Revoke"
+			},
+			"note": {
+				"placeholder": "Note about user...",
+				"responses": {
+					"ok": "The note was recorded successfully.",
+					"unauthorized": "Unauthorized!",
+					"too_long": "The note is too long! Maximum 1500 characters!"
+				}
 			}
 		}
 	}

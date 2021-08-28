@@ -165,6 +165,11 @@
 			"descr":      "",
 			"max_length": 1500
 		},
+		"Friend_Note": {
+			"proto":      "str",
+			"descr":      "",
+			"max_length": 1500
+		},
 
 		"Response": {
 			"descr": "",
@@ -455,6 +460,23 @@
 			"params":  {
 				"target": {
 					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				}
+			},
+			"returns": "Response"
+		},
+		"friends.note": {
+			"path":    "api/friends/note",
+			"descr":   "",
+			"params":  {
+				"target": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"text": {
+					"type":     "Friend_Note",
 					"nullable": false,
 					"descr":    ""
 				}
