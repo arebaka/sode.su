@@ -15,7 +15,7 @@ router.post("/upload", async (req, res, next) => {
         let invalidParams = [];
 
         for (let param in res.locals.api.methods["images.upload"].params) {
-            if (!req.body[param]
+            if (!req.body[param] && req.body[param] !== 0
                 && !res.locals.api.methods["images.upload"].params[param].nullable
             ) {
                 invalidParams.push(param);

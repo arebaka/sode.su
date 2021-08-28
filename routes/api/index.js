@@ -13,6 +13,7 @@ router.use((req, res, next) => {
 
 router.use("/set",     require("./settings"));
 router.use("/friends", require("./friends"));
+router.use("/images",  require("./images"));
 
 router.post("/me", async (req, res, next) => {
     try {
