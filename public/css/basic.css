@@ -623,6 +623,9 @@ html.dark #me-avatar {
   background-color: #0E1621;
   border-color: #212D3B; }
 
+html.circle #me-avatar {
+  border-radius: 50%; }
+
 #me-menu-box {
   z-index: 8;
   position: fixed;
@@ -639,20 +642,18 @@ html.dark #me-avatar {
 #me-menu {
   position: absolute;
   right: 0;
-  width: 18.4rem;
+  width: 18rem;
+  height: 100%;
   background-color: #FFF;
-  border-bottom: 0.2rem solid #7D80B8;
-  border-left: 0.2rem solid #7D80B8;
   transition: all 0.2s ease 0s;
   cursor: pointer; }
 
 html.dark #me-menu {
-  background-color: #0E1621;
-  border-color: #212D3B; }
+  background-color: #0E1621; }
 
 .me-menu {
   display: block;
-  width: 18rem;
+  width: 100%;
   padding: 0 1rem;
   font: 0.9rem/1.5rem Mono, Emoji, monospace, Basic, sans-serif;
   font-size: 1.2rem;
@@ -827,7 +828,8 @@ html.dark #sign-up-box {
   left: 0;
   right: 0;
   display: block;
-  width: 20rem;
+  width: max-content;
+  height: max-content;
   margin: auto;
   background-color: #F0F8FF;
   border-bottom-left-radius: 2px;
@@ -839,12 +841,9 @@ html.dark #sign-up {
   background-color: #0E1621;
   box-shadow: none; }
 
-#log-in {
-  height: calc(4rem + 40px); }
-
 #telegram-login-sodesu_bot {
   display: block;
-  margin: 1rem auto;
+  margin: 1rem;
 }
 
 #sign-up {
@@ -2265,8 +2264,9 @@ html.dark .friends-user {
 .friends-user-avatar {
   display: block;
   float: left;
-  width: 2.5rem;
-  height: 2.5rem;
+  margin-right: .5rem;
+  width: 3rem;
+  height: 3rem;
   font-family: Mono;
   font-size: 2.5rem;
   line-height: 2.5rem;
@@ -2275,30 +2275,35 @@ html.dark .friends-user {
   background-color: #FFF;
 }
 html.dark .friends-user-avatar {
+  color: #ECECEC;
   background-color: #0E1621;
   border-color: #212D3B;
 }
+html.circle .friends-user-avatar {
+  border-radius: 50%;
+}
 .friends-user-name {
-  float: right;
-  width: calc(100% - 3rem);
-  height: 1.25rem;
+  float: left;
+  width: calc(100% - 3.5rem);
+  height: 1.5rem;
   font-family: Basic;
   font-size: 1.2rem;
-  line-height: 1.25rem;
-  text-align: left;
+  line-height: 1.5rem;
   color: #7D80B8;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+html.dark .friends-user-name {
+  color: #0C0;
+}
 .friends-user-username {
-  float: right;
-  width: calc(100% - 3rem);
-  height: 1.25rem;
+  float: left;
+  width: max-content;
+  height: 1.5rem;
   font-family: Mono;
-  font-size: 1rem;
-  line-height: 1.25rem;
-  text-align: left;
+  font-size: .9rem;
+  line-height: 1.5rem;
   color: #000;
   overflow: hidden;
   white-space: nowrap;
@@ -2306,9 +2311,8 @@ html.dark .friends-user-avatar {
 }
 .friends-user-button {
   display: block;
-  float: left;
-  margin-top: .5rem;
-  margin-right: .5rem;
+  float: right;
+  margin: 0 .5rem;
   padding: 0 .5rem;
   height: 1.5rem;
   font-family: Buttons;
@@ -2316,6 +2320,7 @@ html.dark .friends-user-avatar {
   line-height: 1.5rem;
   text-transform: lowercase;
   background: none;
+  border: 1px solid;
   transition: all .2s ease 0s;
 }
 .friends-user-button-positive {
@@ -2477,6 +2482,7 @@ html.dark .error .friends-user-note-response {
   #sign-up {
     min-height: 15rem; }
 
+  #me-menu,
   #menu-logo,
   #menu {
     width: 100%; }

@@ -169,9 +169,7 @@ class DBHelper
             subp.stdout.on("data", data => hash += data.toString());
             subp.on("close", () => resolve((new BigInt64Array([hash]))[0]));
 
-            if (typeof data == "string") {
-                subp.stdin.write(data);
-            }
+            subp.stdin.write(data);
             subp.stdin.end();
         });
     }

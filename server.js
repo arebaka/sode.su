@@ -74,6 +74,7 @@ class Server
             .use("/js",       router.js)
             .use("/policy",   router.policy)
             .use("/settings", router.settings)
+            .use("/friends",  router.friends)
             .use("/",         router.root)
             .use("/api",      router.api);
 

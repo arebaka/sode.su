@@ -16,7 +16,7 @@
 			headers: {
 				"Content-Type": "application/json"
 			},
-			body:   JSON.stringify({ target: id })
+			body:   JSON.stringify({ target: parseInt(id) })
 		})
 		.then(res => res.json())
 		.then(res => {

@@ -52,7 +52,21 @@ router.get("/favicon.ico", async(req, res) => {
 });
 
 router.get("/", async (req, res) => {
+    const ogMeta = [
+        { "og:image":     `${res.locals.api.host}/img/menu-head.png` },
+        { "image:type":   "image/png" },
+        { "image:width":  "1500" },
+        { "image:height": "500" },
+        { "og:image":     `${res.locals.api.host}/img/logo.png` },
+        { "image:type":   "image/png" },
+        { "image:width":  "3750" },
+        { "image:height": "3750" }
+    ]
+        .map(i => `<meta name="${Object.keys(i)[0]}" content="${Object.values(i)[0]}" />`)
+        .join("\n\t");
+
     res
+        .status(200)
         .set("Cache-Control", "public, max-age=0")
         .type(".html")
         .send(cache.page({
@@ -60,9 +74,10 @@ router.get("/", async (req, res) => {
             descr:     i18n[res.locals.clientLang].index.descr,
             url:       req.hostname + req.path,
             css:       "css/index.css",
-            canonical: `${res.locals.api.host}/`,
+            canonical: res.locals.api.host + '/',
             title:     i18n[res.locals.clientLang].index.title,
-            type:      "website"
+            type:      "website",
+            og:        ogMeta
         }));
 });
 

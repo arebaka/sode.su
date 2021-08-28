@@ -11,18 +11,16 @@ router.use((req, res, next) => {
 });
 
 router.get("/:section?", (req, res, next) => {
-    if (req.params.section && !res.locals.api.paths.settings[req.params.section])
-        return next(404);
-
     res
+        .status(200)
         .type(".html")
         .send(cache.page({
             lang:      i18n[res.locals.clientLang].meta.lang,
-            descr:     i18n[res.locals.clientLang].settings.descr,
+            descr:     i18n[res.locals.clientLang].friends.descr,
             url:       req.hostname + req.path,
             css:       "css/basic.css",
             canonical: req.hostname + req.path,
-            title:     i18n[res.locals.clientLang].settings.title,
+            title:     i18n[res.locals.clientLang].friends.title,
             type:      "website"
         }));
 });

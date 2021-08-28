@@ -1,6 +1,7 @@
 const path    = require("path");
 const fs      = require("fs");
 const express = require("express");
+const jsesc   = require("jsesc");
 const router  = express.Router();
 
 const db    = require("../db");
@@ -42,26 +43,35 @@ router.get("/:prefix(@|~):descriptor/bio", async (req, res, next) => {
 
 router.get("/:prefix(@|~):descriptor", async (req, res, next) => {
     const profile = await db.getProfile(res.locals.entityType, req.params.descriptor);
+    const bio     = await db.getBio(res.locals.entityType, req.params.descriptor);
 
     if (!profile)
         return next(404);
     if (!isNaN(req.params.descriptor) && profile.username)
         return res.redirect(req.path.replace(req.params.descriptor, profile.username));
 
+    const ogMeta = [
+        { "og:profile:first_name": jsesc(profile.name, { minimal: true }) || i18n[res.locals.clientLang].user.default.name },
+        { "og:profile:username":   profile.username || profile.id },
+        { "og:image":              profile.avatar ? `${res.locals.api.host}${req.path}/i/0/${profile.avatar}` : `${res.locals.api.host}/img/avatar.png` }
+    ]
+        .map(i => `<meta name="${Object.keys(i)[0]}" content="${Object.values(i)[0]}" />`)
+        .join("\n\t");
+
     res
+        .status(200)
         .type(".html")
         .send(cache.page({
             lang:      i18n[res.locals.clientLang].meta.lang,
-            descr:     i18n[res.locals.clientLang].user.descr,
+            descr:     bio ? jsesc(bio.replace(/\s/g, ' '), { minimal: true }) : i18n[res.locals.clientLang].user.descr,
             url:       req.hostname + req.path,
             css:       "css/user.css",
             canonical: req.hostname + req.path,
             type:      "profile",
-            title:     i18n[res.locals.clientLang].user.title.replace(
-                "{{name}}", profile.name
-                    ? profile.name
-                    : i18n[res.locals.clientLang].user.default.name
-            )
+            title:     jsesc(i18n[res.locals.clientLang].user.title.replace(
+                "{{name}}", profile.name || i18n[res.locals.clientLang].user.default.name
+            ), { minimal: true }),
+            og:        ogMeta
         }));
 });
 

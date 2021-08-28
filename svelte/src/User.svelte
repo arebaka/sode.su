@@ -68,7 +68,7 @@
 </script>
 
 {#if profile}
-	<div id="profile" class:me={me.id == profile.id}>
+	<div id="profile" class:me={me && me.id == profile.id}>
 		{#if profile.cover}
 			<img src="{api.paths["@*"].i["0"]["*." + profile.cover.split('.')[1]]
 					.replace(":1", profile.id)

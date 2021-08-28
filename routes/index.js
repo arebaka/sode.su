@@ -7,5 +7,6 @@ module.exports = {
     js:       require("./js"),
     policy:   require("./policy"),
     settings: require("./settings"),
+    friends:  require("./friends"),
     api:      require("./api")
 };

@@ -18,6 +18,10 @@
 		"title": "Settings – sode.su",
 		"descr": ""
 	},
+	"friends": {
+		"title": "Friends – sode.su",
+		"descr": ""
+	},
 	"user": {
 		"title": "{{name}} | sode.su",
 		"descr": "A favorite user of sode.su antisotial network",

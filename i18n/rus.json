@@ -18,6 +18,10 @@
 		"title": "Настройки – sode.su",
 		"descr": ""
 	},
+	"friends": {
+		"title": "Друзья – sode.su",
+		"descr": ""
+	},
 	"user": {
 		"title": "{{name}} | sode.su",
 		"descr": "Любимый пользователь антисоциальной сети sode.su",

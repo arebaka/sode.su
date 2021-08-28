@@ -19,6 +19,7 @@
     "imagemin-pngquant": "^9.0.2",
     "imagemin-svgo": "^9.0.0",
     "imagemin-webp": "^6.0.0",
+    "jsesc": "^3.0.2",
     "mmmagic": "^0.5.3",
     "morgan": "^1.10.0",
     "pg": "^8.6.0",
