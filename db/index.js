@@ -58,6 +58,15 @@ class DBHelper
                 returning id
             `, [type, content.rows[0].id]);
 
+        await this.pool.query(`
+                insert into artifacts_in_content (content_id, artifact_id, "offset", length)
+                values ($1, $2, $3, $4)
+                on conflict do nothing
+            `, [
+                content.rows[0].id, artifact.rows[0].id,
+                0, Array.from(string).length
+            ]);
+
         return artifact.rows[0].id;
     }
 
@@ -83,7 +92,7 @@ class DBHelper
                 await this.pool.query(`
                         insert into artifacts_in_content (content_id, artifact_id, "offset", length)
                         values ($1, $2, $3, $4)
-                        on conflict (content_id, artifact_id, "offset", length) do nothing
+                        on conflict do nothing
                     `, [
                         content.rows[0].id, artifact,
                         Array.from(text.substr(0, match.index)).length,
@@ -613,7 +622,7 @@ class DBHelper
         const id = await this.pool.query(`
                 update ${this.entityTables[entityType].profile}
                 set alias = null where id = $1
-                on conflict (alias) do nothing
+                on conflict do nothing
                 returning id`,
             [entityId]);
 
