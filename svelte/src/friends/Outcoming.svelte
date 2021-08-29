@@ -8,6 +8,23 @@
 	export let list;
 
 	ui.active = "outcoming";
+
+	function revoke(id)
+	{
+		fetch(api.methods["friends.remove"].path, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ target: parseInt(id) })
+			})
+			.then(res => res.json())
+			.then(res => {
+				if (res.status == api.errors.ok) {
+					ui.active = ui.active;
+				}
+			});
+	}
 </script>
 
 <Router>
@@ -27,7 +44,7 @@
 					{/if}
 					<p class="friends-user-name">{list[u].name || dict.profile.user.default.name}</p>
 					<p class="friends-user-username">@{list[u].username || u}</p>
-					<button class="friends-user-button friends-user-button-negative" on:click|preventDefault|stopPropagation>
+					<button class="friends-user-button friends-user-button-negative" on:click|preventDefault|stopPropagation={() => revoke(u)}>
 						{dict.friends[ui.active].buttons.negative}
 					</button>
 				</a>

@@ -21,7 +21,7 @@
 		.then(res => res.json())
 		.then(res => {
 			if (res.status == api.errors.ok) {
-				ui.active = "incoming";
+				ui.active = ui.active;
 			}
 		});
 	}

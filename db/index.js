@@ -629,6 +629,28 @@ class DBHelper
         return friendship.rows[0];
     }
 
+    async unfriend(offererId, acceptorId)
+    {
+        const friendship = await this.pool.query(`
+                select id, since_dt
+                from friends
+                where offerer_id = $1
+                and acceptor_id = $2
+            `, [
+                offererId, acceptorId
+            ]);
+
+        if (!friendship.rows[0])
+            return null;
+
+        await this.pool.query(`
+                delete from friends
+                where id = $1
+            `, [friendship.rows[0].id]);
+
+        return friendship.rows[0];
+    }
+
     async noteFriend(userId, friendId, text)
     {
         const note = await this._getContent(text, userId);

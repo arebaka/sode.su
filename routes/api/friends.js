@@ -63,6 +63,39 @@ router.post("/add", async (req, res, next) => {
     }
 });
 
+router.post("/remove", async (req, res, next) => {
+    try {
+        if (!res.locals.authorized)
+            return res
+                .status(401)
+                .json({ status: res.locals.api.errors.unauthorized });
+
+        if (typeof req.body.target != "number"
+            || isNaN(req.body.target)
+            || req.body.target !== parseInt(req.body.target)
+            || req.body.target < 0
+        )
+            return res
+                .status(400)
+                .json({ status: res.locals.api.errors.invalid_value, param: "target" });
+
+        const friendship = await db.unfriend(req.cookies.userid, req.body.target);
+
+        return friendship
+            ? res
+                .status(200)
+                .json({ status: res.locals.api.errors.ok })
+            : res
+                .status(424)
+                .json({ status: res.locals.api.errors.doesnt_exists });
+    }
+    catch (err) {
+        res
+            .status(400)
+            .json({ status: res.locals.api.errors.invalid_data });
+    }
+});
+
 router.post("/note", async (req, res, next) => {
     try {
         if (!res.locals.authorized)

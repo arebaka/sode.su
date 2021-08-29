@@ -12,7 +12,7 @@
 					headers: {
 						"Content-Type": "application/json"
 					},
-					body:   JSON.stringify({ target: profile.id })
+					body: JSON.stringify({ target: profile.id })
 				})
 				.then(res => res.json())
 				.then(res => {
@@ -35,10 +35,38 @@
 			handler: () => {}
 		},
 		unfriend: {
-			handler: () => {}
+			handler: () => {
+				fetch(api.methods["friends.remove"].path, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({ target: profile.id })
+				})
+				.then(res => res.json())
+				.then(res => {
+					if (res.status == api.errors.ok) {
+						profile = profile;
+					}
+				});
+			}
 		},
 		unsubscribe: {
-			handler: () => {}
+			handler: () => {
+				fetch(api.methods["friends.remove"].path, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({ target: profile.id })
+				})
+				.then(res => res.json())
+				.then(res => {
+					if (res.status == api.errors.ok) {
+						profile = profile;
+					}
+				});
+			}
 		},
 		ban: {
 			handler: () => {}

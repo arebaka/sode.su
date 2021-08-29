@@ -530,6 +530,18 @@
 			},
 			"returns": "Response"
 		},
+		"friends.remove": {
+			"path":    "api/friends/remove",
+			"descr":   "",
+			"params":  {
+				"target": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				}
+			},
+			"returns": "Response"
+		},
 		"friends.note": {
 			"path":    "api/friends/note",
 			"descr":   "",
