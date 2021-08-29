@@ -41,6 +41,7 @@
 			});
 		}
 
+		ui.logOut.open = false;
 	}
 
 	window.onTelegramAuth = function(user) {
@@ -128,6 +129,9 @@
 			}
 		},
 		logIn: {
+			open: false
+		},
+		logOut: {
 			open: false
 		}
 	};
@@ -283,7 +287,7 @@
 						</li>
 					{/each}
 					<li class="me-menu-box" id="me-menu-log-out">
-						<button class="me-menu" on:click={logout}>
+						<button class="me-menu" on:click={() => {ui.logOut.open = true}}>
 							{dict.me_menu.log_out}
 						</button>
 					</li>
@@ -342,12 +346,12 @@
 			</div>
 		</div>
 
-		<div id="log-out-box">
-			<div id="log-out">
-				<h1 id="log-out-headline"></h1>
-				<p id="log-out-text"></p>
-				<button id="log-out-yes-button"></button>
-				<button id="log-out-no-button"></button>
+		<div id="log-out-box" class:open={ui.logOut.open} on:click={() => {ui.logOut.open = false}}>
+			<div id="log-out" on:click|stopPropagation>
+				<h1 id="log-out-headline">{dict.log_out.headline}</h1>
+				<p id="log-out-text">{dict.log_out.text}</p>
+				<button id="log-out-yes-button" on:click={logout}>{dict.log_out.yes}</button>
+				<button id="log-out-no-button" on:click={() => {ui.logOut.open = false}}>{dict.log_out.no}</button>
 			</div>
 		</div>
 

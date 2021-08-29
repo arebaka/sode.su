@@ -803,7 +803,7 @@ html.dark .menu .notice {
 
 /****** Авторизация ******/
 #log-in-box,
-#sign-up-box {
+#log-out-box {
   z-index: 50;
   position: fixed;
   top: 0;
@@ -814,14 +814,15 @@ html.dark .menu .notice {
   background: rgba(100, 100, 100, 0.5); }
 
 html.dark #log-in-box,
-html.dark #sign-up-box {
+html.dark #log-out-box {
   background: rgba(50, 50, 100, 0.5); }
 
-#log-in-box.open {
+#log-in-box.open,
+#log-out-box.open {
   display: block; }
 
 #log-in,
-#sign-up {
+#log-out {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -837,7 +838,7 @@ html.dark #sign-up-box {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.15); }
 
 html.dark #log-in,
-html.dark #sign-up {
+html.dark #log-out {
   background-color: #0E1621;
   box-shadow: none; }
 
@@ -846,11 +847,8 @@ html.dark #sign-up {
   margin: 1rem;
 }
 
-#sign-up {
-  height: 15rem; }
-
 #log-in-headline,
-#sign-up-headline {
+#log-out-headline {
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
   font-size: 1.5rem;
   font-weight: bold;
@@ -860,7 +858,7 @@ html.dark #sign-up {
   background-color: #7D80B8; }
 
 html.dark #log-in-headline,
-html.dark #sign-up-headline {
+html.dark #log-out-headline {
   color: #ECECEC;
   background-color: #212D3B; }
 
@@ -940,78 +938,38 @@ html.dark #sign-up-log-in {
   background: none; }
 
 /****** Выход ******/
-#log-out-box {
-  z-index: 50;
-  position: fixed;
-  top: 0;
-  left: 0;
-  display: none;
-  width: 100%;
-  height: 100%;
-  background: rgba(100, 100, 100, 0.5); }
-
-html.dark #log-out-box {
-  background: rgba(50, 50, 100, 0.5); }
-
-#log-out {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: block;
-  width: 20rem;
-  height: 12.3rem;
-  margin: auto;
-  background-color: #F0F8FF;
-  border-bottom-left-radius: 2px;
-  border-bottom-right-radius: 2px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15); }
-
-html.dark #log-out {
-  background-color: #0E1621;
-  box-shadow: none; }
-
-#log-out-headline {
-  font: 1rem/1.5rem Basic, Emoji, sans-serif;
-  font-size: 1.5rem;
-  font-weight: bold;
-  line-height: 2rem;
-  text-align: center;
-  color: #F0F8FF;
-  background-color: #7D80B8; }
-
-html.dark #log-in-headline {
-  color: #ECECEC;
-  background-color: #212D3B; }
-
 #log-out-text {
   display: block;
-  width: calc(100% - 1rem);
+  width: 15rem;
   margin: .5rem;
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
   font-size: 1rem;
-  font-weight: bold;
-  line-height: 1.5rem;
-  color: #000; }
+  line-height: 1.5rem; }
 
 #log-out-yes-button,
 #log-out-no-button {
   display: block;
-  width: 100%;
-  margin-top: 1rem;
+  width: 16rem;
+  margin-top: .5rem;
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
   font-size: 1rem;
   font-weight: bold;
-  line-height: 1.6rem;
-  color: #FFF;
+  line-height: 2rem;
+  color: #F0F8FF;
+  background: none;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
   cursor: pointer; }
 
 #log-out-yes-button {
-  background-color: #080; }
+  color: #080; }
+
+html.dark #log-out-yes-button {
+  color: #0C0; }
 
 #log-out-no-button {
-  background-color: #C00; }
+  color: #C00; }
+
 
 /****** Тост-уведомления ******/
 #toasts {

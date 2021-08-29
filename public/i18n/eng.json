@@ -115,7 +115,7 @@
 	},
 	"log_out": {
 		"headline": "Logging out",
-		"text": "Log out of your account?<br />The session will be destroyed.",
+		"text": "Log out of your account?\nThe session will be destroyed for your security.",
 		"yes": "Yes",
 		"no": "No"
 	},
