@@ -72,10 +72,34 @@
 			});
 	}
 
+	const actions = {
+		showToast: (text, type="alert", duration=5000) => {
+			const toast = {
+				text:     text,
+				type:     type,
+				duration: duration
+			};
+
+			toasts.push(toast);
+			toasts = toasts;
+
+			if (duration) {
+				setTimeout(() => {
+					actions.hideToast(toast);
+				}, duration);
+			}
+		},
+		hideToast: (toast) => {
+			toasts.splice(toasts.indexOf(toast), 1);
+			toasts = toasts;
+		}
+	};
+
 	let api;
 	let lang;
 	let dict;
 	let me;
+	let toasts = [];
 	let params = location.search
 		? JSON.parse('{"'
 			+ decodeURI(location.search
@@ -327,18 +351,24 @@
 			</div>
 		</div>
 
-		<div id="toasts"></div>
+		<div id="toasts">
+			{#each toasts as toast}
+				<div class="toast toast-{toast.type}" on:click={() => hideToast(toast)}>
+					{toast.text}
+				</div>
+			{/each}
+		</div>
 
 		<main id="container">
 			<Route path="/settings/*">
-				<Settings api={api} dict={dict} bind:me={me}/>
+				<Settings api={api} dict={dict} actions={actions} bind:me={me}/>
 			</Route>
 			<Route path="/friends/*">
-				<Friends api={api} dict={dict} bind:me={me}/>
+				<Friends api={api} dict={dict} actions={actions} bind:me={me}/>
 			</Route>
 			<Route path="/:entity" let:params>
-				{#if /^@([0-9]+)|([A-Za-z_][A-Za-z0-9_\-\.]*)$/.test(params.entity)}
-					<User api={api} dict={dict} me={me} descriptor={params.entity.substring(1)}/>
+				{#if (/^@([0-9]+)|([A-Za-z_][A-Za-z0-9_\-\.]*)$/.test(params.entity))}
+					<User api={api} dict={dict} actions={actions} bind:me={me} descriptor={params.entity.substring(1)}/>
 				{:else}
 					<Error code={404}/>
 				{/if}

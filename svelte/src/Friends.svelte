@@ -9,6 +9,7 @@
 	export let api;
 	export let dict;
 	export let me;
+	export let actions;
 
 	const tabs = ["mutual", "incoming", "outcoming"];
 
@@ -87,11 +88,11 @@
 			<ul id="friends-list">
 				<Route path="/:category" let:params>
 					{#if params.category == "mutual"}
-						<Mutual api={api} dict={dict} bind:me={me} bind:ui={ui} list={friends}/>
+						<Mutual api={api} dict={dict} actions={actions} bind:me={me} bind:ui={ui} list={friends}/>
 					{:else if params.category == "incoming"}
-						<Incoming api={api} dict={dict} bind:me={me} bind:ui={ui} list={friends}/>
+						<Incoming api={api} dict={dict} actions={actions} bind:me={me} bind:ui={ui} list={friends}/>
 					{:else if params.category == "outcoming"}
-						<Outcoming api={api} dict={dict} bind:me={me} bind:ui={ui} list={friends}/>
+						<Outcoming api={api} dict={dict} actions={actions} bind:me={me} bind:ui={ui} list={friends}/>
 					{:else}
 						<Error code={404}/>
 					{/if}

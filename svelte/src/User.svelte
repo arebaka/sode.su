@@ -18,6 +18,10 @@
 				.then(res => {
 					if (res.status == api.errors.ok) {
 						profile = profile;
+						actions.showToast(
+							dict.profile.user.toasts.friended.replace("{{name}}",profile.name),
+							"success", 5000
+						);
 					}
 				});
 			}
@@ -47,6 +51,10 @@
 				.then(res => {
 					if (res.status == api.errors.ok) {
 						profile = profile;
+						actions.showToast(
+							dict.profile.user.toasts.unfriended.replace("{{name}}", profile.name),
+							"success", 5000
+						);
 					}
 				});
 			}
@@ -64,6 +72,11 @@
 				.then(res => {
 					if (res.status == api.errors.ok) {
 						profile = profile;
+						actions.showToast(
+							dict.profile.user.toasts.unsubscribed
+								.replace("{{name}}", profile.name || dict.profile.user.default.name),
+							"success", 5000
+						);
 					}
 				});
 			}
@@ -79,6 +92,7 @@
 	export let api;
 	export let dict;
 	export let me;
+	export let actions;
 	export let descriptor;
 
 	let profile;

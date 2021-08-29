@@ -186,7 +186,7 @@ router.post("/relation", async (req, res, next) => {
                 .status(401)
                 .json({ status: res.locals.api.errors.unauthorized });
 
-        if (typeof req.body.entity != "string" || !req.body.entity.match(new RegExp(res.locals.api.types.Serialized_Entity)))
+        if (typeof req.body.entity != "string" || !(new RegExp(res.locals.api.types.Serialized_Entity)).test(req.body.entity))
             return res
                 .status(400)
                 .json({ status: res.locals.api.errors.invalid_data });

@@ -9,6 +9,7 @@
 	export let api;
 	export let dict;
 	export let me;
+	export let actions;
 </script>
 
 <Router>

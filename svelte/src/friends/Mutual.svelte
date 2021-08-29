@@ -4,6 +4,7 @@
 	export let api;
 	export let dict;
 	export let me;
+	export let actions;
 	export let ui;
 	export let list;
 
@@ -66,6 +67,11 @@
 			.then(res => {
 				if (res.status == api.errors.ok) {
 					ui.active = ui.active;
+					actions.showToast(
+						dict.friends.mutual.toasts.removed
+							.replace("{{name}}", list[id].name || dict.profile.user.default.name),
+						"success", 5000
+					);
 				}
 			});
 	}

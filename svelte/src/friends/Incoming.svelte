@@ -4,6 +4,7 @@
 	export let api;
 	export let dict;
 	export let me;
+	export let actions;
 	export let ui;
 	export let list;
 
@@ -12,18 +13,23 @@
 	function accept(id)
 	{
 		fetch(api.methods["friends.add"].path, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body:   JSON.stringify({ target: parseInt(id) })
-		})
-		.then(res => res.json())
-		.then(res => {
-			if (res.status == api.errors.ok) {
-				ui.active = ui.active;
-			}
-		});
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body:   JSON.stringify({ target: parseInt(id) })
+			})
+			.then(res => res.json())
+			.then(res => {
+				if (res.status == api.errors.ok) {
+					ui.active = ui.active;
+					actions.showToast(
+						dict.friends.incoming.toasts.accepted
+							.replace("{{name}}", list[id].name || dict.profile.user.default.name),
+						"success", 5000
+					);
+				}
+			});
 	}
 </script>
 

@@ -193,6 +193,13 @@
 				"unsubscribe": "Unsubscribe",
 				"ban": "Ban",
 				"unban": "Unban"
+			},
+			"toasts": {
+				"friended": "{{name}} has been friended",
+				"unfriended": "{{name}} has been unfriended",
+				"unsubscribed": "You have been unsubscribed from {{name}}",
+				"banned": "{{name}} has been banned",
+				"unbanned": "{{name}} has been unbanned"
 			}
 		}
 	},
@@ -317,6 +324,9 @@
 					"unauthorized": "Unauthorized!",
 					"too_long": "The note is too long! Maximum 1500 characters!"
 				}
+			},
+			"toasts": {
+				"removed": "{{name}} has been removed from friends"
 			}
 		},
 		"incoming": {
@@ -335,6 +345,10 @@
 					"unauthorized": "Unauthorized!",
 					"too_long": "The note is too long! Maximum 1500 characters!"
 				}
+			},
+			"toasts": {
+				"accepted": "{{name}} has been added to friends",
+				"rejected": "The request from {{name}} has been rejected"
 			}
 		},
 		"outcoming": {
@@ -352,6 +366,9 @@
 					"unauthorized": "Unauthorized!",
 					"too_long": "The note is too long! Maximum 1500 characters!"
 				}
+			},
+			"toasts": {
+				"revoked": "The request to add {{name}} as a friend was revokes"
 			}
 		}
 	}

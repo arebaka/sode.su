@@ -28,7 +28,7 @@ router.post("/upload", async (req, res, next) => {
                 .json({ status: res.locals.api.errors.missing_param, params: invalidParams });
 
         if (typeof req.body.album_owner != "string"
-            || !req.body.album_owner.match(new RegExp(res.locals.api.types.Serialized_Entity.pattern))
+            || !(new RegExp(res.locals.api.types.Serialized_Entity.pattern)).test(req.body.album_owner)
         ) {
             invalidParams.push("album_owner");
         }
@@ -42,7 +42,7 @@ router.post("/upload", async (req, res, next) => {
         }
 
         if (typeof req.body.file != "string"
-            || !req.body.file.match(/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/)
+            || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(req.body.file)
         ) {
             invalidParams.push("file");
         }
