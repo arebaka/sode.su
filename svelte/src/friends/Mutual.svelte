@@ -56,24 +56,29 @@
 
 	function remove(id)
 	{
-		fetch(api.methods["friends.remove"].path, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({ target: parseInt(id) })
-			})
-			.then(res => res.json())
-			.then(res => {
-				if (res.status == api.errors.ok) {
-					ui.active = ui.active;
-					actions.showToast(
-						dict.friends.mutual.toasts.removed
-							.replace("{{name}}", list[id].name || dict.profile.user.default.name),
-						"success", 5000
-					);
-				}
-			});
+		let ctxDict  = dict.friends.mutual.confirmations.remove;
+		ctxDict.text = ctxDict.text.replace("{{name}}", list[id].name || dict.profile.user.default.name);
+
+		actions.confirm(ctxDict, () => {
+			fetch(api.methods["friends.remove"].path, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({ target: parseInt(id) })
+				})
+				.then(res => res.json())
+				.then(res => {
+					if (res.status == api.errors.ok) {
+						ui.active = ui.active;
+						actions.showToast(
+							dict.friends.mutual.toasts.removed
+								.replace("{{name}}", list[id].name || dict.profile.user.default.name),
+							"success", 5000
+						);
+					}
+				});
+		}, () => {});
 	}
 </script>
 

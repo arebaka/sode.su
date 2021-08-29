@@ -40,8 +40,6 @@
 				me = null;
 			});
 		}
-
-		ui.logOut.open = false;
 	}
 
 	window.onTelegramAuth = function(user) {
@@ -93,6 +91,12 @@
 		hideToast: (toast) => {
 			toasts.splice(toasts.indexOf(toast), 1);
 			toasts = toasts;
+		},
+		confirm: (dict, onYes, onNo) => {
+			ui.confirmation.dict  = dict;
+			ui.confirmation.onYes = onYes;
+			ui.confirmation.onNo  = onNo;
+			ui.confirmation.open  = true;
 		}
 	};
 
@@ -133,6 +137,17 @@
 		},
 		logOut: {
 			open: false
+		},
+		confirmation: {
+			open: false,
+			dict: {
+				headline: null,
+				text:     null,
+				yes:      null,
+				no:       null
+			},
+			onYes: null,
+			onNo:  null
 		}
 	};
 
@@ -350,14 +365,31 @@
 			<div id="log-out" on:click|stopPropagation>
 				<h1 id="log-out-headline">{dict.log_out.headline}</h1>
 				<p id="log-out-text">{dict.log_out.text}</p>
-				<button id="log-out-yes-button" on:click={logout}>{dict.log_out.yes}</button>
+				<button id="log-out-yes-button" on:click={() => { ui.logOut.open = false; logout(); }}>
+					{dict.log_out.yes}
+				</button>
 				<button id="log-out-no-button" on:click={() => {ui.logOut.open = false}}>{dict.log_out.no}</button>
+			</div>
+		</div>
+
+		<div id="confirmation-box" class:open={ui.confirmation.open} on:click={() => {ui.confirmation.open = false}}>
+			<div id="confirmation" on:click|stopPropagation>
+				<h1 id="confirmation-headline">{ui.confirmation.dict.headline}</h1>
+				<p id="confirmation-text">{ui.confirmation.dict.text}</p>
+				<button id="confirmation-yes-button"
+						on:click={() => { ui.confirmation.open = false; ui.confirmation.onYes(); }}>
+					{ui.confirmation.dict.yes}
+				</button>
+				<button id="confirmation-no-button"
+						on:click={() => { ui.confirmation.open = false; ui.confirmation.onNo(); }}>
+					{ui.confirmation.dict.no}
+				</button>
 			</div>
 		</div>
 
 		<div id="toasts">
 			{#each toasts as toast}
-				<div class="toast toast-{toast.type}" on:click={() => hideToast(toast)}>
+				<div class="toast toast-{toast.type}" on:click={() => actions.hideToast(toast)}>
 					{toast.text}
 				</div>
 			{/each}

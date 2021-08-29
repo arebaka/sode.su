@@ -1,6 +1,16 @@
 <script type="text/javascript">
 	import Error from "./Error.svelte";
 
+	export let api;
+	export let dict;
+	export let me;
+	export let actions;
+	export let descriptor;
+
+	let profile;
+	let bio;
+	let relation;
+
 	const profileButtons = {
 		chat: {
 			handler: () => {}
@@ -40,23 +50,28 @@
 		},
 		unfriend: {
 			handler: () => {
-				fetch(api.methods["friends.remove"].path, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify({ target: profile.id })
-				})
-				.then(res => res.json())
-				.then(res => {
-					if (res.status == api.errors.ok) {
-						profile = profile;
-						actions.showToast(
-							dict.profile.user.toasts.unfriended.replace("{{name}}", profile.name),
-							"success", 5000
-						);
-					}
-				});
+				let ctxDict  = dict.profile.user.confirmations.unfriend;
+				ctxDict.text = ctxDict.text.replace("{{name}}", profile.name || dict.profile.user.default.name);
+
+				actions.confirm(ctxDict, () => {
+					fetch(api.methods["friends.remove"].path, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({ target: profile.id })
+						})
+						.then(res => res.json())
+						.then(res => {
+							if (res.status == api.errors.ok) {
+								profile = profile;
+								actions.showToast(
+									dict.profile.user.toasts.unfriended.replace("{{name}}", profile.name),
+									"success", 5000
+								);
+							}
+						});
+				}, () => {});
 			}
 		},
 		unsubscribe: {
@@ -88,16 +103,6 @@
 			handler: () => {}
 		}
 	};
-
-	export let api;
-	export let dict;
-	export let me;
-	export let actions;
-	export let descriptor;
-
-	let profile;
-	let bio;
-	let relation;
 
 	$: if (descriptor) {
 		fetch(api.paths["@*"]["profile.json"].replace(":1", descriptor))

@@ -803,7 +803,8 @@ html.dark .menu .notice {
 
 /****** Авторизация ******/
 #log-in-box,
-#log-out-box {
+#log-out-box,
+#confirmation-box {
   z-index: 50;
   position: fixed;
   top: 0;
@@ -814,15 +815,18 @@ html.dark .menu .notice {
   background: rgba(100, 100, 100, 0.5); }
 
 html.dark #log-in-box,
-html.dark #log-out-box {
+html.dark #log-out-box,
+html.dark #confirmation-box {
   background: rgba(50, 50, 100, 0.5); }
 
 #log-in-box.open,
-#log-out-box.open {
+#log-out-box.open,
+#confirmation-box.open {
   display: block; }
 
 #log-in,
-#log-out {
+#log-out,
+#confirmation {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -838,7 +842,8 @@ html.dark #log-out-box {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.15); }
 
 html.dark #log-in,
-html.dark #log-out {
+html.dark #log-out,
+html.dark #confirmation {
   background-color: #0E1621;
   box-shadow: none; }
 
@@ -848,7 +853,8 @@ html.dark #log-out {
 }
 
 #log-in-headline,
-#log-out-headline {
+#log-out-headline,
+#confirmation-headline {
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
   font-size: 1.5rem;
   font-weight: bold;
@@ -858,7 +864,8 @@ html.dark #log-out {
   background-color: #7D80B8; }
 
 html.dark #log-in-headline,
-html.dark #log-out-headline {
+html.dark #log-out-headline,
+html.dark #confirmation-headline {
   color: #ECECEC;
   background-color: #212D3B; }
 
@@ -938,7 +945,8 @@ html.dark #sign-up-log-in {
   background: none; }
 
 /****** Выход ******/
-#log-out-text {
+#log-out-text,
+#confirmation-text {
   display: block;
   width: 15rem;
   margin: .5rem;
@@ -947,7 +955,9 @@ html.dark #sign-up-log-in {
   line-height: 1.5rem; }
 
 #log-out-yes-button,
-#log-out-no-button {
+#log-out-no-button,
+#confirmation-yes-button,
+#confirmation-no-button {
   display: block;
   width: 16rem;
   margin-top: .5rem;
@@ -961,13 +971,16 @@ html.dark #sign-up-log-in {
   border-bottom: 2px solid;
   cursor: pointer; }
 
-#log-out-yes-button {
+#log-out-yes-button,
+#confirmation-yes-button {
   color: #080; }
 
-html.dark #log-out-yes-button {
+html.dark #log-out-yes-button,
+html.dark #confirmation-yes-button {
   color: #0C0; }
 
-#log-out-no-button {
+#log-out-no-button,
+#confirmation-no-button {
   color: #C00; }
 
 

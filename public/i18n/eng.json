@@ -194,6 +194,14 @@
 				"ban": "Ban",
 				"unban": "Unban"
 			},
+			"confirmations": {
+				"unfriend": {
+					"headline": "Unfriend",
+					"text": "Remove {{name}} from friends?\nThe note will alse be erased.",
+					"yes": "Yes",
+					"no": "No"
+				}
+			},
 			"toasts": {
 				"friended": "{{name}} has been friended",
 				"unfriended": "{{name}} has been unfriended",
@@ -323,6 +331,14 @@
 					"ok": "The note was recorded successfully.",
 					"unauthorized": "Unauthorized!",
 					"too_long": "The note is too long! Maximum 1500 characters!"
+				}
+			},
+			"confirmations": {
+				"remove": {
+					"headline": "Unfriend",
+					"text": "Remove {{name}} from friends?\nThe note will alse be erased.",
+					"yes": "Yes",
+					"no": "No"
 				}
 			},
 			"toasts": {
