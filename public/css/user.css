@@ -43,10 +43,66 @@ html.dark #profile-name {
 	-sodesu-thumb: 300;
 }
 
+#profile-relation {
+	clear: left;
+	float: left;
+	margin-right: 1rem;
+	padding: .5rem;
+	width: 20rem;
+}
+#profile-relation-note {
+	display: none;
+	clear: both;
+	padding: .5rem;
+	width: 100%;
+	height: 2.5rem;
+	font-family: Basic;
+	font-size: 1rem;
+	line-height: 1.5rem;
+	color: #000;
+	background: none;
+	border-top: 1px solid #7D80B8;
+	border-bottom: 1px solid #7D80B8;
+	resize: none;
+}
+#profile[data-relation="mutual"] #profile-relation-note {
+	display: block;
+}
+html.dark #profile-relation-note {
+  color: #ECECEC;
+  border-color: #ECECEC;
+}
+#profile-relation-note:focus {
+  outline: 1px dotted #7D80B8;
+}
+html.dark #profile-relation-note:focus {
+  outline-color: #212D3B;
+}
+#profile-relation-note-response {
+  display: block;
+  padding: 0 .5rem;
+  width: 100%;
+  font-size: .8rem;
+  color: #080;
+}
+.error #profile-relation-note-response {
+  color: #800;
+}
+html.dark #profile-relation-note-response {
+  color: #0C0;
+}
+html.dark .error #profile-relation-note-response {
+  color: #C00;
+}
+.error #profile-relation-note {
+  border-color: #C00;
+}
+
 #profile-buttons {
 	clear: left;
 	float: left;
-	margin-right: .5rem;
+	margin-right: 1rem;
+	margin-bottom: -1px;
 	width: 20rem;
 }
 
@@ -67,9 +123,6 @@ html.dark #profile-name {
 	cursor: pointer;
 	transition: all .2s ease 0s;
 }
-.profile-button:last-child {
-	margin-bottom: 0;
-}
 html.dark .profile-button {
 	color: #CECECE;
 	background-color: #212D3B;
@@ -88,11 +141,33 @@ html.dark .profile-button {
 html.dark .profile-button::after {
 	border-color: #0E1621;
 }
-#profile-chat {
+#profile-button-chat,
+#profile-button-friend,
+#profile-button-unfriend,
+#profile-button-unsubscribe,
+#profile-button-ban,
+#profile-button-unban {
 	display: none;
 }
-.me #profile-friend {
+.authorized #profile-button-ban {
+	display: block;
+}
+#profile[data-relation="incoming"] #profile-button-friend,
+.authorized #profile[data-relation="none"] #profile-button-friend {
+	display: block;
+}
+#profile[data-relation="mutual"] #profile-button-unfriend {
+	display: block;
+}
+#profile[data-relation="outcoming"] #profile-button-unsubscribe {
+	display: block;
+}
+#profile[data-relation="me"] #profile-button-ban,
+#profile.banned #profile-button-ban {
 	display: none;
+}
+#profile.banned #profile-button-unban {
+	display: block;
 }
 #profile-chat:after {
 	background-image: url("../../img/chat.svg");
@@ -112,16 +187,17 @@ html.dark .profile-button::after {
 #profile-music:after {
 	background-image: url("../../img/music.svg");
 }
-.profile-button:last-of-type {
-	border-bottom-left-radius: 2px;
-	border-bottom-right-radius: 2px;
-}
 .profile-button:hover,
 .profile-button:focus {
 	color: #FFF07C;
 }
+html.dark .profile-button:hover,
+html.dark .profile-button:focus {
+	color: #FFF;
+	background-color: #17212B;
+}
 .profile-button:active {
-	transform: scaleX(.9);
+	font-size: .9rem;
 }
 
 #location-box,
@@ -1558,6 +1634,7 @@ html.dark #show-all-posts-button {
 		display: none;
 	}
 	#profile-avatar,
+	#profile-relation,
 	#profile-buttons {
 		width: 100%;
 	}

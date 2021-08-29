@@ -361,6 +361,87 @@ class DBHelper
         return bio.rows[0] ? bio.rows[0].text : null;
     }
 
+    async getRelation(userId, entityType, entityId)
+    {
+        switch (entityType) {
+        case "user":
+            let res = {};
+
+            res.friend = await this.pool.query(`
+                    select offerer_id, acceptor_id
+                    from friends
+                    where offerer_id = $1
+                    and acceptor_id = $2
+                    or acceptor_id = $1
+                    and offerer_id = $2
+                `, [
+                    userId, entityId 
+                ]);
+
+            if (!res.friend.rows.length) {
+                res.friend = "none";
+            } else if (res.friend.rows.length == 2) {
+                res.friend = "mutual";
+            } else if (res.friend.rows[0].offerer_id == entityId) {
+                res.friend = "incoming";
+            } else {
+                res.friend = "outcoming";
+            }
+
+            res.common_friends = await this.pool.query(`
+                    select count(*) as count
+                    from friends f1
+                    join friends f2
+                    on f2.offerer_id = f1.acceptor_id
+                    and f2.acceptor_id = f1.offerer_id
+                    where f1.offerer_id = $1
+                    and f1.acceptor_id in (
+                        select f1.acceptor_id as id
+                        from friends f1
+                        join friends f2
+                        on f2.offerer_id = f1.acceptor_id
+                        and f2.acceptor_id = f1.offerer_id
+                        where f1.offerer_id = $2
+                    )
+                `, [
+                    userId, entityId
+                ]);
+            res.common_friends = parseInt(res.common_friends.rows[0].count);
+
+            res.common_clubs = 0;
+
+            res.note = await this.pool.query(`
+                    select c.text as note
+                    from friends f
+                    join content c
+                    on c.id = f.note_id
+                    where f.offerer_id = $1
+                    and f.acceptor_id = $2
+                `, [
+                    userId, entityId
+                ]);
+            res.note = res.note.rows[0] ? res.note.rows[0].note : "";
+
+            res.banned = await this.pool.query(`
+                    select b.id
+                    from blacklist b
+                    join users u1
+                    on b.issuer_id = u1.entity_id
+                    join users u2
+                    on b.banned_id = u2.entity_id
+                    where u1.id = $1
+                    and u2.id = $2
+                `, [
+                    userId, entityId
+                ]);
+            res.banned = res.banned.rows[0] ? true : false;
+
+            return res;
+        break;
+        case "club": return null;
+        }
+    }
+
     async getFriends(userId, type)
     {
         const queries = {
@@ -374,10 +455,8 @@ class DBHelper
                 on c.id = f1.note_id
                 where f1.offerer_id = $1`,
             incoming: `
-                select f.offerer_id as id, f.since_dt as since_dt, c.text as note
+                select f.offerer_id as id, f.since_dt as since_dt
                 from friends f
-                join content c
-                on c.id = f.note_id
                 where f.acceptor_id = $1
                 and f.offerer_id not in (
                     select acceptor_id

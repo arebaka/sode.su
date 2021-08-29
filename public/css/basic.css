@@ -309,7 +309,7 @@ html.dark #preloader {
   overflow: hidden;
   clear: both;
   margin-top: 2.5rem;
-  min-height: calc(100vh - 7rem);
+  min-height: calc(100vh - 7rem - 3px);
   background-color: #FFF; }
 
 html.dark #container {
@@ -585,10 +585,9 @@ html.dark #sign-up-button {
 #me-name {
   float: left;
   max-width: 15rem;
-  height: 1rem;
-  margin-top: .2rem;
+  height: 1.3rem;
   padding-right: 1rem;
-  font: 1rem/1.5rem Basic, Emoji, sans-serif;
+  font: 1rem/1.3rem Basic, Emoji, sans-serif;
   font-weight: bold;
   line-height: 1rem;
   color: #FFF; }
@@ -600,10 +599,9 @@ html.dark #me-name {
   clear: left;
   float: left;
   max-width: 15rem;
-  height: .8rem;
-  margin-top: .1rem;
+  height: 1.2rem;
   padding-right: 1rem;
-  font: 0.9rem/1.5rem Mono, Emoji, monospace, Basic, sans-serif;
+  font: 0.9rem/1.2rem Mono, Emoji, monospace, Basic, sans-serif;
   line-height: .8rem;
   color: #FFF; }
 
@@ -2350,6 +2348,9 @@ html.dark .friends-user-button-positive:focus {
 html.dark .friends-user-button-negative:hover,
 html.dark .friends-user-button-negative:focus {
   background-color: #400;
+}
+.friends-user-button:active {
+  border-width: 3px;
 }
 .friends-user-note {
   display: block;

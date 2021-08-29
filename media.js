@@ -82,20 +82,20 @@ async function saveImage(buffer, hash, format, width, height)
                 .resize(100, 100)
                 .toFile(path.resolve(`thumbs/100/${hash}.${format}`), (err, info) => {});
 
-            if (width > 300 && height > 300) {
+            if (width > 300 || height > 300) {
                 sharp(buffer)
-                    .resize(100, 100)
-                    .toFile(path.resolve(`thumbs/100/${hash}.${format}`), (err, info) => {});
+                    .resize(300, 300)
+                    .toFile(path.resolve(`thumbs/300/${hash}.${format}`), (err, info) => {});
 
-                if (width > 500 && height > 500) {
+                if (width > 500 || height > 500) {
                     sharp(buffer)
-                        .resize(100, 100)
-                        .toFile(path.resolve(`thumbs/100/${hash}.${format}`), (err, info) => {});
+                        .resize(500, 500)
+                        .toFile(path.resolve(`thumbs/500/${hash}.${format}`), (err, info) => {});
 
-                    if (width > 1000 && height > 1000) {
+                    if (width > 1000 || height > 1000) {
                         sharp(buffer)
                             .resize(1000, 1000)
-                            .toFile(path.resolve(`thumbs/100/${hash}.${format}`), (err, info) => {});
+                            .toFile(path.resolve(`thumbs/1000/${hash}.${format}`), (err, info) => {});
                     }
                 }
             }

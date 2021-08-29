@@ -266,6 +266,37 @@
 				}
 			}
 		},
+		"User_Relation": {
+			"descr": "",
+			"props": {
+				"friend": {
+					"type":     "str",
+					"enum":     ["me", "mutual", "incoming", "outcoming", "none"],
+					"nullable": false,
+					"descr":    ""
+				},
+				"common_friends": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"common_clubs": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"note": {
+					"type":     "str",
+					"nullable": false,
+					"descr":    ""
+				},
+				"banned": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				}
+			}
+		},
 		"Me_Response": {
 			"descr": "",
 			"props": {
@@ -298,6 +329,21 @@
 					"type":     "bool",
 					"nullable": false,
 					"descr":    ""
+				}
+			}
+		},
+		"Relation_Response": {
+			"descr": "",
+			"props": {
+				"status": {
+					"type":     "Status",
+					"nullable": false,
+					"descr":    ""
+				},
+				"data": {
+					"type":     "User_Relation",
+					"nullable": false,
+					"descr":    "//TODO clubs"
 				}
 			}
 		}
@@ -361,8 +407,26 @@
 		"entities": {
 			"path":    "api/entities",
 			"descr":   "",
-			"params":  "Serialized_Entity[]",
+			"params":  {
+				"entities": {
+					"type":     "Serialized_Entity[]",
+					"nullable": false,
+					"descr":    ""
+				}
+			},
 			"returns": "//TODO"
+		},
+		"relation": {
+			"path":    "api/relation",
+			"descr":   "",
+			"params":  {
+				"entity": {
+					"type":     "Serialized_Entity",
+					"nullable": false,
+					"descr":    ""
+				}
+			},
+			"returns": "Relation_Response"
 		},
 		"set.profile": {
 			"path":    "api/set/profile",

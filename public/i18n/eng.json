@@ -127,13 +127,72 @@
 				"name": "Anon",
 				"bio": "There is a bio example."
 			},
+			"relation": {
+				"me": "It is your profile",
+				"friend": {
+					"mutual": "You are friends",
+					"incoming": "Your subscriber",
+					"outcoming": "You are subscribed",
+					"none": "No relationship"
+				},
+				"common_friends": {
+					"mutual": "Common friends: {{count}}",
+					"incoming": "Common friends: {{count}}",
+					"outcoming": "Common friends: {{count}}",
+					"none": "Common friends: {{count}}"
+				},
+				"common_clubs": {
+					"mutual": "Common clubs: {{count}}",
+					"incoming": "Common clubs: {{count}}",
+					"outcoming": "Common clubs: {{count}}",
+					"none": "Common clubs: {{count}}"
+				},
+				"note": {
+					"mutual": {
+						"placeholder": "Note about friend...",
+						"responses": {
+							"ok": "The note was recorded successfully.",
+							"unauthorized": "Unauthorized!",
+							"too_long": "The note is too long! Maximum 1500 characters!"	
+						}
+					},
+					"incoming": {
+						"placeholder": "Note about follower...",
+						"responses": {
+							"ok": "The note was recorded successfully.",
+							"unauthorized": "Unauthorized!",
+							"too_long": "The note is too long! Maximum 1500 characters!"	
+						}
+					},
+					"outcoming": {
+						"placeholder": "Note about user...",
+						"responses": {
+							"ok": "The note was recorded successfully.",
+							"unauthorized": "Unauthorized!",
+							"too_long": "The note is too long! Maximum 1500 characters!"	
+						}
+					},
+					"none": {
+						"placeholder": "Note about user...",
+						"responses": {
+							"ok": "The note was recorded successfully.",
+							"unauthorized": "Unauthorized!",
+							"too_long": "The note is too long! Maximum 1500 characters!"	
+						}
+					}
+				}
+			},
 			"buttons": {
 				"chat": "Open chat",
 				"friend": "Add as friend",
 				"theme": "Design theme",
 				"images": "Images",
 				"videos": "Videos",
-				"music": "Music"
+				"music": "Music",
+				"unfriend": "Unfriend",
+				"unsubscribe": "Unsubscribe",
+				"ban": "Ban",
+				"unban": "Unban"
 			}
 		}
 	},

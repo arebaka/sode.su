@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS public.bans (
 CREATE TABLE IF NOT EXISTS public.blacklist (
     id bigserial NOT NULL PRIMARY KEY,
     issuer_id bigint NOT NULL,
-    issued_id bigint NOT NULL,
+    banned_id bigint NOT NULL,
     issued_dt timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -402,7 +402,7 @@ ALTER TABLE public.artifacts_in_content ADD CONSTRAINT artifacts_in_content_arti
 ALTER TABLE public.bans                 ADD CONSTRAINT bans_entity_id_fk                   FOREIGN KEY (entity_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.bans                 ADD CONSTRAINT bans_reason_id_fk                   FOREIGN KEY (reason_id)         REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.blacklist            ADD CONSTRAINT blacklist_issuer_id_fk              FOREIGN KEY (issuer_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE public.blacklist            ADD CONSTRAINT blacklist_issued_id_fk              FOREIGN KEY (issued_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.blacklist            ADD CONSTRAINT blacklist_banned_id_fk              FOREIGN KEY (banned_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.prohibited_media     ADD CONSTRAINT prohibited_media_reason_id_fk       FOREIGN KEY (reason_id)         REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.media                ADD CONSTRAINT media_uploader_id_fk                FOREIGN KEY (uploader_id)       REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.albums               ADD CONSTRAINT albums_owner_id_fk                  FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;

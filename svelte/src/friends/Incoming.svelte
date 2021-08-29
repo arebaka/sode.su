@@ -21,7 +21,7 @@
 		.then(res => res.json())
 		.then(res => {
 			if (res.status == api.errors.ok) {
-				navigate(api.paths.friends.mutual);
+				ui.active = "incoming";
 			}
 		});
 	}

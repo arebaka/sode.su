@@ -131,8 +131,10 @@ router.post("/logout", async (req, res, next) => {
 
 router.post("/entities", async (req, res, next) => {
     try {
-        if (typeof req.body != "object" || !Array.isArray(req.body))
-            return next(400);
+        if (typeof req.body.entities != "object" || !Array.isArray(req.body.entities))
+            return res
+                .status(400)
+                .json({ status: res.locals.api.errors.invalid_data });
 
         let lists = {
             user: [],
@@ -142,7 +144,7 @@ router.post("/entities", async (req, res, next) => {
         let parts;
         let entities;
 
-        for (let descriptor of req.body) {
+        for (let descriptor of req.body.entities) {
             parts = descriptor.split('/');
 
             if (parts.length != 2 || !/^[1-9][0-9]*$/.test(parts[1]))
@@ -171,6 +173,49 @@ router.post("/entities", async (req, res, next) => {
             .json({ status: 200, data: result });
     }
     catch (err) {
+        res
+            .status(400)
+            .json({ status: res.locals.api.errors.invalid_data });
+    }
+});
+
+router.post("/relation", async (req, res, next) => {
+    try {
+        if (!res.locals.authorized)
+            return res
+                .status(401)
+                .json({ status: res.locals.api.errors.unauthorized });
+
+        if (typeof req.body.entity != "string" || !req.body.entity.match(new RegExp(res.locals.api.types.Serialized_Entity)))
+            return res
+                .status(400)
+                .json({ status: res.locals.api.errors.invalid_data });
+
+        const parts    = req.body.entity.split('/');
+
+        if (parts[0] == "user" && parts[1] == req.cookies.userid) {
+            return res
+                .status(200)
+                .json({ status: res.locals.api.errors.ok, data: {
+                    friend:         "me",
+                    common_friends: 0,
+                    common_clubs:   0,
+                    note:           "",
+                    banned:         false
+                }});
+        }
+
+        const relation = await db.getRelation(req.cookies.userid, parts[0], parseInt(parts[1]));
+
+        return relation
+            ? res
+                .status(200)
+                .json({ status: res.locals.api.errors.ok, data: relation })
+            : res
+                .status(424)
+                .json({ status: res.locals.api.errors.doesnt_exists });
+    }
+    catch (err) {console.log(err);
         res
             .status(400)
             .json({ status: res.locals.api.errors.invalid_data });

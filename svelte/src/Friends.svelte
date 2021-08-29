@@ -50,7 +50,7 @@
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify(list.map(u => "user/" + u.id))
+				body: JSON.stringify({ entities: list.map(u => "user/" + u.id) })
 			})
 			.then(res => res.json())
 			.then(res => {

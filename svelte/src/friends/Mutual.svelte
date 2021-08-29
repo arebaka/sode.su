@@ -27,7 +27,7 @@
 				})
 				.then(res => res.json())
 				.then(res => {
-					[userId].noteResponse = res.status;
+					list[userId].noteResponse = res.status;
 					if (!list[userId].noteResponse) {
 						list[userId].note         = text;
 						list[userId].noteResponse = api.errors.ok;
