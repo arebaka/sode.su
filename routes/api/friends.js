@@ -46,15 +46,38 @@ router.post("/add", async (req, res, next) => {
                 .status(400)
                 .json({ status: res.locals.api.errors.invalid_value, param: "target" });
 
-        const friendship = await db.friend(req.cookies.userid, req.body.target);
+        const relation = await db.getRelation(req.cookies.userid, "user", req.body.target);
 
-        return friendship
-            ? res
-                .status(200)
-                .json({ status: res.locals.api.errors.ok })
-            : res
-                .status(403)
-                .json({ status: res.locals.api.errors.access_denied });
+        try {
+            if (relation.friend == "incoming")
+                throw [200, "ok"];
+            if (relation.friend == "mutual" || relation.friend == "outcoming")
+                throw [409, "conflict"];
+
+            const profile = await db.getProfile("user", req.body.target);
+
+            if (profile.friendable == "public")
+                throw [200, "ok"];
+            if (profile.friendable == "private")
+                throw [403, "access_denied"];
+            if (relation.common_friends > 0)
+                throw [200, "ok"];
+            throw [403, "access_denied"];
+        }
+        catch (status) {
+            let friendship = null;
+            if (status[1] == "ok") {
+                friendship = await db.friend(req.cookies.userid, req.body.target);
+            }
+
+            friendship
+                ? res
+                    .status(status[0])
+                    .json({ status: res.locals.api.errors[status[1]] })
+                : res
+                    .status(403)
+                    .json({ status: res.locals.api.errors.access_denied });
+        }
     }
     catch (err) {
         res

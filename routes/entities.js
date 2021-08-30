@@ -22,7 +22,7 @@ router.get("/:prefix(@|~):descriptor*", async (req, res, next) => {
     await next();
 });
 
-router.get("/:prefix(@|~):descriptor/profile.json", async (req, res, next) => {
+router.get("/:prefix(@|~):descriptor/profile", async (req, res, next) => {
     const profile = await db.getProfile(res.locals.entityType, req.params.descriptor);
     if (!profile)
         return next(404);

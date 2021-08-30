@@ -51,7 +51,7 @@ html.dark #profile-name {
 	width: 20rem;
 }
 #profile-relation-note {
-	display: none;
+	display: block;
 	clear: both;
 	padding: .5rem;
 	width: 100%;
@@ -64,9 +64,6 @@ html.dark #profile-name {
 	border-top: 1px solid #7D80B8;
 	border-bottom: 1px solid #7D80B8;
 	resize: none;
-}
-#profile[data-relation="mutual"] #profile-relation-note {
-	display: block;
 }
 html.dark #profile-relation-note {
   color: #ECECEC;
@@ -140,34 +137,6 @@ html.dark .profile-button {
 }
 html.dark .profile-button::after {
 	border-color: #0E1621;
-}
-#profile-button-chat,
-#profile-button-friend,
-#profile-button-unfriend,
-#profile-button-unsubscribe,
-#profile-button-ban,
-#profile-button-unban {
-	display: none;
-}
-.authorized #profile-button-ban {
-	display: block;
-}
-#profile[data-relation="incoming"] #profile-button-friend,
-.authorized #profile[data-relation="none"] #profile-button-friend {
-	display: block;
-}
-#profile[data-relation="mutual"] #profile-button-unfriend {
-	display: block;
-}
-#profile[data-relation="outcoming"] #profile-button-unsubscribe {
-	display: block;
-}
-#profile[data-relation="me"] #profile-button-ban,
-#profile.banned #profile-button-ban {
-	display: none;
-}
-#profile.banned #profile-button-unban {
-	display: block;
 }
 #profile-chat:after {
 	background-image: url("../../img/chat.svg");

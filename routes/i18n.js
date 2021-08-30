@@ -7,10 +7,10 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get("/:name.json", async (req, res, next) => {
+router.get("/:name", async (req, res, next) => {
     res
         .type(".json")
-        .sendFile(path.resolve(`public/i18n${req.path}`), err => {
+        .sendFile(path.resolve(`public/i18n/${req.params.name}.json`), err => {
             if (err) {
                 next(404);
             }

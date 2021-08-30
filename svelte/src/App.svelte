@@ -174,7 +174,7 @@
 		setCookie("lang", lang, 10000);
 		document.getElementsByTagName("html")[0].setAttribute("lang", api.langs[lang].iso2);
 
-		fetch(api.paths.i18n["*.json"].replace(":1", lang))
+		fetch(api.paths.i18n["*"].replace(":1", lang))
 			.then(res => res.json())
 			.then(res => dict = res);
 	}

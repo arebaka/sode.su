@@ -585,11 +585,10 @@ html.dark #sign-up-button {
 #me-name {
   float: left;
   max-width: 15rem;
-  height: 1.3rem;
   padding-right: 1rem;
   font: 1rem/1.3rem Basic, Emoji, sans-serif;
   font-weight: bold;
-  line-height: 1rem;
+  line-height: 1.3rem;
   color: #FFF; }
 
 html.dark #me-name {
@@ -599,10 +598,9 @@ html.dark #me-name {
   clear: left;
   float: left;
   max-width: 15rem;
-  height: 1.2rem;
   padding-right: 1rem;
   font: 0.9rem/1.2rem Mono, Emoji, monospace, Basic, sans-serif;
-  line-height: .8rem;
+  line-height: 1.2rem;
   color: #FFF; }
 
 #me-avatar {
@@ -891,6 +889,19 @@ html.dark #log-in-disclaimer {
   color: #7D80B8;
   text-decoration: none;
 }
+.log-in-disclaimer-point-box a:hover,
+.log-in-disclaimer-point-box a:focus {
+  text-decoration: underline;
+}
+html.dark .log-in-disclaimer-point-box a {
+  color: #48F;
+}
+.log-in-disclaimer-point-box a:visited {
+  color: #7D80B8;
+}
+html.dark .log-in-disclaimer-point-box a:visited {
+  color: #48F;
+}
 #log-in-disclaimer-submit {
   display: block;
   width: 100%;
@@ -1001,10 +1012,16 @@ html.dark #ask-for-cookies-button-ok {
   color: #ECECEC;
   background-color: #212D3B;
 }
-#ask-for-cookies-button:hover,
-#ask-for-cookies-button:focus {
+#ask-for-cookies-button-ok:hover,
+#ask-for-cookies-button-ok:focus {
+  color: #7D80B8;
   background: none;
   border: 5px solid;
+}
+html.dark #ask-for-cookies-button-ok:hover,
+html.dark #ask-for-cookies-button-ok:focus {
+  color: #ECECEC;
+  background: none;
 }
 
 /****** Тост-уведомления ******/
@@ -2247,6 +2264,7 @@ html.dark #friends-descr {
   clear: both;
   overflow: hidden;
   margin-top: .5rem;
+  padding: 0 .5rem;
   width: 100%;
   text-decoration: none;
   border-bottom: 1px solid #7D80B8;
@@ -2313,9 +2331,8 @@ html.dark .friends-user-name {
 .friends-user-button {
   display: block;
   float: right;
-  margin: 0 .5rem;
+  margin-left: .5rem;
   padding: 0 .5rem;
-  height: 1.5rem;
   font-family: Buttons;
   font-size: .9rem;
   line-height: 1.5rem;
@@ -2358,7 +2375,7 @@ html.dark .friends-user-button-negative:focus {
 .friends-user-note {
   display: block;
   clear: both;
-  padding: .5rem;
+  padding: .5rem 0;
   width: 100%;
   height: 2.5rem;
   font-family: Basic;

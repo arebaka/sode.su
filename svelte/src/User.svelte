@@ -11,105 +11,119 @@
 	let bio;
 	let relation;
 
-	const profileButtons = {
-		chat: {
-			handler: () => {}
-		},
-		friend: {
-			handler: () => {
-				fetch(api.methods["friends.add"].path, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify({ target: profile.id })
-				})
-				.then(res => res.json())
-				.then(res => {
-					if (res.status == api.errors.ok) {
-						profile = profile;
-						actions.showToast(
-							dict.profile.user.toasts.friended.replace("{{name}}",profile.name),
-							"success", 5000
-						);
+	let ui = {
+		profile: {
+			buttons: {
+				chat: {
+					allowed: false,
+					handler: () => {}
+				},
+				friend: {
+					allowed: false,
+					handler: () => {
+						fetch(api.methods["friends.add"].path, {
+								method: "POST",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								body: JSON.stringify({ target: profile.id })
+							})
+							.then(res => res.json())
+							.then(res => {
+								if (res.status == api.errors.ok) {
+									profile = profile;
+									actions.showToast(
+										dict.profile.user.toasts.friended.replace("{{name}}",profile.name),
+										"success", 5000
+									);
+								}
+							});
 					}
-				});
-			}
-		},
-		theme: {
-			handler: () => {}
-		},
-		images: {
-			handler: () => {}
-		},
-		videos: {
-			handler: () => {}
-		},
-		music: {
-			handler: () => {}
-		},
-		unfriend: {
-			handler: () => {
-				let ctxDict  = {...dict.profile.user.confirmations.unfriend};
-				ctxDict.text = ctxDict.text.replace("{{name}}", profile.name || dict.profile.user.default.name);
+				},
+				theme: {
+					allowed: true,
+					handler: () => {}
+				},
+				images: {
+					allowed: true,
+					handler: () => {}
+				},
+				videos: {
+					allowed: true,
+					handler: () => {}
+				},
+				music: {
+					allowed: true,
+					handler: () => {}
+				},
+				unfriend: {
+					allowed: false,
+					handler: () => {
+						let ctxDict  = {...dict.profile.user.confirmations.unfriend};
+						ctxDict.text = ctxDict.text.replace("{{name}}", profile.name || dict.profile.user.default.name);
 
-				actions.confirm(ctxDict, () => {
-					fetch(api.methods["friends.remove"].path, {
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json"
-							},
-							body: JSON.stringify({ target: profile.id })
-						})
-						.then(res => res.json())
-						.then(res => {
-							if (res.status == api.errors.ok) {
-								profile = profile;
-								actions.showToast(
-									dict.profile.user.toasts.unfriended.replace("{{name}}", profile.name),
-									"success", 5000
-								);
-							}
-						});
-				}, () => {});
-			}
-		},
-		unsubscribe: {
-			handler: () => {
-				fetch(api.methods["friends.remove"].path, {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify({ target: profile.id })
-				})
-				.then(res => res.json())
-				.then(res => {
-					if (res.status == api.errors.ok) {
-						profile = profile;
-						actions.showToast(
-							dict.profile.user.toasts.unsubscribed
-								.replace("{{name}}", profile.name || dict.profile.user.default.name),
-							"success", 5000
-						);
+						actions.confirm(ctxDict, () => {
+							fetch(api.methods["friends.remove"].path, {
+									method: "POST",
+									headers: {
+										"Content-Type": "application/json"
+									},
+									body: JSON.stringify({ target: profile.id })
+								})
+								.then(res => res.json())
+								.then(res => {
+									if (res.status == api.errors.ok) {
+										profile = profile;
+										actions.showToast(
+											dict.profile.user.toasts.unfriended.replace("{{name}}", profile.name),
+											"success", 5000
+										);
+									}
+								});
+						}, () => {});
 					}
-				});
+				},
+				unsubscribe: {
+					allowed: false,
+					handler: () => {
+						fetch(api.methods["friends.remove"].path, {
+								method: "POST",
+								headers: {
+									"Content-Type": "application/json"
+								},
+								body: JSON.stringify({ target: profile.id })
+							})
+							.then(res => res.json())
+							.then(res => {
+								if (res.status == api.errors.ok) {
+									profile = profile;
+									actions.showToast(
+										dict.profile.user.toasts.unsubscribed
+											.replace("{{name}}", profile.name || dict.profile.user.default.name),
+										"success", 5000
+									);
+								}
+							});
+					}
+				},
+				ban: {
+					allowed: false,
+					handler: () => {}
+				},
+				unban: {
+					allowed: false,
+					handler: () => {}
+				}
 			}
-		},
-		ban: {
-			handler: () => {}
-		},
-		unban: {
-			handler: () => {}
 		}
 	};
 
 	$: if (descriptor) {
-		fetch(api.paths["@*"]["profile.json"].replace(":1", descriptor))
+		fetch(api.paths["@*"].profile.replace(":1", descriptor))
 			.then(res => res.status == 200 ? res.json() : null)
 			.then(res => profile = res);
 
-		fetch(api.paths["@*"]["bio"].replace(":1", descriptor))
+		fetch(api.paths["@*"].bio.replace(":1", descriptor))
 			.then(res => res.status == 200 ? res.text() : null)
 			.then(res => bio = res);
 	}
@@ -128,12 +142,33 @@
 				body: JSON.stringify({ entity: "user/" + profile.id })
 			})
 			.then(res => res.json())
-			.then(res => { relation = res.status == api.errors.ok
-				? {...res.data, noteResponse: null} : null
+			.then(res => {
+				relation = res.status == api.errors.ok
+					? {...res.data, noteResponse: null} : null
 			});
 	}
 	else {
 		relation = null;
+	}
+
+	$: if (relation) {
+		ui.profile.buttons.friend.allowed = relation.friend == "incoming" || (
+			relation.friend == "none" && (
+				profile.friendable == "public" || (
+					profile.friendable == "protected" && relation.common_friends > 0
+		)));
+
+		ui.profile.buttons.unfriend.allowed    = relation.friend == "mutual";
+		ui.profile.buttons.unsubscribe.allowed = relation.friend == "outcoming";
+		ui.profile.buttons.ban.allowed         = !relation.banned;
+		ui.profile.buttons.unban.allowed       = relation.banned;
+	}
+	else {
+		ui.profile.buttons.friend.allowed      =
+		ui.profile.buttons.unfriend.allowed    =
+		ui.profile.buttons.unsubscribe.allowed =
+		ui.profile.buttons.ban.allowed         =
+		ui.profile.buttons.unban.allowed       = false;
 	}
 
 	function escapeText(text)
@@ -228,28 +263,32 @@
 						{dict.profile.user.relation.common_clubs[relation.friend]
 							.replace("{{count}}", relation.common_clubs)}
 					</p>
-					<label id="profile-relation-note-box" class:error={relation.noteResponse} on:click|preventDefault|stopPropagation>
-						<textarea placeholder="{dict.profile.user.relation.note[relation.friend].placeholder}" id="profile-relation-note"
-							on:blur={e => updateNote(e.target.value)} on:click={e => updateAreaHeight(e.target)}
-							on:input={e => checkNote(e.target.value)} on:input={e => updateAreaHeight(e.target)}
-						>{relation.note}</textarea>
-						{#if relation.noteResponse !== null}
-							<p id="profile-relation-note-response">
-								{dict.profile.user.relation.note[relation.friend].responses[
-									Object.keys(api.errors).find(key => api.errors[key] == relation.noteResponse)
-								]}
-							</p>
-						{/if}
-					</label>
+					{#if relation.friend == "mutual"}
+						<label id="profile-relation-note-box" class:error={relation.noteResponse} on:click|preventDefault|stopPropagation>
+							<textarea placeholder="{dict.profile.user.relation.note[relation.friend].placeholder}" id="profile-relation-note"
+								on:blur={e => updateNote(e.target.value)} on:click={e => updateAreaHeight(e.target)}
+								on:input={e => checkNote(e.target.value)} on:input={e => updateAreaHeight(e.target)}
+							>{relation.note}</textarea>
+							{#if relation.noteResponse !== null}
+								<p id="profile-relation-note-response">
+									{dict.profile.user.relation.note[relation.friend].responses[
+										Object.keys(api.errors).find(key => api.errors[key] == relation.noteResponse)
+									]}
+								</p>
+							{/if}
+						</label>
+					{/if}
 				{/if}
 			</div>
 		{/if}
 
 		<div id="profile-buttons">
-			{#each Object.keys(profileButtons) as button}
-				<button class="profile-button" id="profile-button-{button}" on:click={profileButtons[button].handler}>
-					{dict.profile.user.buttons[button]}
-				</button>
+			{#each Object.keys(ui.profile.buttons) as button}
+				{#if ui.profile.buttons[button].allowed}
+					<button class="profile-button" id="profile-button-{button}" on:click={ui.profile.buttons[button].handler}>
+						{dict.profile.user.buttons[button]}
+					</button>
+				{/if}
 			{/each}
 		</div>
 

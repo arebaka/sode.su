@@ -27,7 +27,7 @@ router.get("/api", async (req, res) => {
         .json(res.locals.api);
 });
 
-router.get("/emoji.json", async (req, res) => {
+router.get("/emoji", async (req, res) => {
     res
         .type(".json")
         .sendFile(path.resolve("public/emoji.json"));

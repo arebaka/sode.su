@@ -50,7 +50,7 @@
 		"/":             "",
 		"robots.txt":    "robots.txt",
 		"api":           "api",
-		"emoji.json":    "emoji.json",
+		"emoji":         "emoji",
 		"manifest.json": "manifest.json",
 		"sitemap.xml":   "sitemap.xml",
 		"favicon.ico":   "favicon.ico",
@@ -61,7 +61,7 @@
 			}
 		},
 		"i18n": {
-			"*.json": "i18n/:1.json"
+			"*": "i18n/:1"
 		},
 		"img": {
 			"*.svg":  "img/:1.svg",
@@ -87,9 +87,9 @@
 			"outcoming": "friends/outcoming"
 		},
 		"@*": {
-			"/":            "@:1",
-			"profile.json": "@:1/profile.json",
-			"bio":          "@:1/bio",
+			"/":       "@:1",
+			"profile": "@:1/profile",
+			"bio":     "@:1/bio",
 			"i":            {
 				"/": "@:1/i",
 				"0": {
