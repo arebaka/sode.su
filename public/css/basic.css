@@ -983,6 +983,63 @@ html.dark #confirmation-yes-button {
 #confirmation-no-button {
   color: #C00; }
 
+#ask-for-cookies {
+  position: fixed;
+  bottom: -100%;
+  z-index: 1000;
+  width: 100%;
+  background-color: #F0F8FF;
+  box-shadow: 2px 0 2px rgba(0, 0, 0, 0.15);
+}
+#ask-for-cookies.open {
+  bottom: 0;
+  animation: show-ask-for-cookies 1s ease both;
+}
+html.dark #ask-for-cookies {
+  background-color: #0E1621;
+  box-shadow: none;
+}
+#ask-for-cookies-headline {
+  font-family: Basic;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 2rem;
+  text-align: center;
+  color: #F0F8FF;
+  background-color: #7D80B8;
+}
+html.dark #ask-for-cookies-headline {
+  color: #ECECEC;
+  background-color: #212D3B;
+}
+#ask-for-cookies-text {
+  margin: 1rem .5rem;
+  font-family: Basic;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+#ask-for-cookies-button-ok {
+  display: block;
+  float: right;
+  margin: .5rem;
+  padding: 0 1rem;
+  min-width: 10rem;
+  font-family: Buttons;
+  font-size: 1.5rem;
+  line-height: 3rem;
+  color: #F0F8FF;
+  background-color: #7D80B8;
+  transition: all .2s ease 0s;
+}
+html.dark #ask-for-cookies-button-ok {
+  color: #ECECEC;
+  background-color: #212D3B;
+}
+#ask-for-cookies-button:hover,
+#ask-for-cookies-button:focus {
+  background: none;
+  border: 5px solid;
+}
 
 /****** Тост-уведомления ******/
 #toasts {
@@ -2499,4 +2556,9 @@ html.dark .error .friends-user-note-response {
 @keyframes show-toast {
   0% { left: -100%; }
   100% { left: 0; }
+}
+
+@keyframes show-ask-for-cookies {
+  0% { bottom: -100%; }
+  100% { bottom: 0; }
 }

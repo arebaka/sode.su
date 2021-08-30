@@ -42,6 +42,12 @@
 		}
 	}
 
+	function allowCookies()
+	{
+		setCookie("cookies_perm", true, 10000);
+		ui.askForCookies.open = false;
+	}
+
 	window.onTelegramAuth = function(user) {
 		fetch(api.methods.auth.path, {
 				method:  "POST",
@@ -148,6 +154,9 @@
 			},
 			onYes: null,
 			onNo:  null
+		},
+		askForCookies: {
+			open: false
 		}
 	};
 
@@ -162,6 +171,12 @@
 		fetch(api.paths.i18n["*.json"].replace(":1", lang))
 			.then(res => res.json())
 			.then(res => dict = res);
+	}
+
+	$: if (dict) {
+		if (!getCookie("cookies_perm")) {
+			ui.askForCookies.open = true;
+		}
 	}
 
 	$: if (ui.view) {
@@ -385,6 +400,12 @@
 					{ui.confirmation.dict.no}
 				</button>
 			</div>
+		</div>
+
+		<div id="ask-for-cookies" class:open={ui.askForCookies.open}>
+			<h1 id="ask-for-cookies-headline">{dict.ask_for_cookies.headline}</h1>
+			<p id="ask-for-cookies-text">{dict.ask_for_cookies.text}</p>
+			<button id="ask-for-cookies-button-ok" on:click={allowCookies}>{dict.ask_for_cookies.ok}</button>
 		</div>
 
 		<div id="toasts">

@@ -119,6 +119,11 @@
 		"yes": "Yes",
 		"no": "No"
 	},
+	"ask_for_cookies": {
+		"headline": "The site uses cookies",
+		"text": "In order for you and me to be further legally comfortable, I have to warn you: the site uses cookies to store the interface settings (language, view), the session after your authorization, etc. Without all of that, the site would be working with dementia.  By continuing to use the site, you agree to these conditions for the processing of personal data and the use of cookies. Click the button to confirm. Otherwise, you cannot be here, and you have to immediately leave this place.",
+		"ok": "OK"
+	},
 	"index": {},
 	"profile": {
 		"user": {
@@ -197,7 +202,7 @@
 			"confirmations": {
 				"unfriend": {
 					"headline": "Unfriend",
-					"text": "Remove {{name}} from friends?\nThe note will alse be erased.",
+					"text": "Remove {{name}} from friends?\nThe note will also be erased.",
 					"yes": "Yes",
 					"no": "No"
 				}
@@ -336,7 +341,7 @@
 			"confirmations": {
 				"remove": {
 					"headline": "Unfriend",
-					"text": "Remove {{name}} from friends?\nThe note will alse be erased.",
+					"text": "Remove {{name}} from friends?\nThe note will also be erased.",
 					"yes": "Yes",
 					"no": "No"
 				}
