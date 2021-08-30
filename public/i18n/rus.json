@@ -111,6 +111,20 @@
 			"title": "Ошибка входа",
 			"unauthorized": "Неудачно.",
 			"invalid_data": "Неверный запрос."
+		},
+		"disclaimer": {
+			"age": "Я старше 18 лет",
+			"terms": {
+				"label": "Я прочитал и принимаю {{link}}",
+				"name": "пользовательское соглашение",
+				"link": "policy/rus-RU/terms"
+			},
+			"privacy": {
+				"label": "Я прочитал и принимаю {{link}}",
+				"name": "политику конфиденциальности",
+				"link": "policy/rus-RU/privacy"
+			},
+			"submit": "Всё верно"
 		}
 	},
 	"log_out": {

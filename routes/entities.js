@@ -59,7 +59,6 @@ router.get("/:prefix(@|~):descriptor", async (req, res, next) => {
         .join("\n\t");
 
     res
-        .status(200)
         .type(".html")
         .send(cache.page({
             lang:      i18n[res.locals.clientLang].meta.lang,

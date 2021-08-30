@@ -736,7 +736,7 @@ html.dark #menu {
 
 html.dark #menu-logo {
   background-color: #0E1621;
-  background-image: url("../../img/menu-head-300-night.png");
+  background-image: url("../../img/menu-head-300-dark.png");
   border-color: #212D3B; }
 
 .menu-box {
@@ -812,18 +812,18 @@ html.dark .menu .notice {
   display: none;
   width: 100%;
   height: 100%;
-  background: rgba(100, 100, 100, 0.5); }
-
+  background: rgba(100, 100, 100, 0.5);
+}
 html.dark #log-in-box,
 html.dark #log-out-box,
 html.dark #confirmation-box {
-  background: rgba(50, 50, 100, 0.5); }
-
+  background: rgba(50, 50, 100, 0.5);
+}
 #log-in-box.open,
 #log-out-box.open,
 #confirmation-box.open {
-  display: block; }
-
+  display: block;
+}
 #log-in,
 #log-out,
 #confirmation {
@@ -839,19 +839,18 @@ html.dark #confirmation-box {
   background-color: #F0F8FF;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15); }
-
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+}
 html.dark #log-in,
 html.dark #log-out,
 html.dark #confirmation {
   background-color: #0E1621;
-  box-shadow: none; }
-
+  box-shadow: none;
+}
 #telegram-login-sodesu_bot {
   display: block;
   margin: 1rem;
 }
-
 #log-in-headline,
 #log-out-headline,
 #confirmation-headline {
@@ -861,88 +860,55 @@ html.dark #confirmation {
   line-height: 2rem;
   text-align: center;
   color: #F0F8FF;
-  background-color: #7D80B8; }
-
+  background-color: #7D80B8;
+}
 html.dark #log-in-headline,
 html.dark #log-out-headline,
 html.dark #confirmation-headline {
   color: #ECECEC;
-  background-color: #212D3B; }
-
-.log-in-field-label,
-.sign-up-field-label {
+  background-color: #212D3B;
+}
+#log-in-disclaimer {
   display: block;
-  width: calc(100% - 1rem);
-  margin: 0 .5rem;
+  max-width: 15rem;
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
-  font-size: .9rem;
-  font-weight: bold;
+  font-size: 1rem;
   line-height: 1.5rem;
-  text-align: left;
-  color: #7D80B8; }
-
-.log-in-field,
-.sign-up-field {
-  display: block;
-  width: calc(100% - 1rem);
-  height: 1.2rem;
-  padding: 0 .2rem;
-  margin: 0 .5rem;
-  font: 1rem/1.5rem Basic, Emoji, sans-serif;
-  font-size: .8rem;
-  line-height: 1.2rem;
   color: #000;
-  background-color: #FFF;
-  border: 1px solid #7D80B8; }
-
-html.dark .log-in-field,
-html.dark .sign-up-field {
+  background: none;
+}
+html.dark #log-in-disclaimer {
   color: #ECECEC;
-  background-color: #000; }
-
-.log-in-field.error,
-.sign-up-field.error {
-  background-color: #FCC;
-  border-color: #F00; }
-
-#log-in-submit,
-#sign-up-submit {
+}
+.log-in-disclaimer-point-box {
+  display: block;
+  margin: .5rem 0;
+  padding: 0 .5rem;
+  width: 100%;
+}
+.log-in-disclaimer-point-box a {
+  font-weight: bold;
+  color: #7D80B8;
+  text-decoration: none;
+}
+#log-in-disclaimer-submit {
   display: block;
   width: 100%;
-  margin-top: 1rem;
   font: 1rem/1.5rem Basic, Emoji, sans-serif;
   font-size: 1rem;
   font-weight: bold;
-  line-height: 1.6rem;
-  color: #FFF;
-  background-color: #7D80B8;
-  cursor: pointer; }
-
-html.dark #log-in-submit,
-html.dark #sign-up-submit {
-  background-color: #212D3B; }
-
-#log-in-sign-up,
-#sign-up-log-in {
-  margin: .5rem;
-  font: 1rem/1.5rem Basic, Emoji, sans-serif;
-  font-size: .9rem;
-  line-height: 1rem;
-  color: #000; }
-
-html.dark #log-in-sign-up,
-html.dark #sign-up-log-in {
-  color: #ECECEC; }
-
-#log-in-sign-up-button,
-#sign-up-log-in-button {
-  padding: 0;
-  font: 1rem/1.5rem Basic, Emoji, sans-serif;
-  font-size: .9rem;
-  font-weight: bold;
-  line-height: 1rem;
-  color: #7D80B8;
-  background: none; }
+  line-height: 2rem;
+  text-align: center;
+  color: #F0F8FF;
+  background-color: #080;
+  cursor: pointer;
+}
+html.dark #log-in-disclaimer-submit {
+  color: #ECECEC;
+  background: none;
+  border-top: 1px solid #0C0;
+  border-bottom: 1px solid #0C0;
+}
 
 /****** Выход ******/
 #log-out-text,

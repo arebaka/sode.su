@@ -139,7 +139,13 @@
 			}
 		},
 		logIn: {
-			open: false
+			open: false,
+			disclaimer: {
+				approved: false,
+				age:      false,
+				terms:    false,
+				privacy:  false
+			}
 		},
 		logOut: {
 			open: false
@@ -370,9 +376,38 @@
 		<div id="log-in-box" class:open={ui.logIn.open} on:click={() => {ui.logIn.open = false}}>
 			<div id="log-in" on:click|stopPropagation>
 				<h1 id="log-in-headline">{dict.log_in.headline}</h1>
-				<script async src="https://telegram.org/js/telegram-widget.js?15"
-					data-telegram-login="sodesu_bot" data-size="large" data-radius="0"
-					data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+				{#if !ui.logIn.disclaimer.approved}
+					<form id="log-in-disclaimer" on:submit|preventDefault={() => {ui.logIn.disclaimer.approved = true}}>
+						<label for="log-in-disclaimer-age" class="log-in-disclaimer-point-box" id="log-in-disclaimer-age-box">
+							<input type="checkbox" name="age" class="log-in-disclaimer-point" id="log-in-disclaimer-age" 
+								bind:checked={ui.logIn.disclaimer.age} />
+							{dict.log_in.disclaimer.age}
+						</label>
+						<label for="log-in-disclaimer-terms" class="log-in-disclaimer-point-box" id="log-in-disclaimer-terms-box">
+							<input type="checkbox" name="terms" class="log-in-disclaimer-point" id="log-in-disclaimer-terms"
+								bind:checked={ui.logIn.disclaimer.terms} />
+							{@html dict.log_in.disclaimer.terms.label
+								.replace("{{link}}",
+									`<a href="${dict.log_in.disclaimer.terms.link}">${dict.log_in.disclaimer.terms.name}</a>`
+							)}
+						</label>
+						<label for="log-in-disclaimer-privacy" class="log-in-disclaimer-point-box" id="log-in-disclaimer-privacy-box">
+							<input type="checkbox" name="privacy" class="log-in-disclaimer-point" id="log-in-disclaimer-privacy"
+								bind:checked={ui.logIn.disclaimer.privacy} />
+							{@html dict.log_in.disclaimer.privacy.label
+								.replace("{{link}}",
+									`<a href="${dict.log_in.disclaimer.privacy.link}">${dict.log_in.disclaimer.privacy.name}</a>`
+							)}
+						</label>
+						{#if ui.logIn.disclaimer.age && ui.logIn.disclaimer.terms && ui.logIn.disclaimer.privacy}
+							<input type="submit" value="{dict.log_in.disclaimer.submit}" id="log-in-disclaimer-submit">
+						{/if}
+					</form>
+				{:else}
+					<script async src="https://telegram.org/js/telegram-widget.js?15"
+						data-telegram-login="sodesu_bot" data-size="large" data-radius="0"
+						data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+				{/if}
 			</div>
 		</div>
 

@@ -50,7 +50,7 @@
 		},
 		unfriend: {
 			handler: () => {
-				let ctxDict  = dict.profile.user.confirmations.unfriend;
+				let ctxDict  = {...dict.profile.user.confirmations.unfriend};
 				ctxDict.text = ctxDict.text.replace("{{name}}", profile.name || dict.profile.user.default.name);
 
 				actions.confirm(ctxDict, () => {

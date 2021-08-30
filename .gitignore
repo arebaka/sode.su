@@ -11,6 +11,7 @@ videos/*
 audios/*
 thumbs/*
 logs/*
+policy/*
 
 public/js/bundle.js
 api.js.old

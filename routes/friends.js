@@ -12,7 +12,6 @@ router.use((req, res, next) => {
 
 router.get("/:section?", (req, res, next) => {
     res
-        .status(200)
         .type(".html")
         .send(cache.page({
             lang:      i18n[res.locals.clientLang].meta.lang,

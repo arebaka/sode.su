@@ -111,6 +111,20 @@
 			"headline": "Logging in failed",
 			"unauthorized": "Unauthorized.",
 			"invalid_data": "The request is invalid."
+		},
+		"disclaimer": {
+			"age": "I am over 18 years old",
+			"terms": {
+				"label": "I read and accept the {{link}}",
+				"name": "terms of service",
+				"link": "policy/rus-RU/terms"
+			},
+			"privacy": {
+				"label": "A read and accept the {{link}}",
+				"name": "privacy policy",
+				"link": "policy/rus-RU/privacy"
+			},
+			"submit": "All right"
 		}
 	},
 	"log_out": {

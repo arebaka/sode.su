@@ -56,7 +56,7 @@
 
 	function remove(id)
 	{
-		let ctxDict  = dict.friends.mutual.confirmations.remove;
+		let ctxDict  = {...dict.friends.mutual.confirmations.remove};
 		ctxDict.text = ctxDict.text.replace("{{name}}", list[id].name || dict.profile.user.default.name);
 
 		actions.confirm(ctxDict, () => {
