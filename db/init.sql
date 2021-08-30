@@ -74,11 +74,21 @@ CREATE TYPE public.poll_type AS ENUM (
     'quiz'
 );
 
+CREATE TYPE public.wall_sorting AS ENUM (
+    'datetime',
+    'datetime_reverse',
+    'bumps',
+    'bumps_reverse',
+    'reactions',
+    'reactions_reverse'
+);
+
 CREATE TABLE IF NOT EXISTS public.entities (
     id bigserial NOT NULL PRIMARY KEY,
     last_album_index bigint DEFAULT 0 NOT NULL,
     last_playlist_index bigint DEFAULT 0 NOT NULL,
-    last_videolib_index bigint DEFAULT 0 NOT NULL
+    last_videolib_index bigint DEFAULT 0 NOT NULL,
+    last_wall_index bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.content (
@@ -240,6 +250,35 @@ CREATE TABLE IF NOT EXISTS public.video_tags (
     tag_id bigint NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS public.walls (
+    id bigserial NOT NULL PRIMARY KEY,
+    owner_id bigint NOT NULL,
+    index bigint NOT NULL,
+    visibility public.access DEFAULT 'public'::public.access NOT NULL,
+    writable public.access DEFAULT 'protected'::public.access NOT NULL,
+    commentable public.access DEFAULT 'public'::public.access NOT NULL,
+    anon_posts_only boolean DEFAULT false NOT NULL,
+    anon_comments_only boolean DEFAULT false NOT NULL,
+    sorting public.wall_sorting DEFAULT 'datetime_reverse'::public.wall_sorting NOT NULL,
+    bumplimit bigint DEFAULT 500 NOT NULL,
+    last_post_index bigint DEFAULT 0 NOT NULL,
+    pinned_post_id bigint
+);
+
+CREATE TABLE IF NOT EXISTS public.posts (
+    id bigserial NOT NULL PRIMARY KEY,
+    wall_id bigint NOT NULL,
+    index bigint NOT NULL,
+    author_id bigint NOT NULL,
+    text_id bigint NOT NULL,
+    sent_dt timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    commentable public.access DEFAULT 'public'::public.access NOT NULL,
+    anon_comments_only boolean DEFAULT false NOT NULL,
+    last_comment_index bigint DEFAULT 0 NOT NULL,
+    poll_id bigint,
+    repost_id bigint
+);
+
 CREATE TABLE IF NOT EXISTS public.users (
     id bigserial NOT NULL PRIMARY KEY,
     entity_id bigint NOT NULL,
@@ -394,6 +433,24 @@ CREATE INDEX IF NOT EXISTS polls_answer_visibility_index          ON public.poll
 CREATE INDEX IF NOT EXISTS polls_closing_dt_index                 ON public.polls                USING btree (closing_dt);
 CREATE INDEX IF NOT EXISTS polls_multiple_answers_index           ON public.polls                USING btree (multiple_answers);
 CREATE INDEX IF NOT EXISTS poll_options_index_index               ON public.poll_options         USING btree (index);
+CREATE INDEX IF NOT EXISTS entities_last_album_index              ON public.entities             USING btree (last_album_index);
+CREATE INDEX IF NOT EXISTS entities_last_playlist_index           ON public.entities             USING btree (last_playlist_index);
+CREATE INDEX IF NOT EXISTS entities_last_videolib_index           ON public.entities             USING btree (last_videolib_index);
+CREATE INDEX IF NOT EXISTS entities_last_wall_index               ON public.entities             USING btree (last_wall_index);
+CREATE INDEX IF NOT EXISTS walls_index_index                      ON public.walls                USING btree (index);
+CREATE INDEX IF NOT EXISTS walls_visibility_index                 ON public.walls                USING btree (visibility);
+CREATE INDEX IF NOT EXISTS walls_writable_index                   ON public.walls                USING btree (writable);
+CREATE INDEX IF NOT EXISTS walls_commentable_index                ON public.walls                USING btree (commentable);
+CREATE INDEX IF NOT EXISTS walls_anon_posts_only_index            ON public.walls                USING btree (anon_posts_only);
+CREATE INDEX IF NOT EXISTS walls_anon_comments_only_index         ON public.walls                USING btree (anon_comments_only);
+CREATE INDEX IF NOT EXISTS walls_sorting_index                    ON public.walls                USING btree (sorting);
+CREATE INDEX IF NOT EXISTS walls_bumplimit_index                  ON public.walls                USING btree (bumplimit);
+CREATE INDEX IF NOT EXISTS walls_last_post_index_index            ON public.walls                USING btree (last_post_index);
+CREATE INDEX IF NOT EXISTS posts_index_index                      ON public.posts                USING btree (index);
+CREATE INDEX IF NOT EXISTS posts_sent_dt_index                    ON public.posts                USING btree (sent_dt);
+CREATE INDEX IF NOT EXISTS posts_commentable_index                ON public.posts                USING btree (commentable);
+CREATE INDEX IF NOT EXISTS posts_anon_comments_only_index         ON public.posts                USING btree (anon_comments_only);
+CREATE INDEX IF NOT EXISTS posts_last_comment_index_index         ON public.posts                USING btree (last_comment_index);
 
 ALTER TABLE public.content              ADD CONSTRAINT content_uploader_id_fk              FOREIGN KEY (uploader_id)       REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.artifacts            ADD CONSTRAINT artifacts_string_id_fk              FOREIGN KEY (string_id)         REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
@@ -457,3 +514,10 @@ ALTER TABLE public.quizzes              ADD CONSTRAINT quizzes_correct_option_id
 ALTER TABLE public.quizzes              ADD CONSTRAINT quizzes_explanation_id_fk           FOREIGN KEY (explanation_id)    REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.poll_answers         ADD CONSTRAINT poll_answers_user_id_fk             FOREIGN KEY (user_id)           REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.poll_answers         ADD CONSTRAINT poll_answers_option_id_fk           FOREIGN KEY (option_id)         REFERENCES public.poll_options(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.walls                ADD CONSTRAINT walls_owner_id_fk                   FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.walls                ADD CONSTRAINT walls_pinned_post_id_fk             FOREIGN KEY (pinned_post_id)    REFERENCES public.posts(id)        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.posts                ADD CONSTRAINT posts_wall_id_fk                    FOREIGN KEY (wall_id)           REFERENCES public.walls(id)        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.posts                ADD CONSTRAINT posts_author_id_fk                  FOREIGN KEY (author_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.posts                ADD CONSTRAINT posts_text_id_fk                    FOREIGN KEY (text_id)           REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.posts                ADD CONSTRAINT posts_poll_id_fk                    FOREIGN KEY (poll_id)           REFERENCES public.polls(id)        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.posts                ADD CONSTRAINT posts_repost_id_fk                  FOREIGN KEY (repost_id)         REFERENCES public.posts(id)        ON UPDATE CASCADE ON DELETE CASCADE;

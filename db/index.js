@@ -601,6 +601,13 @@ class DBHelper
             `, [
                 id, null, avatarId, nameId.id
             ]);
+
+        await this.pool.query(`
+                insert into walls (owner_id, index)
+                values ($1, $2)
+            `, [
+                entityId.rows[0].id, 0
+            ]);
     }
 
     async destroySession(userId, key)
