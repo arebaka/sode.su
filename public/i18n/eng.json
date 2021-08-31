@@ -168,7 +168,7 @@
 				},
 				"note": {
 					"mutual": {
-						"placeholder": "Note about friend...",
+						"placeholder": "Note about friend, maximum 1500 characters...",
 						"responses": {
 							"ok": "The note was recorded successfully.",
 							"unauthorized": "Unauthorized!",
@@ -176,7 +176,7 @@
 						}
 					},
 					"incoming": {
-						"placeholder": "Note about follower...",
+						"placeholder": "Note about follower, maximum 1500 characters...",
 						"responses": {
 							"ok": "The note was recorded successfully.",
 							"unauthorized": "Unauthorized!",
@@ -184,7 +184,7 @@
 						}
 					},
 					"outcoming": {
-						"placeholder": "Note about user...",
+						"placeholder": "Note about user, maximum 1500 characters...",
 						"responses": {
 							"ok": "The note was recorded successfully.",
 							"unauthorized": "Unauthorized!",
@@ -192,7 +192,7 @@
 						}
 					},
 					"none": {
-						"placeholder": "Note about user...",
+						"placeholder": "Note about user, maximum 1500 characters...",
 						"responses": {
 							"ok": "The note was recorded successfully.",
 							"unauthorized": "Unauthorized!",
@@ -229,6 +229,54 @@
 				"unbanned": "{{name}} has been unbanned"
 			}
 		}
+	},
+	"wall": {
+		"list": {
+			"headline": "Walls",
+			"descr": "Choose a wall to go to it",
+			"create": "Create a new wall"
+		},
+		"user": {
+			"default": {
+				"name": "Main"
+			},
+			"visibility": {
+				"public": "Visible to everyone",
+				"protected": "Visible only to friends",
+				"private": "Visible only to owner"
+			},
+			"postable": {
+				"public": "Postable for everyone",
+				"protected": "Postable only for friends",
+				"private": "Postable only for owner"
+			},
+			"commentable": {
+				"public": "Commentable for everyone",
+				"protected": "Commentable only for friends",
+				"private": "Commentable only for owner"
+			},
+			"anon_posts_only": "Anon posts only",
+			"anon_comments_only": "Anon comments only",
+			"sorting": {
+				"datetime": "Sorting from early to late",
+				"datetime_reverse": "Sorting from late to early",
+				"bumps": "Sorting by bumps (early to late)",
+				"bumps_reverse": "Sorting by bumps (late to early)",
+				"reactions": "Sorting by number of reactions (lowest to highest)",
+				"reactions_reverse": "Sorting by number of reactions (highest to lowest)"
+			},
+			"bumplimit": "Bumplimit: {{number}}"
+		},
+		"back": "Back",
+		"post": {
+			"placeholder": "New post, maximum 15000 characters...",
+			"reset": "Reset",
+			"submit": "Send",
+			"responses": {
+				"too_long": "Text is too long! Maximum 15000 characters!"
+			}
+		},
+		"empty": "The wall is empty"
 	},
 	"settings": {
 		"back": "Back",
@@ -282,9 +330,9 @@
 			"descr": "Manage your privacy",
 			"friendable": {
 				"label": "Who can add me as friend",
-				"private": "Nobody",
+				"private": "No one",
 				"protected": "Friend of friends",
-				"public": "Everybody",
+				"public": "Everyone",
 				"responses": {
 					"ok": "The value has been changed successfully.",
 					"unauthorized": "Unauthorized!",
@@ -294,9 +342,9 @@
 			},
 			"invitable": {
 				"label": "Who can invite me to the clubs",
-				"private": "Nobody",
+				"private": "No one",
 				"protected": "Only friends",
-				"public": "Everybody",
+				"public": "Everyone",
 				"responses": {
 					"ok": "The value has been changed successfully.",
 					"unauthorized": "Unauthorized!",
@@ -306,9 +354,9 @@
 			},
 			"commentable": {
 				"label": "Who can comment the posts on my wall",
-				"private": "Nobody",
+				"private": "No one",
 				"protected": "Only friends",
-				"public": "Everybody",
+				"public": "Everyone",
 				"responses": {
 					"ok": "The value has been changed successfully.",
 					"unauthorized": "Unauthorized!",

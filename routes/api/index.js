@@ -145,10 +145,10 @@ router.post("/entities", async (req, res, next) => {
         let entities;
 
         for (let descriptor of req.body.entities) {
-            parts = descriptor.split('/');
-
-            if (parts.length != 2 || !/^[1-9][0-9]*$/.test(parts[1]))
+            if (!(new RegExp(res.locals.api.types.Serialized_Entity).test(descriptor)))
                 return next(400);
+
+            parts = descriptor.split('/');
 
             switch (parts[0]) {
             case "user":

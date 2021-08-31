@@ -57,8 +57,8 @@ html.dark #profile-name {
 	width: 100%;
 	height: 2.5rem;
 	font-family: Basic;
-	font-size: 1rem;
-	line-height: 1.5rem;
+	font-size: .9rem;
+	line-height: 1.3rem;
 	color: #000;
 	background: none;
 	border-top: 1px solid #7D80B8;
@@ -876,7 +876,6 @@ html.dark #new-post-comment-user {
 /****** Стена ******/
 #wall {
 	position: relative;
-	top: 2px;
 	overflow: hidden;
 	max-width: 1140px;
 	margin: 1rem auto;
@@ -888,223 +887,239 @@ html.dark #new-post-comment-user {
 html.dark #wall {
 	color: #ECECEC;
 	background-color: #0E1621;
+	border: 2px solid #212D3B;
 	box-shadow: none;
 }
-#new-post {
+#walls-headline {
+	padding: 0 .5rem;
+	font-family: Basic, Emoji, Mono, sans-serif;
+	font-size: 1.5rem;
+	font-weight: bold;
+  line-height: 3rem;
+	color: #7D80B8;
+	text-align: left;
+}
+html.dark #walls-headline {
+  color: #0C0;
+}
+#walls-descr {
+  padding: 1rem .5rem;
+  font-family: Basic, Emoji, Mono, sans-serif;
+  font-size: 1rem;
+  background-color: #F0F8FF;
+}
+html.dark #walls-descr {
+  background-color: #17212B;
+}
+.walls-wall-box {
+  width: 100%;
+}
+.walls-wall {
+	overflow: hidden;
+	margin-top: .5rem;
+	padding: 0 .5rem;
+	border-bottom: 1px solid #7D80B8;
+  cursor: pointer;
+  transition: all .2s ease 0s;
+}
+.walls-wall:hover,
+.walls-wall:focus {
+  padding-left: 1rem;
+}
+html.dark .walls-wall {
+	border-color: #212D3B;
+}
+.walls-wall-box:last-of-type .walls-wall {
+	margin-bottom: .5rem;
+	border-bottom: none;
+}
+.walls-wall-name {
+  font-family: Basic;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 2rem;
+  text-align: left;
+  color: #7D80B8;
+}
+html.dark .walls-wall-name {
+  color: #0C0;
+}
+.walls-wall-prop {
+  font-family: Basic;
+  font-size: .8rem;
+  line-height: 1.2rem;
+}
+#walls-create {
+  display: block;
+  width: 100%;
+  font-family: Basic;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: 2rem;
+  color: #F0F8FF;
+  background-color: #7D80B8;
+  transition: all .2s ease 0s;
+}
+html.dark #walls-create {
+  color: #ECECEC;
+  background-color: #212D3B;
+}
+#walls-create:hover,
+#walls-create:focus {
+	color: #FFF07C;
+}
+html.dark #walls-create:hover,
+html.dark #walls-create:focus {
+	color: #FFF;
+	background-color: #17212B;
+}
+#walls-create:active {
+  font-size: .9rem;
+}
+#wall-back {
+  display: block;
+  float: left;
+  margin-right: .5rem;
+  width: 3rem;
+  height: 3rem;
+  font-size: 0;
+  text-align: center;
+  background: none;
+}
+#wall-back:hover,
+#wall-back:focus {
+  text-decoration: none;
+}
+#wall-back:before {
+  content: "<";
+  font-family: Mono;
+  font-size: 1.5rem;
+  line-height: 3rem;
+  color: #7D80B8;
+}
+html.dark #wall-back::before {
+  color: #ECECEC;
+}
+#wall-back:hover,
+#wall-back:focus {
+  background-color: #F0F8FF;
+}
+html.dark #wall-back:hover,
+html.dark #wall-back:focus {
+  background-color: #17212B;
+}
+#wall-headline {
+	padding: 0 .5rem;
+	font-family: Basic, Emoji, Mono, sans-serif;
+	font-size: 1.5rem;
+	font-weight: bold;
+  line-height: 3rem;
+	color: #7D80B8;
+	text-align: left;
+}
+html.dark #wall-headline {
+  color: #0C0;
+}
+#wall-post {
 	position: relative;
 	overflow: auto;
 	margin: .5rem;
 	padding: .5rem;
+  background-color: #F0F8FF;
 	border: 1px solid #7D80B8;
 }
-html.dark #new-post {
+html.dark #wall-post {
+  background-color: #17212B;
 	border-color: #212D3B;
 }
-#new-post-rich {
-	height: 1rem;
-}
-.new-post-rich {
-	float: left;
-	width: 1.2rem;
-	height: 1.2rem;
-	margin-right: .2rem;
-	color: #000;
-	background-color: #F0F8FF;
-	background-position: center;
-	background-size: 90%;
-	background-repeat: no-repeat;
-	border: 1px solid #7D80B8;
-	border-bottom: none;
-	border-top-left-radius: 2px;
-	border-top-right-radius: 2px;
-	cursor: pointer;
-}
-html.dark .new-post-rich {
-	color: #ECECEC;
-	background-color: #212D3B;
-	border-color: #212D3B;
-}
-.new-post-rich:hover,
-.new-post-rich:focus {
-	background-color: #FFF;
-}
-html.dark .new-post-rich:hover,
-html.dark .new-post-rich:focus {
-	background-color: #0E1621;
-}
-.new-post-rich:before {
-	display: block;
-	font-family: Basic;
-	font-size: 1rem;
-	line-height: 1.2rem;
-	text-align: center;
-	color: #000;
-}
-html.dark .new-post-rich:before {
-	color: #ECECEC;
-}
-#new-post-rich-heading:before {
-	content: "H";
-	font-size: 1.2rem;
-	font-weight: bold;
-}
-#new-post-rich-bold:before {
-	content: "B";
-	font-weight: bold;
-}
-#new-post-rich-italic:before {
-	content: "I";
-	font-style: italic;
-}
-#new-post-rich-underlined:before {
-	content: "U";
-	text-decoration: underline;
-}
-#new-post-rich-overline:before {
-	content: "O";
-	text-decoration: overline;
-}
-#new-post-rich-strikethrough:before {
-	content: "S";
-	text-decoration: line-through;
-}
-#new-post-rich-superscript:before {
-	content: "sp";
-	vertical-align: super;
-	font-size: .8rem;
-}
-#new-post-rich-subscript:before {
-	content: "sb";
-	vertical-align: sub;
-	font-size: .8rem;
-}
-#new-post-rich-monospace:before {
-	content: "M";
-	font-family: Mono, monospace;
-}
-#new-post-rich-spoiler:before {
-	content: "R";
-	font-family: Mono, monospace;
-	color: #AAA;
-	background-color: #AAA;
-}
-html.dark #new-post-rich-spoiler:before {
-	color: #444;
-	background-color: #444;
-}
-#new-post-text {
+#wall-post-text {
 	display: block;
 	width: 100%;
 	min-height: 3rem;
-	padding: .2rem 2.5rem;
-	margin-bottom: .5rem;
+	padding: .5rem;
 	font-family: Basic, Emoji, Mono, sans-serif;
 	font-size: .9rem;
 	color: #000;
 	background-color: #FFF;
 	border: 1px solid #7D80B8;
-	border-radius: 2px;
-	border-top-left-radius: 0;
-	resize: vertical;
+	resize: none;
 }
-html.dark #new-post-text {
+html.dark #wall-post-text {
 	color: #ECECEC;
-	background-color: #000;
+  background-color: #0E1621;
 	border-color: #212D3B;
 }
-#new-post-text.error {
-	background-color: #FCC;
-	border-color: #F00;
+.error #wall-post-text {
+	border-color: #C00;
 }
-#new-post-attach-toggle {
-	position: absolute;
-	left: .8rem;
-	bottom: 3rem;
-	width: 2rem;
-	height: 2rem;
-	font-size: 0;
-	background: none;
-	cursor: pointer;
+
+#wall-post-text:focus {
+  outline: 1px solid #7D80B8;
 }
-#new-post-attach-toggle:before {
-	content: "";
-	display: block;
-	width: 2rem;
-	height: 2rem;
-	background-image: url("../../img/attach.svg");
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
+html.dark #wall-post-text:focus {
+  outline-color: #212D3B;
 }
-#new-post-emoji-toggle {
-	position: absolute;
-	right: .8rem;
-	bottom: 3rem;
-	width: 2rem;
-	height: 2rem;
-	font-size: 0;
-	background: none;
-	cursor: pointer;
+#wall-post-author {
+  display: block;
+  float: left;
+  margin-top: .5rem;
+  padding-left: 2rem;
+  padding-right: .5rem;
+  width: 10rem;
+  height: 2rem;
+  font: 1rem/1.5rem Basic, Emoji, sans-serif;
+  line-height: 2rem;
+  color: #000;
+  background-color: #FFF;
+  background-size: contain;
+  background-position: left;
+  background-repeat: no-repeat;
+  border: 1px solid #7D80B8;
+  overflow: hidden;
+  cursor: pointer;
 }
-#new-post-emoji-toggle:before {
-	content: "";
-	display: block;
-	width: 1.6rem;
-	height: 1.6rem;
-	background-image: url("../../img/emoji.svg");
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
+html.dark #wall-post-author {
+  color: #ECECEC;
+  background-color: #0E1621;
+  border-color: #212D3B;
 }
-#new-post-anonymly-box {
-	float: left;
-	height: 1rem;
-	padding-top: .2rem;
-	font-family: Mono;
-	font-size: .8rem;
-	line-height: 1rem;
-	cursor: pointer;
-}
-#new-post-anonymly {
-	position: relative;
-	top: .15rem;
-	margin-right: .2rem;
-}
-#new-post-reset {
+#wall-post-reset {
 	display: none;
 }
-#new-post-submit {
+#wall-post-submit {
 	float: right;
-	width: 1.8rem;
-	height: 1.8rem;
+  margin-top: .5rem;
 	padding: 0 .5rem;
 	font-family: Buttons, Emoji, sans-serif;
-	font-size: 0;
-	line-height: 1.8rem;
-	color: #FFF;
+	font-size: 1rem;
+	line-height: 2rem;
+  color: #7D80B8;
 	background: none;
-	background-image: url("../../img/send.svg");
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
 	cursor: pointer;
+  transition: all .2s ease 0s;
+}
+#wall-post-submit:hover,
+#wall-post-submit:focus {
+  color: #F0F8FF;
+  background-color: #7D80B8;
+}
+html.dark #wall-post-submit {
+  color: #ECECEC;
+}
+html.dark #wall-post-submit:hover,
+html.dark #wall-post-submit:focus {
+  color: #17212B;
+  background-color: #ECECEC;
 }
 #new-post-submit[disabled="disabled"] {
 	background-image: url("../../img/loading-ring.svg");
 }
-#wall-stub {
+#wall-empty {
 	width: 100%;
-	padding: 1rem;
-	font-family: Buttons, Emoji, sans-serif;
+	padding: 0 .5rem;
+	font-family: Basic, Emoji, sans-serif;
 	font-size: 1.5rem;
-	line-height: 2rem;
-	text-align: center;
-	color: #000;
-	background-color: #FFF;
-}
-html.dark #wall-stub {
-	color: #ECECEC;
-	background-color: #0E1621;
+	line-height: 3rem;
 }
 .post {
 	position: relative;
@@ -1593,7 +1608,6 @@ html.dark #show-all-posts-button {
 
 @media screen and (max-width: 500px) {
 	#profile {
-		border: none;
 		box-shadow: none;
 	}
 	html.dark #profile {
@@ -1607,6 +1621,12 @@ html.dark #show-all-posts-button {
 	#profile-buttons {
 		width: 100%;
 	}
+  #wall {
+    box-shadow: none;
+  }
+  html.dark #wall {
+    border: none;
+  }
 	.post-option {
 		min-width: 0;
 		padding: 0 .5rem;

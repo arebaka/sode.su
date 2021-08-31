@@ -240,11 +240,10 @@ class DBHelper
     {
         let user = await this.pool.query(`
                 select u.id, u.role, u.registered_dt,
-                    up.alias as username, up.searchable, up.friendable, up.invitable, up.commentable,
-                    up.anon_comments_only, up.last_post_index, up.pinned_post_index,
+                    up.alias as username, up.searchable, up.friendable, up.invitable,
                     m_c.hash as cover_hash, m_c.format as cover_format,
                     m_a.hash as avatar_hash, m_a.format as avatar_format,
-                    c.text as name
+                    c.text as name, u.entity_id
                 from ${this.entityTables["user"].account} u
                 join ${this.entityTables["user"].profile} up on up.id = u.id
                 left join images i_c on i_c.id = up.cover_image_id
@@ -259,14 +258,35 @@ class DBHelper
         if (!user)
             return null;
 
+        const walls = await this.pool.query(`
+                select w.index, c.text as name,
+                    w.visibility, w.postable, w.commentable,
+                    w.anon_posts_only, w.anon_comments_only,
+                    w.sorting, w.bumplimit, w.last_post_index,
+                    p.index as pinned_post_index
+                from walls w
+                join content c
+                on c.id = w.name_id
+                left join posts p
+                on p.id = w.pinned_post_id
+                where w.owner_id = $1
+                order by index
+            `, [user.entity_id]);
+
         user.id     = parseInt(user.id);
-        user.cover  = user.cover_hash  ? (new BigUint64Array([user.cover_hash]))[0]  + '.' + user.cover_format  : null;
-        user.avatar = user.avatar_hash ? (new BigUint64Array([user.avatar_hash]))[0] + '.' + user.avatar_format : null;
+        user.cover  = user.cover_hash
+            ? (new BigUint64Array([user.cover_hash]))[0]  + '.' + user.cover_format
+            : null;
+        user.avatar = user.avatar_hash
+            ? (new BigUint64Array([user.avatar_hash]))[0] + '.' + user.avatar_format
+            : null;
+        user.walls  = walls.rows;
 
         user.cover_hash
             = user.cover_format
             = user.avatar_hash
             = user.avatar_format
+            = user.entity_id
             = undefined;
 
         return user;
@@ -276,18 +296,18 @@ class DBHelper
     {
         const queries = {
             user: `
-                select up.id as id, up.alias as username, up.searchable,
-                    up.friendable, up.invitable, up.commentable,
-                    up.anon_comments_only, up.last_post_index, up.pinned_post_index,
+                select up.id as id, up.alias as username,
+                    up.searchable, up.friendable, up.invitable,
                     m_c.hash as cover_hash, m_c.format as cover_format,
                     m_a.hash as avatar_hash, m_a.format as avatar_format,
-                    c.text as name
+                    c.text as name, u.entity_id
                 from ${this.entityTables["user"].profile} up
                 left join images i_c on i_c.id = up.cover_image_id
                 left join media m_c on m_c.id = i_c.media_id
                 left join images i_a on i_a.id = up.avatar_image_id
                 left join media m_a on m_a.id = i_a.media_id
                 join content c on c.id = up.name_id
+                join users u on u.id = up.id
                 where up.${/^\d+$/.test(entityId) ? "id" : "alias"} = $1
             `,
             club: ``
@@ -298,14 +318,31 @@ class DBHelper
         if (!profile)
             return null;
 
+        const walls = await this.pool.query(`
+                select w.index, c.text as name,
+                    w.visibility, w.postable, w.commentable,
+                    w.anon_posts_only, w.anon_comments_only,
+                    w.sorting, w.bumplimit, w.last_post_index,
+                    p.index as pinned_post_index
+                from walls w
+                join content c
+                on c.id = w.name_id
+                left join posts p
+                on p.id = w.pinned_post_id
+                where w.owner_id = $1
+                order by index
+            `, [profile.entity_id]);
+
         profile.id     = parseInt(profile.id);
         profile.cover  = profile.cover_hash  ? (new BigUint64Array([profile.cover_hash]))[0]  + '.' + profile.cover_format  : null;
         profile.avatar = profile.avatar_hash ? (new BigUint64Array([profile.avatar_hash]))[0] + '.' + profile.avatar_format : null;
+        profile.walls  = walls.rows;
 
         profile.cover_hash
             = profile.cover_format
             = profile.avatar_hash
             = profile.avatar_format
+            = profile.entity_id
             = undefined;
 
         return profile;
@@ -316,8 +353,7 @@ class DBHelper
         const queries = {
             user: `
                 select up.id as id, up.alias as username, up.searchable,
-                    up.friendable, up.invitable, up.commentable,
-                    up.anon_comments_only, up.last_post_index, up.pinned_post_index,
+                    up.friendable, up.invitable,
                     m_c.hash as cover_hash, m_c.format as cover_format,
                     m_a.hash as avatar_hash, m_a.format as avatar_format,
                     c.text as name
@@ -335,9 +371,14 @@ class DBHelper
         profiles = profiles.rows;
 
         for (let i in profiles) {
+            profiles[i].type   = type;
             profiles[i].id     = parseInt(profiles[i].id);
-            profiles[i].cover  = profiles[i].cover_hash  ? (new BigUint64Array([profiles[i].cover_hash]))[0]  + '.' + profiles[i].cover_format  : null;
-            profiles[i].avatar = profiles[i].avatar_hash ? (new BigUint64Array([profiles[i].avatar_hash]))[0] + '.' + profiles[i].avatar_format : null;
+            profiles[i].cover  = profiles[i].cover_hash
+                ? (new BigUint64Array([profiles[i].cover_hash]))[0]  + '.' + profiles[i].cover_format
+                : null;
+            profiles[i].avatar = profiles[i].avatar_hash
+                ? (new BigUint64Array([profiles[i].avatar_hash]))[0] + '.' + profiles[i].avatar_format
+                : null;
     
             profiles[i].cover_hash
                 = profiles[i].cover_format
@@ -603,10 +644,10 @@ class DBHelper
             ]);
 
         await this.pool.query(`
-                insert into walls (owner_id, index)
-                values ($1, $2)
+                insert into walls (owner_id, index, name_id)
+                values ($1, $2, $3)
             `, [
-                entityId.rows[0].id, 0
+                entityId.rows[0].id, 0, 1
             ]);
     }
 

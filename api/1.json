@@ -158,7 +158,7 @@
 		"Serialized_Entity": {
 			"proto":   "str",
 			"descr":   "",
-			"pattern": "^(user|club)\\/[1-9][0-9]*$"
+			"pattern": "^(user|club)\\/(0|([1-9][0-9]*))$"
 		},
 		"Image_Descr": {
 			"proto":      "str",
@@ -169,6 +169,21 @@
 			"proto":      "str",
 			"descr":      "",
 			"max_length": 1500
+		},
+		"Wall_Sorting": {
+			"proto": "str",
+			"descr": "",
+			"enum":  ["datetime", "datetime_reverse", "bumps", "bumps_reverse", "reactions", "reactions_reverse"]
+		},
+		"Post_Text": {
+			"proto":      "str",
+			"descr":      "",
+			"max_length": 15000
+		},
+		"Serialized_Wall": {
+			"proto":   "",
+			"descr":   "",
+			"pattern": "^(user|club)\\/(0|([1-9][0-9]*))\\/(0|([1-9][0-9]*))$"
 		},
 
 		"Response": {
@@ -186,6 +201,66 @@
 				},
 				"params": {
 					"type":     "str[]",
+					"nullable": true,
+					"descr":    ""
+				}
+			}
+		},
+		"Wall": {
+			"descr": "",
+			"props": {
+				"index": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"name": {
+					"type":     "str",
+					"nullable": false,
+					"descr":    ""
+				},
+				"visibility": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"postable": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"commentable": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"anon_posts_only": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"anon_comments_only": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"sorting": {
+					"type":     "Wall_Sorting",
+					"nullable": false,
+					"descr":    ""
+				},
+				"bumplimit": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"last_post_index": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"pinned_post_index": {
+					"type":     "uint64",
 					"nullable": true,
 					"descr":    ""
 				}
@@ -239,28 +314,13 @@
 					"nullable": false,
 					"descr":    ""
 				},
-				"commentable": {
-					"type":     "Access",
-					"nullable": false,
-					"descr":    ""
-				},
-				"anon_comments_only": {
-					"type":     "bool",
-					"nullable": false,
-					"descr":    ""
-				},
-				"last_post_index": {
-					"type":     "uint64",
-					"nullable": false,
-					"descr":    ""
-				},
-				"pinned_post_index": {
-					"type":     "uint64",
-					"nullable": false,
-					"descr":    ""
-				},
 				"username": {
 					"type":     "Username",
+					"nullable": false,
+					"descr":    ""
+				},
+				"walls": {
+					"type":     "Wall[]",
 					"nullable": false,
 					"descr":    ""
 				}
@@ -553,6 +613,28 @@
 				},
 				"text": {
 					"type":     "Friend_Note",
+					"nullable": false,
+					"descr":    ""
+				}
+			},
+			"returns": "Response"
+		},
+		"wall.post": {
+			"path":    "api/wall/post",
+			"descr":   "",
+			"params":  {
+				"wall": {
+					"type":     "Serialized_Wall",
+					"nullable": false,
+					"descr":    ""
+				},
+				"author": {
+					"type":     "Serialized_Entity",
+					"nullable": false,
+					"descr":    ""
+				},
+				"text": {
+					"type": "Post_Text",
 					"nullable": false,
 					"descr":    ""
 				}

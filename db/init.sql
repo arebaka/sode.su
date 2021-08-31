@@ -254,8 +254,9 @@ CREATE TABLE IF NOT EXISTS public.walls (
     id bigserial NOT NULL PRIMARY KEY,
     owner_id bigint NOT NULL,
     index bigint NOT NULL,
+    name_id bigint NOT NULL,
     visibility public.access DEFAULT 'public'::public.access NOT NULL,
-    writable public.access DEFAULT 'protected'::public.access NOT NULL,
+    postable public.access DEFAULT 'protected'::public.access NOT NULL,
     commentable public.access DEFAULT 'public'::public.access NOT NULL,
     anon_posts_only boolean DEFAULT false NOT NULL,
     anon_comments_only boolean DEFAULT false NOT NULL,
@@ -439,7 +440,7 @@ CREATE INDEX IF NOT EXISTS entities_last_videolib_index           ON public.enti
 CREATE INDEX IF NOT EXISTS entities_last_wall_index               ON public.entities             USING btree (last_wall_index);
 CREATE INDEX IF NOT EXISTS walls_index_index                      ON public.walls                USING btree (index);
 CREATE INDEX IF NOT EXISTS walls_visibility_index                 ON public.walls                USING btree (visibility);
-CREATE INDEX IF NOT EXISTS walls_writable_index                   ON public.walls                USING btree (writable);
+CREATE INDEX IF NOT EXISTS walls_postable_index                   ON public.walls                USING btree (postable);
 CREATE INDEX IF NOT EXISTS walls_commentable_index                ON public.walls                USING btree (commentable);
 CREATE INDEX IF NOT EXISTS walls_anon_posts_only_index            ON public.walls                USING btree (anon_posts_only);
 CREATE INDEX IF NOT EXISTS walls_anon_comments_only_index         ON public.walls                USING btree (anon_comments_only);
@@ -515,7 +516,8 @@ ALTER TABLE public.quizzes              ADD CONSTRAINT quizzes_explanation_id_fk
 ALTER TABLE public.poll_answers         ADD CONSTRAINT poll_answers_user_id_fk             FOREIGN KEY (user_id)           REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.poll_answers         ADD CONSTRAINT poll_answers_option_id_fk           FOREIGN KEY (option_id)         REFERENCES public.poll_options(id) ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.walls                ADD CONSTRAINT walls_owner_id_fk                   FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
-ALTER TABLE public.walls                ADD CONSTRAINT walls_pinned_post_id_fk             FOREIGN KEY (pinned_post_id)    REFERENCES public.posts(id)        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.walls                ADD CONSTRAINT walls_name_id_fk                    FOREIGN KEY (name_id)           REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;
+ALTER TABLE public.walls                ADD CONSTRAINT walls_pinned_post_id_fk             FOREIGN KEY (pinned_post_id)    REFERENCES public.posts(id)        ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.posts                ADD CONSTRAINT posts_wall_id_fk                    FOREIGN KEY (wall_id)           REFERENCES public.walls(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.posts                ADD CONSTRAINT posts_author_id_fk                  FOREIGN KEY (author_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.posts                ADD CONSTRAINT posts_text_id_fk                    FOREIGN KEY (text_id)           REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;

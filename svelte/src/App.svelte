@@ -110,6 +110,7 @@
 	let lang;
 	let dict;
 	let me;
+	let my     = {};
 	let toasts = [];
 	let params = location.search
 		? JSON.parse('{"'
@@ -177,6 +178,17 @@
 		fetch(api.paths.i18n["*"].replace(":1", lang))
 			.then(res => res.json())
 			.then(res => dict = res);
+
+		if (getCookie("userid")) {
+			fetch(api.methods.me.path, { method: "POST" })
+				.then(res => res.json())
+				.then(res => {
+					if (res.status == api.errors.ok) {
+						me = res.data;
+						document.getElementsByTagName("html")[0].className += " authorized";
+					}
+				});
+		}
 	}
 
 	$: if (dict) {
@@ -207,6 +219,18 @@
 		setCookie("view", ui.view, 10000);
 	}
 
+	$: if (me) {
+		fetch(api.methods.entities.path, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ entities: ["user/0", "user/" + me.id] })
+		})
+		.then(res => res.json())
+		.then(res => my = res.data);
+	}
+
 	fetch("api")
 		.then(res => res.json())
 		.then(res => {
@@ -223,17 +247,6 @@
 					}
 				})()
 				|| "eng";
-
-			if (getCookie("userid")) {
-				fetch(api.methods.me.path, { method: "POST" })
-					.then(res => res.json())
-					.then(res => {
-						if (res.status == api.errors.ok) {
-							me = res.data;
-							document.getElementsByTagName("html")[0].className += " authorized";
-						}
-					});
-			}
 		});
 </script>
 
@@ -460,7 +473,7 @@
 			</Route>
 			<Route path="/:entity" let:params>
 				{#if (/^@([0-9]+)|([A-Za-z_][A-Za-z0-9_\-\.]*)$/.test(params.entity))}
-					<User api={api} dict={dict} actions={actions} bind:me={me} descriptor={params.entity.substring(1)}/>
+					<User api={api} dict={dict} actions={actions} bind:me={me} my={my} descriptor={params.entity.substring(1)}/>
 				{:else}
 					<Error code={404}/>
 				{/if}
