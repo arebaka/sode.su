@@ -16,23 +16,23 @@ router.post("/wall.post", async (req, res, next) => {
         const params = {
             wall: {
                 ownerType: wall[0],
-                ownerId:   wall[1],
-                index:     wall[2]
+                ownerId:   parseInt(wall[1]),
+                index:     parseInt(wall[2])
             },
             author: {
                 type: author[0],
-                id:   author[1]
+                id:   parseInt(author[1])
             },
             poll: poll ? {
                 creatorType: poll[0],
-                creatorId:   poll[1],
-                index:       poll[2]
+                creatorId:   parseInt(poll[1]),
+                index:       parseInt(poll[2])
             } : null,
             repost: repost ? {
                 wallOwnerType: repost[0],
-                wallOwnerId:   repost[1],
-                wallIndex:     repost[2],
-                index:         repost[3]
+                wallOwnerId:   parseInt(repost[1]),
+                wallIndex:     parseInt(repost[2]),
+                index:         parseInt(repost[3])
             } : null
         };
 
@@ -42,7 +42,7 @@ router.post("/wall.post", async (req, res, next) => {
         if (!wall)
             return res
                 .status(424)
-                .json({ status: api.erorrs.doesnt_exists, param: "wall" });
+                .json({ status: api.errors.doesnt_exists, param: "wall" });
 
         if (params.author.type != "user"
             || !(params.author.id === 0
@@ -53,13 +53,15 @@ router.post("/wall.post", async (req, res, next) => {
                 .status(403)
                 .json({ status: api.errors.access_denied });
 
-        const relation = await db.getRelation(params.author.type, params.author.id, params.wall.ownerType, params.wall.ownerId);
+        const relation = await db.getRelation(
+            params.wall.ownerType, params.wall.ownerId, params.author.type, params.author.id
+        );
 
         if (relation.banned || (
-            relation.friend != "me" && (
+            relation.relation != "me" && (
                 wall.postable != "public"
                     || wall.postable == "private"
-                    || relation.friend != "mutual"
+                    || relation.relation != "friend"
         )))
             return res
                 .status(403)
@@ -91,10 +93,11 @@ router.post("/wall.post", async (req, res, next) => {
         }
 */
         const post = await db.post(
-            wall.id, author.type, author.id,
-            req.params.text, req.params.schedule,
-            req.params.commentable, req.params.anon_comments_only,
-            poll ? poll.id : null, repost ? repost.id : null
+            wall.id, params.author.type, params.author.id,
+            req.body.text, req.body.schedule,
+            req.body.commentable, req.body.anon_comments_only,
+            poll ? poll.id : null, repost ? repost.id : null,
+            req.cookies.userid
         );
 
         post
@@ -105,7 +108,7 @@ router.post("/wall.post", async (req, res, next) => {
                 .status(403)
                 .json({ status: api.errors.access_denied });
     }
-    catch (err) {
+    catch (err) {console.error(err);
         res
             .status(400)
             .json({ status: api.errors.invalid_data });

@@ -1,5 +1,6 @@
 <script type="text/javascript">
 	import Error from "./Error.svelte";
+	import Wall  from "./Wall.svelte";
 
 	export let api;
 	export let dict;
@@ -116,8 +117,7 @@
 					handler: () => {}
 				}
 			}
-		},
-		wall: null
+		}
 	};
 
 	$: if (descriptor) {
@@ -213,45 +213,6 @@
 			return relation.noteResponse = api.errors.too_long;
 	}
 
-	function post()
-	{
-		ui.wall.post.response = null;
-
-		if (ui.wall.post.text.length > api.types.Post_Text.max_length)
-			return ui.wall.post.response = api.errors.too_long
-
-		fetch(api.method["wall.post"].path, {
-				method:  "POST",
-				headers: { "Content-Type": "application/json" },
-				body:    JSON.stringify({
-					wall:              `user/${profile.id}/${ui.wall.index}`,
-					author:             ui.wall.post.author,
-					text:               ui.wall.post.text,
-					schedule:           null,
-					commentable:        "public",
-					anon_comments_only: false,
-					poll:               null,
-					repost:             null
-				})
-			})
-			.then(res => res.json())
-			.then(res => {
-				ui.wall.post.response = res.status;
-				if (ui.wall.post.response == api.errors.ok) {
-					alert(res);
-				}
-			});
-	}
-
-	function checkPost(text)
-	{
-		ui.wall.post.text     = text;
-		ui.wall.post.response = null;
-
-		if (text.length > api.types.Post_Text.max_length)
-			return ui.wall.post.response = api.errors.too_long
-	}
-
 	function updateAreaHeight(area)
 	{
 		area.style.height = "0px";
@@ -335,84 +296,7 @@
 		{/if}
 	</div>
 
-	<div id="wall" data-relation="{relation ? relation.relation : "none"}">
-		{#if !ui.wall}
-			<h1 id="walls-headline">{dict.wall.list.headline}</h1>
-			<p id="walls-descr">{dict.wall.list.descr}</p>
-			<ui id="walls">
-				{#each profile.walls as wall}
-					<li class="walls-wall-box">
-						<div class="walls-wall" on:click={() => {ui.wall = {...wall, post: {}}}}>
-							<h2 class="walls-wall-name">{wall.name || dict.wall.user.default.name} #{wall.index}</h2>
-							<p class="walls-wall-prop">{dict.wall.user.visibility[wall.visibility]}</p>
-							<p class="walls-wall-prop">{dict.wall.user.postable[wall.postable]}</p>
-							<p class="walls-wall-prop">{dict.wall.user.commentable[wall.commentable]}</p>
-							{#if wall.anon_posts_only}
-								<p class="walls-wall-prop">{dict.wall.user.anon_posts_only}</p>
-							{/if}
-							{#if wall.anon_comments_only}
-								<p class="walls-wall-prop">{dict.wall.user.anon_comments_only}</p>
-							{/if}
-							<p class="walls-wall-prop">{dict.wall.user.sorting[wall.sorting]}</p>
-							{#if wall.sorting == "bumps" || wall.sorting == "bumps_reverse"}
-								<p class="walls-wall-prop">{dict.wall.user.bumplimit.replace("{{number}}", wall.bumplimit)}</p>
-							{/if}
-						</div>
-					</li>
-				{/each}
-			</ui>
-			{#if relation && relation.relation == "me"}
-				<button id="walls-create" on:click={() => {}}>{dict.wall.list.create}</button>
-			{/if}
-		{:else}
-			<button id="wall-back" on:click={() => {ui.wall = null}}>{dict.wall.back}</button>
-			<h1 id="wall-headline">{ui.wall.name || dict.wall.user.default.name} #{ui.wall.index}</h1>
-			{#if me && relation && (relation.relation == "me" || ui.wall.postable == "public"
-					|| (ui.wall.postable == "protected" && relation.relation == "friend"))}
-				<form enctype="text/plain" action={api.methods["wall.post"].path} method="POST"
-						id="wall-post" class:error={ui.wall.post.response} on:submit|preventDefault={post}>
-					<textarea name="text" placeholder="{dict.wall.post.placeholder}" id="wall-post-text" required
-						on:click={e => updateAreaHeight(e.target)} on:input={e => updateAreaHeight(e.target)}
-						on:input={e => checkPost(e.target.value)}></textarea>
-					{#if my}
-						<select name="author" id="wall-post-author" required bind:value={ui.wall.post.author}>
-							{#if wall.anon_posts_only}
-								<option value="user/0" class="wall-post-author-option" selected>
-									{my["user/0"].name || dict.profile.user.default.name}
-								</option>
-							{:else}
-								{#each Object.keys(my) as entity}
-									<option value={entity} class="wall-post-author-option" selected={entity == "user/" + me.id}>
-										{my[entity].name || dict.profile[my[entity].type].default.name}
-									</option>
-								{/each}
-							{/if}
-						</select>
-						{#if ui.wall.post.author && my[ui.wall.post.author].avatar}
-							<img src="{api.paths["@*"].i['0']["*." + my[ui.wall.post.author].avatar.split('.')[1]]
-								.replace(":1", my[ui.wall.post.author].id)
-								.replace(":2", my[ui.wall.post.author].avatar.split('.')[0])
-								+ "?thumb=100"}" alt="" id="wall-post-author-avatar" />
-						{/if}
-					{/if}
-					<input type="reset" value="{dict.wall.post.reset}" id="wall-post-reset" />
-					<input type="submit" value="{dict.wall.post.submit}" id="wall-post-submit" />
-					{#if ui.wall.post && ui.wall.post.response}
-						<p id="wall-post-response">
-							{dict.wall.post.responses[
-								Object.keys(api.errors).find(key => api.errors[key] == ui.wall.post.response)
-							]}
-						</p>
-					{/if}
-				</form>				
-			{/if}
-			{#if ui.wall.posts && ui.wall.posts.length}
-				
-			{:else}
-				<p id="wall-empty">{dict.wall.empty}</p>
-			{/if}
-		{/if}
-	</div>
+	<Wall api={api} dict={dict} me={me} actions={actions} my={my} profile={profile} relation={relation}/>
 {:else if profile === null}
 	<Error code={404}/>
 {:else}

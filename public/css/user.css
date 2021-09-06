@@ -918,6 +918,7 @@ html.dark #walls-descr {
   width: 100%;
 }
 .walls-wall {
+	position: relative;
 	overflow: hidden;
 	margin-top: .5rem;
 	padding: 0 .5rem;
@@ -947,7 +948,24 @@ html.dark .walls-wall {
 html.dark .walls-wall-name {
   color: #0C0;
 }
+.walls-wall-index {
+	font-family: Digits;
+}
+.walls-wall-posts-count {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	padding: 0 .5rem;
+	font-family: Digits;
+	font-size: 1rem;
+	line-height: 2rem;
+	background-color: #F0F8FF;
+}
+html.dark .walls-wall-posts-count {
+	background-color: #17212B;
+}
 .walls-wall-prop {
+  clear: both;
   font-family: Basic;
   font-size: .8rem;
   line-height: 1.2rem;
@@ -1022,6 +1040,9 @@ html.dark #wall-back:focus {
 }
 html.dark #wall-headline {
   color: #0C0;
+}
+#wall-index {
+	font-family: Digits;
 }
 #wall-post {
 	position: relative;

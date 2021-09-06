@@ -265,19 +265,9 @@ router.post("/relation", async (req, res, next) => {
     try {
         const parts = req.body.entity.split('/');
 
-        if (parts[0] == "user" && parts[1] == req.cookies.userid) {
-            return res
-                .status(200)
-                .json({ status: api.errors.ok, data: {
-                    relation:       "me",
-                    common_friends: 0,
-                    common_clubs:   0,
-                    note:           "",
-                    banned:         false
-                }});
-        }
-
-        const relation = await db.getRelation("user", req.cookies.userid, parts[0], parseInt(parts[1]));
+        const relation = await db.getRelation(
+            "user", req.cookies.userid, parts[0], parseInt(parts[1])
+        );
 
         return relation
             ? res

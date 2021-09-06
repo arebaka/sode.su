@@ -34,7 +34,15 @@ class DBHelper
         };
 
         this.artifactPatters = {
-            number: /[+–-]?([0-9]*\.)?[0-9]+/g
+            number:   /[+–-]?([0-9]*\.)?[0-9]+/g,
+            mention:  /(?:^|\s)(@|~)[A-Za-z][A-Za-z0-9\\-\\.]*/g,
+            hashtag:  /(?:^|\s)#[^ !"#%&()*+,.:;<=>?\[\/\]\^{|}]/g,
+            slashtag: /(?:^|\s)\/[^ !"#%&()*+,.:;<=>?\[\/\]\^{|}]/g,
+            cashtag:  /(?:^|\s)(¤|\$|€|₿|₽|¥)[0-9A-Za-z_-]/g,
+            phone:    /(\+\d{1,3}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/g,
+            email:    /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g,
+            uri:      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g,
+            emoji:    /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?(?:\u200d(?:[^\ud800-\udfff]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?)*/g
         };
     }
 
@@ -413,7 +421,7 @@ class DBHelper
                     pp.index as pinned_post_index, count(p.*) as n_posts
                 from walls w
                 join ${this.entityTables[ownerType].account} u
-                on u.id = w.owner_id
+                on u.entity_id = w.owner_id
                 join content c
                 on c.id = w.name_id
                 left join posts pp
@@ -421,7 +429,7 @@ class DBHelper
                 left join posts p
                 on p.wall_id = w.id
                 where u.id = $1
-                and index = $2
+                and w.index = $2
                 group by w.id, c.id, pp.id
             `, [ownerId, index]);
 
@@ -436,60 +444,67 @@ class DBHelper
             case "user":
                 let res = {};
 
-                res.relation = await this.pool.query(`
-                        select offerer_id, acceptor_id
-                        from friends
-                        where offerer_id = $1
-                        and acceptor_id = $2
-                        or acceptor_id = $1
-                        and offerer_id = $2
-                    `, [
-                        fromId, toId
-                    ]);
-
-                if (!res.relation.rows.length) {
-                    res.relation = "none";
-                } else if (res.relation.rows.length == 2) {
-                    res.relation = "friend";
-                } else if (res.relation.rows[0].offerer_id == toId) {
-                    res.relation = "incoming";
-                } else {
-                    res.relation = "outcoming";
+                if (fromId == toId) {
+                    res.relation       = "me";
+                    res.common_friends = res.common_clubs = 0;
+                    res.note           = "";
                 }
+                else {
+                    res.relation = await this.pool.query(`
+                            select offerer_id, acceptor_id
+                            from friends
+                            where offerer_id = $1
+                            and acceptor_id = $2
+                            or acceptor_id = $1
+                            and offerer_id = $2
+                        `, [
+                            fromId, toId
+                        ]);
 
-                res.common_friends = await this.pool.query(`
-                        select count(*) as count
-                        from friends f1
-                        join friends f2
-                        on f2.offerer_id = f1.acceptor_id
-                        and f2.acceptor_id = f1.offerer_id
-                        where f1.offerer_id = $1
-                        and f1.acceptor_id in (
-                            select f1.acceptor_id as id
+                    if (!res.relation.rows.length) {
+                        res.relation = "none";
+                    } else if (res.relation.rows.length == 2) {
+                        res.relation = "friend";
+                    } else if (res.relation.rows[0].offerer_id == toId) {
+                        res.relation = "incoming";
+                    } else {
+                        res.relation = "outcoming";
+                    }
+
+                    res.common_friends = await this.pool.query(`
+                            select count(*) as count
                             from friends f1
                             join friends f2
                             on f2.offerer_id = f1.acceptor_id
                             and f2.acceptor_id = f1.offerer_id
-                            where f1.offerer_id = $2
-                        )
-                    `, [
-                        fromId, toId
-                    ]);
-                res.common_friends = parseInt(res.common_friends.rows[0].count);
+                            where f1.offerer_id = $1
+                            and f1.acceptor_id in (
+                                select f1.acceptor_id as id
+                                from friends f1
+                                join friends f2
+                                on f2.offerer_id = f1.acceptor_id
+                                and f2.acceptor_id = f1.offerer_id
+                                where f1.offerer_id = $2
+                            )
+                        `, [
+                            fromId, toId
+                        ]);
+                    res.common_friends = parseInt(res.common_friends.rows[0].count);
 
-                res.common_clubs = 0;
+                    res.common_clubs = 0;
 
-                res.note = await this.pool.query(`
-                        select c.text as note
-                        from friends f
-                        join content c
-                        on c.id = f.note_id
-                        where f.offerer_id = $1
-                        and f.acceptor_id = $2
-                    `, [
-                        fromId, toId
-                    ]);
-                res.note = res.note.rows[0] ? res.note.rows[0].note : "";
+                    res.note = await this.pool.query(`
+                            select c.text as note
+                            from friends f
+                            join content c
+                            on c.id = f.note_id
+                            where f.offerer_id = $1
+                            and f.acceptor_id = $2
+                        `, [
+                            fromId, toId
+                        ]);
+                    res.note = res.note.rows[0] ? res.note.rows[0].note : "";
+                }
 
                 res.banned = await this.pool.query(`
                         select b.id
@@ -842,11 +857,11 @@ class DBHelper
     }
 
     async post(wallId, authorType, authorId, text, schedule,
-        commentable, anon_comments_only, pollId, repostId)
+        commentable, anon_comments_only, pollId, repostId, userId)
     {
         const author = await this.pool.query(`
                 select entity_id as id
-                from ${this.entityTables[authorType]}
+                from ${this.entityTables[authorType].account}
                 where id = $1
             `, [authorId]);
         if (!author.rows[0])
@@ -854,22 +869,32 @@ class DBHelper
 
         const index = await this.pool.query(`
                 update walls
-                set index = index + 1
+                set last_post_index = last_post_index + 1
                 where id = $1
-                returning index
+                returning last_post_index
             `, [wallId]);
 
-        text = await this._getContent(text);
+        text = await this._getContent(text, userId);
+
+        if (!schedule) {
+            schedule = "2019-04-27 03:00:00";
+        }
 
         const post = await this.pool.query(`
                 insert into posts (
                     wall_id, index, author_id, text_id, sent_dt,
                     commentable, anon_comments_only, poll_id, repost_id
                 )
-                values ($1, $2, $3, $4, max($5, current_timestamp()), $6, $7, $8, $9)
+                values ($1, $2, $3, $4, (
+                    select $5 as dt
+                    union
+                    select current_timestamp as dt
+                    order by dt desc
+                    limit 1
+                ), $6, $7, $8, $9)
                 returning id, index, sent_dt
             `, [
-                wallId, index.rows[0].index, author.rows[0].id, text.id,
+                wallId, index.rows[0].last_post_index, author.rows[0].id, text.id,
                 schedule, commentable, anon_comments_only, pollId, repostId
             ]);
 
