@@ -1,6 +1,6 @@
 <script type="text/javascript">
-	const options = ["friendable", "invitable", "commentable"];
-	const flags   = ["searchable", "anon_comments_only"];
+	const options = ["friendable", "invitable"];
+	const flags   = ["searchable"];
 
 	export let api;
 	export let dict;
@@ -8,11 +8,9 @@
 
 	let profile   = {...me};
 	let responses = {
-		friendable:         null,
-		invitable:          null,
-		commentable:        null,
-		searchable:         null,
-		anon_comments_only: null
+		friendable: null,
+		invitable:  null,
+		searchable: null
 	};
 
 	document.title = dict.settings.privacy.title;
@@ -22,7 +20,7 @@
 		responses[option] = null;
 		if (me[option] == profile[option]) return;
 
-		if (!profile[option]) {
+		if (profile[option] == null || profile[option] == undefined) {
 			responses[option] = api.errors.missing_param;
 		}
 
@@ -30,38 +28,17 @@
 			fetch(api.methods["set.privacy"].path, {
 					method:  "POST",
 					headers: { "Content-Type": "application/json" },
-					body:    JSON.stringify({ [option]: profile[option] })
+					body:    JSON.stringify({
+						friendable: profile.friendable,
+						invitable:  profile.invitable,
+						searchable: profile.searchable
+					})
 				})
 				.then(res => res.json())
 				.then(res => {
 					responses[option] = res.status;
 					if (!responses[option]) {
 						me[option] = profile[option];
-					}
-				});
-		}
-	}
-
-	function changeFlag(flag)
-	{
-		responses[flag] = null;
-		if (me[flag] == profile[flag]) return;
-
-		if (!profile[flag]) {
-			profile[flag] = false;
-		}
-
-		if (!responses[flag]) {
-			fetch(api.methods["set.privacy"].path, {
-					method:  "POST",
-					headers: { "Content-Type": "application/json" },
-					body:    JSON.stringify({ [flag]: profile[flag] })
-				})
-				.then(res => res.json())
-				.then(res => {
-					responses[flag] = res.status;
-					if (!responses[flag]) {
-						me[flag] = profile[flag];
 					}
 				});
 		}
@@ -98,11 +75,11 @@
 		<fieldset id="settings-privacy-flags">
 			<legend id="settings-privacy-flags-legend">{dict.settings.privacy.flags.headline}</legend>
 			{#each flags as flag}
-				<label class="settings-privacy-flag-box" id="settings-privacy-{flag}-box">
+				<label class="settings-privacy-flag-box" id="settings-privacy-{flag}-box" class:error={responses[flag]}>
 					{dict.settings.privacy[flag].label}
 					<input type="checkbox" name="{flag}" class="settings-privacy-flag"
 						id="settings-privacy-{flag}" bind:checked={profile[flag]} required
-						on:change={() => { changeFlag(flag) }}/>
+						on:change={() => change(flag)}/>
 					{#if responses[flag] !== null}
 						<p class="settings-response" id="settings-privacy-{flag}-response">
 							{dict.settings.privacy[flag].responses[

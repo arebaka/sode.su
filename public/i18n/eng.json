@@ -147,27 +147,27 @@
 				"bio": "There is a bio example."
 			},
 			"relation": {
-				"me": "It is your profile",
-				"friend": {
-					"mutual": "You are friends",
+				"relation": {
+					"me": "It is your profile",
+					"friend": "You are friends",
 					"incoming": "Your subscriber",
 					"outcoming": "You are subscribed",
 					"none": "No relationship"
 				},
 				"common_friends": {
-					"mutual": "Common friends: {{count}}",
+					"friend": "Common friends: {{count}}",
 					"incoming": "Common friends: {{count}}",
 					"outcoming": "Common friends: {{count}}",
 					"none": "Common friends: {{count}}"
 				},
 				"common_clubs": {
-					"mutual": "Common clubs: {{count}}",
+					"friend": "Common clubs: {{count}}",
 					"incoming": "Common clubs: {{count}}",
 					"outcoming": "Common clubs: {{count}}",
 					"none": "Common clubs: {{count}}"
 				},
 				"note": {
-					"mutual": {
+					"friend": {
 						"placeholder": "Note about friend, maximum 1500 characters...",
 						"responses": {
 							"ok": "The note was recorded successfully.",
@@ -352,30 +352,11 @@
 					"invalid_value": "Invalid value!"
 				}
 			},
-			"commentable": {
-				"label": "Who can comment the posts on my wall",
-				"private": "No one",
-				"protected": "Only friends",
-				"public": "Everyone",
-				"responses": {
-					"ok": "The value has been changed successfully.",
-					"unauthorized": "Unauthorized!",
-					"missing_param": "Value is required!",
-					"invalid_value": "Invalid value!"
-				}
-			},
 			"flags": {
 				"headline": "Flags"
 			},
 			"searchable": {
 				"label": "Other users can find me through user search",
-				"responses": {
-					"ok": "The flag has been changed successfully.",
-					"unauthorized": "Unauthorized!"
-				}
-			},
-			"anon_comments_only": {
-				"label": "Comments on my wall can only be posted anonymously",
 				"responses": {
 					"ok": "The flag has been changed successfully.",
 					"unauthorized": "Unauthorized!"

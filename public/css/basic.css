@@ -384,6 +384,17 @@ html.dark #topnav-language .topnav-label {
   border-color: #FFF;
   transform: translateY(0.3rem); }
 
+html.dark .topnav:hover,
+html.dark .topnav:focus,
+html.dark #topnav-media .topnav-label:hover,
+html.dark #topnav-media .topnav-label:focus,
+html.dark #topnav-view .topnav-label:hover,
+html.dark #topnav-view .topnav-label:focus,
+html.dark #topnav-language .topnav-label:hover,
+html.dark #topnav-language .topnav-label:focus {
+  border-color: #ECECEC;
+}
+
 .topnav:active {
   transform: scaleX(0.95); }
 
@@ -412,6 +423,12 @@ html.dark .topnav-label {
   font-size: .9rem;
   line-height: .9rem;
   color: #FFF; }
+
+html.dark #topnav-media .topnav-label:after,
+html.dark #topnav-view .topnav-label:after,
+html.dark #topnav-language .topnav-label:after {
+  color: #ECECEC;
+}
 
 #topnav-medias,
 #topnav-views,
@@ -744,6 +761,11 @@ html.dark #menu-logo {
 html.dark .menu-box {
   border-color: #212D3B; }
 
+.menu {
+  display: block;
+  padding: 0 1rem;
+}
+
 .menu:hover .menu-label, .menu:focus .menu-label {
   text-decoration: none; }
 
@@ -751,7 +773,6 @@ html.dark .menu-box {
 select.menu {
   display: block;
   width: 100%;
-  padding: 0 1rem;
   font: 0.9rem/1.5rem Mono, Emoji, monospace, Basic, sans-serif;
   font-size: 1.2rem;
   font-weight: bold;
@@ -2162,7 +2183,10 @@ html.dark .error .settings-response {
 }
 .error #settings-profile-username,
 .error #settings-profile-name,
-.error #settings-profile-bio {
+.error #settings-profile-bio,
+html.dark .error #settings-profile-username,
+html.dark .error #settings-profile-name,
+html.dark .error #settings-profile-bio {
   border-color: #C00;
 }
 

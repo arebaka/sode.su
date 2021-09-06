@@ -137,11 +137,9 @@
 
 	$: if (profile && me) {
 		fetch(api.methods.relation.path, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({ entity: "user/" + profile.id })
+				method:  "POST",
+				headers: { "Content-Type": "application/json" },
+				body:    JSON.stringify({ entity: "user/" + profile.id })
 			})
 			.then(res => res.json())
 			.then(res => {
@@ -154,14 +152,14 @@
 	}
 
 	$: if (relation) {
-		ui.profile.buttons.friend.allowed = relation.friend == "incoming" || (
-			relation.friend == "none" && (
+		ui.profile.buttons.friend.allowed = relation.relation == "incoming" || (
+			relation.relation == "none" && (
 				profile.friendable == "public" || (
 					profile.friendable == "protected" && relation.common_friends > 0
 		)));
 
-		ui.profile.buttons.unfriend.allowed    = relation.friend == "mutual";
-		ui.profile.buttons.unsubscribe.allowed = relation.friend == "outcoming";
+		ui.profile.buttons.unfriend.allowed    = relation.relation == "friend";
+		ui.profile.buttons.unsubscribe.allowed = relation.relation == "outcoming";
 		ui.profile.buttons.ban.allowed         = !relation.banned;
 		ui.profile.buttons.unban.allowed       = relation.banned;
 	}
@@ -191,21 +189,18 @@
 		if (text.length > api.types.Friend_Note.max_length)
 			return relation.noteResponse = api.errors.too_long;
 
-		if (!relation.noteResponse) {
-			fetch(api.methods["friends.note"].path, {
-					method:  "POST",
-					headers: { "Content-Type": "application/json" },
-					body:    JSON.stringify({ target: profile.id, text: text })
-				})
-				.then(res => res.json())
-				.then(res => {
-					relation.noteResponse = res.status;
-					if (!relation.noteResponse) {
-						relation.note         = text;
-						relation.noteResponse = api.errors.ok;
-					}
-				});
-		}
+		fetch(api.methods["friends.note"].path, {
+				method:  "POST",
+				headers: { "Content-Type": "application/json" },
+				body:    JSON.stringify({ target: profile.id, text: text })
+			})
+			.then(res => res.json())
+			.then(res => {
+				relation.noteResponse = res.status;
+				if (relation.noteResponse == api.errors.ok) {
+					relation.note = text;
+				}
+			});
 	}
 
 	function checkNote(text)
@@ -220,7 +215,32 @@
 
 	function post()
 	{
-		;
+		ui.wall.post.response = null;
+
+		if (ui.wall.post.text.length > api.types.Post_Text.max_length)
+			return ui.wall.post.response = api.errors.too_long
+
+		fetch(api.method["wall.post"].path, {
+				method:  "POST",
+				headers: { "Content-Type": "application/json" },
+				body:    JSON.stringify({
+					wall:              `user/${profile.id}/${ui.wall.index}`,
+					author:             ui.wall.post.author,
+					text:               ui.wall.post.text,
+					schedule:           null,
+					commentable:        "public",
+					anon_comments_only: false,
+					poll:               null,
+					repost:             null
+				})
+			})
+			.then(res => res.json())
+			.then(res => {
+				ui.wall.post.response = res.status;
+				if (ui.wall.post.response == api.errors.ok) {
+					alert(res);
+				}
+			});
 	}
 
 	function checkPost(text)
@@ -243,7 +263,7 @@
 
 {#if profile}
 	<div id="profile" class:banned={relation && relation.banned}
-			data-relation="{relation ? relation.friend : "none"}">
+			data-relation="{relation ? relation.relation : "none"}">
 		{#if profile.cover}
 			<img src="{api.paths["@*"].i["0"]["*." + profile.cover.split('.')[1]]
 					.replace(":1", profile.id)
@@ -265,29 +285,29 @@
 
 		{#if relation}
 			<div id="profile-relation">
-				{#if relation.friend == "me"}
-					<p id="profile-relation-me">{dict.profile.user.relation.me}</p>
+				{#if relation.relation == "me"}
+					<p id="profile-relation-me">{dict.profile.user.relation.relation.me}</p>
 				{:else}
-					<p class="profile-relation-line" id="profile-relation-friend">
-						{dict.profile.user.relation.friend[relation.friend]}
+					<p class="profile-relation-line" id="profile-relation-relation">
+						{dict.profile.user.relation.relation[relation.relation]}
 					</p>
 					<p class="profile-relation-line" id="profile-relation-common-friends" data-count={relation.common_friends}>
-						{dict.profile.user.relation.common_friends[relation.friend]
+						{dict.profile.user.relation.common_friends[relation.relation]
 							.replace("{{count}}", relation.common_friends)}
 					</p>
 					<p class="profile-relation-line" id="profile-relation-common-clubs" data-count={relation.common_clubs}>
-						{dict.profile.user.relation.common_clubs[relation.friend]
+						{dict.profile.user.relation.common_clubs[relation.relation]
 							.replace("{{count}}", relation.common_clubs)}
 					</p>
-					{#if relation.friend == "mutual"}
+					{#if relation.relation == "friend"}
 						<label id="profile-relation-note-box" class:error={relation.noteResponse} on:click|preventDefault|stopPropagation>
-							<textarea placeholder="{dict.profile.user.relation.note[relation.friend].placeholder}" id="profile-relation-note"
+							<textarea placeholder="{dict.profile.user.relation.note[relation.relation].placeholder}" id="profile-relation-note"
 								on:blur={e => updateNote(e.target.value)} on:click={e => updateAreaHeight(e.target)}
 								on:input={e => checkNote(e.target.value)} on:input={e => updateAreaHeight(e.target)}
 							>{relation.note}</textarea>
 							{#if relation.noteResponse !== null}
 								<p id="profile-relation-note-response">
-									{dict.profile.user.relation.note[relation.friend].responses[
+									{dict.profile.user.relation.note[relation.relation].responses[
 										Object.keys(api.errors).find(key => api.errors[key] == relation.noteResponse)
 									]}
 								</p>
@@ -315,7 +335,7 @@
 		{/if}
 	</div>
 
-	<div id="wall" data-relation="{relation ? relation.friend : "none"}">
+	<div id="wall" data-relation="{relation ? relation.relation : "none"}">
 		{#if !ui.wall}
 			<h1 id="walls-headline">{dict.wall.list.headline}</h1>
 			<p id="walls-descr">{dict.wall.list.descr}</p>
@@ -341,27 +361,21 @@
 					</li>
 				{/each}
 			</ui>
-			{#if relation && relation.friend == "me"}
+			{#if relation && relation.relation == "me"}
 				<button id="walls-create" on:click={() => {}}>{dict.wall.list.create}</button>
 			{/if}
 		{:else}
 			<button id="wall-back" on:click={() => {ui.wall = null}}>{dict.wall.back}</button>
 			<h1 id="wall-headline">{ui.wall.name || dict.wall.user.default.name} #{ui.wall.index}</h1>
-			{#if me && relation && (relation.friend == "me" || ui.wall.postable == "public"
-					|| (ui.wall.postable == "protected" && relation.friend == "mutual"))}
+			{#if me && relation && (relation.relation == "me" || ui.wall.postable == "public"
+					|| (ui.wall.postable == "protected" && relation.relation == "friend"))}
 				<form enctype="text/plain" action={api.methods["wall.post"].path} method="POST"
 						id="wall-post" class:error={ui.wall.post.response} on:submit|preventDefault={post}>
 					<textarea name="text" placeholder="{dict.wall.post.placeholder}" id="wall-post-text" required
 						on:click={e => updateAreaHeight(e.target)} on:input={e => updateAreaHeight(e.target)}
 						on:input={e => checkPost(e.target.value)}></textarea>
 					{#if my}
-						<select name="author" id="wall-post-author" required bind:value={ui.wall.post.author} style="background-image: {
-								ui.wall.post.author && my[ui.wall.post.author].avatar
-									? api.paths["@*"].i['0']["*." + my[ui.wall.post.author].avatar.split('.')[1]]
-										.replace(":1", my[ui.wall.post.author].id)
-										.replace(":2", my[ui.wall.post.author].avatar.split('.')[0])
-										+ "?thumb=100"
-									: "none"}">
+						<select name="author" id="wall-post-author" required bind:value={ui.wall.post.author}>
 							{#if wall.anon_posts_only}
 								<option value="user/0" class="wall-post-author-option" selected>
 									{my["user/0"].name || dict.profile.user.default.name}
@@ -374,13 +388,19 @@
 								{/each}
 							{/if}
 						</select>
+						{#if ui.wall.post.author && my[ui.wall.post.author].avatar}
+							<img src="{api.paths["@*"].i['0']["*." + my[ui.wall.post.author].avatar.split('.')[1]]
+								.replace(":1", my[ui.wall.post.author].id)
+								.replace(":2", my[ui.wall.post.author].avatar.split('.')[0])
+								+ "?thumb=100"}" alt="" id="wall-post-author-avatar" />
+						{/if}
 					{/if}
 					<input type="reset" value="{dict.wall.post.reset}" id="wall-post-reset" />
 					<input type="submit" value="{dict.wall.post.submit}" id="wall-post-submit" />
 					{#if ui.wall.post && ui.wall.post.response}
 						<p id="wall-post-response">
 							{dict.wall.post.responses[
-								Object.keys(api.errors).find(key => api.errors[key] == dict.wall.post.responses)
+								Object.keys(api.errors).find(key => api.errors[key] == ui.wall.post.response)
 							]}
 						</p>
 					{/if}

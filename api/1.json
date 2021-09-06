@@ -181,10 +181,36 @@
 			"max_length": 15000
 		},
 		"Serialized_Wall": {
-			"proto":   "",
+			"proto":   "str",
 			"descr":   "",
 			"pattern": "^(user|club)\\/(0|([1-9][0-9]*))\\/(0|([1-9][0-9]*))$"
 		},
+		"Serialized_Poll": {
+			"proto":   "str",
+			"descr":   "",
+			"pattern": "^(user|club)\\/(0|([1-9][0-9]*))\\/(0|([1-9][0-9]*))$"
+		},
+		"Serialized_Post": {
+			"proto":   "str",
+			"descr":   "",
+			"pattern": "^(user|club)\\/(0|([1-9][0-9]*))\\/(0|([1-9][0-9]*))\\/(0|([1-9][0-9]*))$"
+		},
+		"Friend_Type": {
+			"proto": "str",
+			"descr": "",
+			"enum":  ["mutual", "incoming", "outcoming"]
+		},
+		"User_Relative": {
+			"proto": "str",
+			"descr": "",
+			"enum":  ["me", "friend", "incoming", "outcoming", "none"]
+		},
+		"Image_Filename": {
+			"proto":   "str",
+			"descr":   "",
+			"pattern": "^\\d+\\.(svg|png|jpeg|gif|webp)$"
+		},
+
 
 		"Response": {
 			"descr": "",
@@ -329,9 +355,8 @@
 		"User_Relation": {
 			"descr": "",
 			"props": {
-				"friend": {
-					"type":     "str",
-					"enum":     ["me", "mutual", "incoming", "outcoming", "none"],
+				"relation": {
+					"type":     "User_Relative",
 					"nullable": false,
 					"descr":    ""
 				},
@@ -413,13 +438,15 @@
 		"me": {
 			"path":    "api/me",
 			"descr":   "",
+			"auth":    true,
 			"params":  {},
 			"returns": "Me_Response"
 		},
 		"auth": {
-			"path":    "api/auth",
-			"descr":   "",
-			"params":  {
+			"path":  "api/auth",
+			"descr": "",
+			"auth":  false,
+			"params": {
 				"id": {
 					"type":     "uint64",
 					"nullable": false,
@@ -461,13 +488,15 @@
 		"logout": {
 			"path":    "api/logout",
 			"descr":   "",
+			"auth":    true,
 			"params":  {},
 			"returns": "Response"
 		},
 		"entities": {
-			"path":    "api/entities",
-			"descr":   "",
-			"params":  {
+			"path":  "api/entities",
+			"descr": "",
+			"auth":  false,
+			"params": {
 				"entities": {
 					"type":     "Serialized_Entity[]",
 					"nullable": false,
@@ -477,9 +506,10 @@
 			"returns": "//TODO"
 		},
 		"relation": {
-			"path":    "api/relation",
-			"descr":   "",
-			"params":  {
+			"path":  "api/relation",
+			"descr": "",
+			"auth":  true,
+			"params": {
 				"entity": {
 					"type":     "Serialized_Entity",
 					"nullable": false,
@@ -489,9 +519,15 @@
 			"returns": "Relation_Response"
 		},
 		"set.profile": {
-			"path":    "api/set/profile",
-			"descr":   "",
-			"params":  {
+			"path":  "api/set.profile",
+			"descr": "",
+			"auth":  true,
+			"params": {
+				"avatar": {
+					"type":     "Image_Filename",
+					"nullable": true,
+					"descr":    ""
+				},
 				"username": {
 					"type":     "Username",
 					"nullable": true,
@@ -511,31 +547,33 @@
 			"returns": "Response"
 		},
 		"set.privacy": {
-			"path":    "api/set/privacy",
-			"descr":   "",
-			"params":  {
-				"friendable": {
+			"path":  "api/set.privacy",
+			"descr": "",
+			"auth":  true,
+			"params": {
+				"searchable": {
 					"type":     "bool",
-					"nullable": true,
+					"nullable": false,
+					"descr":    ""
+				},
+				"friendable": {
+					"type":     "Access",
+					"nullable": false,
 					"descr":    ""
 				},
 				"invitable": {
-					"type":     "bool",
-					"nullable": true,
-					"descr":    ""
-				},
-				"anon_comments_only": {
-					"type":     "bool",
-					"nullable": true,
+					"type":     "Access",
+					"nullable": false,
 					"descr":    ""
 				}
 			},
 			"returns": "Response"
 		},
 		"images.upload": {
-			"path":    "api/images/upload",
-			"descr":   "",
-			"params":  {
+			"path":  "api/images.upload",
+			"descr": "",
+			"auth":  true,
+			"params": {
 				"album_owner": {
 					"type":     "Serialized_Entity",
 					"nullable": false,
@@ -547,41 +585,37 @@
 					"descr":    ""
 				},
 				"file": {
-					"type":     "Base64",
-					"nullable": false,
-					"descr":    ""
-				},
-				"descr": {
 					"type":     "Image",
-					"nullable": true,
+					"nullable": false,
 					"descr":    "",
 					"encoding": "base64"
+				},
+				"descr": {
+					"type":     "Image_Descr",
+					"nullable": false,
+					"descr":    ""
 				}
 			},
 			"returns": ""
 		},
-		"friends.mutual": {
-			"path":    "api/friends/mutual",
-			"descr":   "",
-			"params":  {},
-			"returns": "uint64[]"
-		},
-		"friends.incoming": {
-			"path":    "api/friends/incoming",
-			"descr":   "",
-			"params":  {},
-			"returns": "uint64[]"
-		},
-		"friends.outcoming": {
-			"path":    "api/friends/outcoming",
-			"descr":   "",
-			"params":  {},
+		"friends.get": {
+			"path":  "api/friends.get",
+			"descr": "",
+			"auth":  true,
+			"params": {
+				"type": {
+					"type":     "Friend_Type",
+					"nullable": false,
+					"descr":    ""
+				}
+			},
 			"returns": "uint64[]"
 		},
 		"friends.add": {
-			"path":    "api/friends/add",
-			"descr":   "",
-			"params":  {
+			"path":  "api/friends.add",
+			"descr": "",
+			"auth":  true,
+			"params": {
 				"target": {
 					"type":     "uint64",
 					"nullable": false,
@@ -591,9 +625,10 @@
 			"returns": "Response"
 		},
 		"friends.remove": {
-			"path":    "api/friends/remove",
-			"descr":   "",
-			"params":  {
+			"path":  "api/friends.remove",
+			"descr": "",
+			"auth":  true,
+			"params": {
 				"target": {
 					"type":     "uint64",
 					"nullable": false,
@@ -603,9 +638,10 @@
 			"returns": "Response"
 		},
 		"friends.note": {
-			"path":    "api/friends/note",
-			"descr":   "",
-			"params":  {
+			"path":  "api/friends.note",
+			"descr": "",
+			"auth":  true,
+			"params": {
 				"target": {
 					"type":     "uint64",
 					"nullable": false,
@@ -620,9 +656,10 @@
 			"returns": "Response"
 		},
 		"wall.post": {
-			"path":    "api/wall/post",
-			"descr":   "",
-			"params":  {
+			"path":  "api/wall.post",
+			"descr": "",
+			"auth":  true,
+			"params": {
 				"wall": {
 					"type":     "Serialized_Wall",
 					"nullable": false,
@@ -634,8 +671,33 @@
 					"descr":    ""
 				},
 				"text": {
-					"type": "Post_Text",
+					"type":     "Post_Text",
 					"nullable": false,
+					"descr":    ""
+				},
+				"schedule": {
+					"type":     "Datetime",
+					"nullable": true,
+					"descr":    ""
+				},
+				"commentable": {
+					"type":     "Access",
+					"nullable": false,
+					"descr":    ""
+				},
+				"anon_comments_only": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"poll": {
+					"type":     "Serialized_Poll",
+					"nullable": true,
+					"descr":    ""
+				},
+				"repost": {
+					"type":     "Serialized_Post",
+					"nullable": true,
 					"descr":    ""
 				}
 			},

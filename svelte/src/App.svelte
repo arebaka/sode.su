@@ -164,6 +164,15 @@
 		},
 		askForCookies: {
 			open: false
+		},
+		notices: {
+			friends:  0,
+			feed:     0,
+			feedback: 0,
+			clubs:    0,
+			images:   0,
+			videos:   0,
+			music:    0
 		}
 	};
 
@@ -229,6 +238,20 @@
 		})
 		.then(res => res.json())
 		.then(res => my = res.data);
+
+		fetch(api.methods["friends.get"].path, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ type: "incoming" })
+		})
+		.then(res => res.json())
+		.then(res => {
+			if (res.status == api.errors.ok) {
+				ui.notices.friends = res.data.length;
+			}
+		});
 	}
 
 	fetch("api")
@@ -262,7 +285,7 @@
 				{#each ui.topnav.tabs as tab}
 					<li class="topnav-box" id="topnav-{tab}-box">
 						<a href="{tab}" rel="bookmark" class="topnav" id="topnav-{tab}" use:link>
-							<p class="notice" data-counter="0"></p>
+							<p class="notice" data-counter="{ui.notices[tab]}">{ui.notices[tab]}</p>
 							<p class="topnav-label">{dict.topnav[tab]}</p>
 						</a>
 					</li>
@@ -273,7 +296,7 @@
 						{#each ui.topnav.media as section}
 							<li class="topnav-media-box">
 								<a href="{section}" rel="bookmark" class="topnav-media" id="topnav-{section}">
-									<p class="notice" data-counter="1">α</p>
+									<p class="notice" data-counter="{ui.notices[section]}">{ui.notices[section]}</p>
 									<p class="topnav-media-label">{dict.topnav[section]}</p>
 								</a>
 							</li>
@@ -364,7 +387,7 @@
 				{#each ui.menu.items as item}
 					<li class="menu-box" id="menu-{item}">
 						<a href="{item}" rel="bookmark" class="menu" use:link on:click={() => {ui.menu.open = false}}>
-							<p class="notice" data-counter="0"></p>
+							<p class="notice" data-counter="{ui.notices[item]}">{ui.notices[item]}</p>
 							<p class="menu-label">{dict.menu[item]}</p>
 						</a>
 					</li>

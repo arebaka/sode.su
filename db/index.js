@@ -270,7 +270,6 @@ class DBHelper
                 left join posts p
                 on p.id = w.pinned_post_id
                 where w.owner_id = $1
-                order by index
             `, [user.entity_id]);
 
         user.id     = parseInt(user.id);
@@ -323,14 +322,16 @@ class DBHelper
                     w.visibility, w.postable, w.commentable,
                     w.anon_posts_only, w.anon_comments_only,
                     w.sorting, w.bumplimit, w.last_post_index,
-                    p.index as pinned_post_index
+                    pp.index as pinned_post_index, count(p.*) as n_posts
                 from walls w
                 join content c
                 on c.id = w.name_id
+                left join posts pp
+                on pp.id = w.pinned_post_id
                 left join posts p
-                on p.id = w.pinned_post_id
+                on p.wall_id = w.id
                 where w.owner_id = $1
-                order by index
+                group by w.id, c.id, pp.id
             `, [profile.entity_id]);
 
         profile.id     = parseInt(profile.id);
@@ -402,82 +403,112 @@ class DBHelper
         return bio.rows[0] ? bio.rows[0].text : null;
     }
 
-    async getRelation(userId, entityType, entityId)
+    async getWall(ownerType, ownerId, index)
     {
-        switch (entityType) {
+        const wall = await this.pool.query(`
+                select w.id, w.index, c.text as name,
+                    w.visibility, w.postable, w.commentable,
+                    w.anon_posts_only, w.anon_comments_only,
+                    w.sorting, w.bumplimit, w.last_post_index,
+                    pp.index as pinned_post_index, count(p.*) as n_posts
+                from walls w
+                join ${this.entityTables[ownerType].account} u
+                on u.id = w.owner_id
+                join content c
+                on c.id = w.name_id
+                left join posts pp
+                on pp.id = w.pinned_post_id
+                left join posts p
+                on p.wall_id = w.id
+                where u.id = $1
+                and index = $2
+                group by w.id, c.id, pp.id
+            `, [ownerId, index]);
+
+        return wall.rows[0];
+    }
+
+    async getRelation(fromType, fromId, toType, toId)
+    {
+        switch (fromType) {
         case "user":
-            let res = {};
+            switch (toType) {
+            case "user":
+                let res = {};
 
-            res.friend = await this.pool.query(`
-                    select offerer_id, acceptor_id
-                    from friends
-                    where offerer_id = $1
-                    and acceptor_id = $2
-                    or acceptor_id = $1
-                    and offerer_id = $2
-                `, [
-                    userId, entityId 
-                ]);
+                res.relation = await this.pool.query(`
+                        select offerer_id, acceptor_id
+                        from friends
+                        where offerer_id = $1
+                        and acceptor_id = $2
+                        or acceptor_id = $1
+                        and offerer_id = $2
+                    `, [
+                        fromId, toId
+                    ]);
 
-            if (!res.friend.rows.length) {
-                res.friend = "none";
-            } else if (res.friend.rows.length == 2) {
-                res.friend = "mutual";
-            } else if (res.friend.rows[0].offerer_id == entityId) {
-                res.friend = "incoming";
-            } else {
-                res.friend = "outcoming";
-            }
+                if (!res.relation.rows.length) {
+                    res.relation = "none";
+                } else if (res.relation.rows.length == 2) {
+                    res.relation = "friend";
+                } else if (res.relation.rows[0].offerer_id == toId) {
+                    res.relation = "incoming";
+                } else {
+                    res.relation = "outcoming";
+                }
 
-            res.common_friends = await this.pool.query(`
-                    select count(*) as count
-                    from friends f1
-                    join friends f2
-                    on f2.offerer_id = f1.acceptor_id
-                    and f2.acceptor_id = f1.offerer_id
-                    where f1.offerer_id = $1
-                    and f1.acceptor_id in (
-                        select f1.acceptor_id as id
+                res.common_friends = await this.pool.query(`
+                        select count(*) as count
                         from friends f1
                         join friends f2
                         on f2.offerer_id = f1.acceptor_id
                         and f2.acceptor_id = f1.offerer_id
-                        where f1.offerer_id = $2
-                    )
-                `, [
-                    userId, entityId
-                ]);
-            res.common_friends = parseInt(res.common_friends.rows[0].count);
+                        where f1.offerer_id = $1
+                        and f1.acceptor_id in (
+                            select f1.acceptor_id as id
+                            from friends f1
+                            join friends f2
+                            on f2.offerer_id = f1.acceptor_id
+                            and f2.acceptor_id = f1.offerer_id
+                            where f1.offerer_id = $2
+                        )
+                    `, [
+                        fromId, toId
+                    ]);
+                res.common_friends = parseInt(res.common_friends.rows[0].count);
 
-            res.common_clubs = 0;
+                res.common_clubs = 0;
 
-            res.note = await this.pool.query(`
-                    select c.text as note
-                    from friends f
-                    join content c
-                    on c.id = f.note_id
-                    where f.offerer_id = $1
-                    and f.acceptor_id = $2
-                `, [
-                    userId, entityId
-                ]);
-            res.note = res.note.rows[0] ? res.note.rows[0].note : "";
+                res.note = await this.pool.query(`
+                        select c.text as note
+                        from friends f
+                        join content c
+                        on c.id = f.note_id
+                        where f.offerer_id = $1
+                        and f.acceptor_id = $2
+                    `, [
+                        fromId, toId
+                    ]);
+                res.note = res.note.rows[0] ? res.note.rows[0].note : "";
 
-            res.banned = await this.pool.query(`
-                    select b.id
-                    from blacklist b
-                    join users u1
-                    on b.issuer_id = u1.entity_id
-                    join users u2
-                    on b.banned_id = u2.entity_id
-                    where u1.id = $1
-                    and u2.id = $2
-                `, [
-                    userId, entityId
-                ]);
-            res.banned = res.banned.rows[0] ? true : false;
+                res.banned = await this.pool.query(`
+                        select b.id
+                        from blacklist b
+                        join users u1
+                        on b.issuer_id = u1.entity_id
+                        join users u2
+                        on b.banned_id = u2.entity_id
+                        where u1.id = $1
+                        and u2.id = $2
+                    `, [
+                        fromId, toId
+                    ]);
+                res.banned = res.banned.rows[0] ? true : false;
 
-            return res;
+                return res;
+            break;
+            case "club": return null;
+            }
         break;
         case "club": return null;
         }
@@ -761,7 +792,8 @@ class DBHelper
         if (alias) {
             await this.pool.query(`
                     update ${this.entityTables[entityType].profile}
-                    set alias = $1 where id = $2
+                    set alias = $1
+                    where id = $2
                     returning id`,
                 [alias, entityId]);
 
@@ -784,7 +816,8 @@ class DBHelper
 
         await this.pool.query(`
                 update ${this.entityTables[entityType].profile}
-                set name_id = $1 where id = $2`,
+                set name_id = $1
+                where id = $2`,
             [nameId.id, entityId]);
     }
 
@@ -794,18 +827,53 @@ class DBHelper
 
         await this.pool.query(`
                 update ${this.entityTables[entityType].profile}
-                set bio_id = $1 where id = $2`,
-            [
-                bioId.id, entityId
-            ]);
+                set bio_id = $1
+                where id = $2`,
+            [bioId.id, entityId]);
     }
 
     async setPrivacy(entityType, entityId, option, value)
     {
         await this.pool.query(`
                 update ${this.entityTables[entityType].profile}
-                set ${option} = $1 where id = $2`,
+                set ${option} = $1
+                where id = $2`,
             [value, entityId]);
+    }
+
+    async post(wallId, authorType, authorId, text, schedule,
+        commentable, anon_comments_only, pollId, repostId)
+    {
+        const author = await this.pool.query(`
+                select entity_id as id
+                from ${this.entityTables[authorType]}
+                where id = $1
+            `, [authorId]);
+        if (!author.rows[0])
+            return null;
+
+        const index = await this.pool.query(`
+                update walls
+                set index = index + 1
+                where id = $1
+                returning index
+            `, [wallId]);
+
+        text = await this._getContent(text);
+
+        const post = await this.pool.query(`
+                insert into posts (
+                    wall_id, index, author_id, text_id, sent_dt,
+                    commentable, anon_comments_only, poll_id, repost_id
+                )
+                values ($1, $2, $3, $4, max($5, current_timestamp()), $6, $7, $8, $9)
+                returning id, index, sent_dt
+            `, [
+                wallId, index.rows[0].index, author.rows[0].id, text.id,
+                schedule, commentable, anon_comments_only, pollId, repostId
+            ]);
+
+        return post.rows[0] || null;
     }
 
     async addImage(buffer, ownerType, ownerId, albumOwnerType, albumOwnerId, albumIndex, descr, uploaderId)

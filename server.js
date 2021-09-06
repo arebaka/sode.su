@@ -30,7 +30,7 @@ class Server
             .use(useragent.express())
             .use(helmet())
             .use(compression())
-            .use(express.json())
+            .use(express.json({ limit: "10mb" }))
             .use(express.urlencoded({ extended: true }));
 
         this.app.use(helmet.contentSecurityPolicy({
@@ -47,13 +47,10 @@ class Server
             if (!i18n[res.locals.clientLang]) {
                 res.locals.clientLang = "eng";
             }
-            res.locals.api = api[req.header("X-API-Version")] || api[0];
-
-            res.set("Server",        "Desu");
-            res.set("X-API-Version", res.locals.api.version);
-
             res.locals.authorized = req.cookies.userid && req.cookies.session
                 && await db.hasSession(req.cookies.userid, req.cookies.session);
+
+            res.set("Server",        "Desu");
 
             logger(
                 res.locals.ip.padEnd(15, ' ') + " [:date[iso]] "

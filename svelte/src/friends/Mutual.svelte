@@ -29,9 +29,8 @@
 				.then(res => res.json())
 				.then(res => {
 					list[userId].noteResponse = res.status;
-					if (!list[userId].noteResponse) {
+					if (list[userId].noteResponse == api.errors.ok) {
 						list[userId].note         = text;
-						list[userId].noteResponse = api.errors.ok;
 					}
 				});
 		}

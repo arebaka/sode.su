@@ -4,6 +4,7 @@ const express = require("express");
 const jsesc   = require("jsesc");
 const router  = express.Router();
 
+const api   = require("../api");
 const db    = require("../db");
 const i18n  = require("../i18n");
 const cache = require("../cache");
@@ -12,8 +13,8 @@ const media = require("../media");
 router.get("/:prefix(@|~):descriptor*", async (req, res, next) => {
     res.set("Cache-Control", "public, max-age=0");
 
-    for (let i in res.locals.api.entities) {
-        if (res.locals.api.entities[i].prefix == req.params.prefix) {
+    for (let i in api.entities) {
+        if (api.entities[i].prefix == req.params.prefix) {
             res.locals.entityType = i;
             break;
         }
@@ -53,7 +54,7 @@ router.get("/:prefix(@|~):descriptor", async (req, res, next) => {
     const ogMeta = [
         { "og:profile:first_name": jsesc(profile.name, { minimal: true }) || i18n[res.locals.clientLang].user.default.name },
         { "og:profile:username":   profile.username || profile.id },
-        { "og:image":              profile.avatar ? `${res.locals.api.host}${req.path}/i/0/${profile.avatar}` : `${res.locals.api.host}/img/avatar.png` }
+        { "og:image":              profile.avatar ? `${api.host}${req.path}/i/0/${profile.avatar}` : `${api.host}/img/avatar.png` }
     ]
         .map(i => `<meta name="${Object.keys(i)[0]}" content="${Object.values(i)[0]}" />`)
         .join("\n\t");

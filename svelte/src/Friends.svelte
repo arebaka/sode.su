@@ -28,8 +28,10 @@
 		list           = {};
 		document.title = dict.friends[ui.active].title;
 
-		fetch(api.methods["friends." + ui.active].path, {
-			method: "POST"
+		fetch(api.methods["friends.get"].path, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ type: ui.active })
 		})
 		.then(res => res.json())
 		.then(res => {

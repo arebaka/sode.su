@@ -3,16 +3,12 @@ const crypto  = require("crypto");
 const express = require("express");
 const router  = express.Router();
 
+const api = require("../../api");
 const db  = require("../../db");
 
-router.post("/:type(mutual|incoming|outcoming)", async (req, res, next) => {
+router.post("/friends.get", async (req, res, next) => {
     try {
-        if (!res.locals.authorized)
-            return res
-                .status(401)
-                .json({ status: res.locals.api.errors.unauthorized });
-
-        let friends = await db.getFriends(req.cookies.userid, req.params.type);
+        let friends = await db.getFriends(req.cookies.userid, req.body.type);
 
         for (let i in friends) {
             friends[i].id = parseInt(friends[i].id);
@@ -21,144 +17,94 @@ router.post("/:type(mutual|incoming|outcoming)", async (req, res, next) => {
 
         res
             .status(200)
-            .json({ status: res.locals.api.errors.ok, data: friends });
+            .json({ status: api.errors.ok, data: friends });
     }
     catch (err) {
         res
             .status(400)
-            .json({ status: res.locals.api.errors.invalid_data });
+            .json({ status: api.errors.invalid_data });
     }
 });
 
-router.post("/add", async (req, res, next) => {
+router.post("/friends.add", async (req, res, next) => {
     try {
-        if (!res.locals.authorized)
-            return res
-                .status(401)
-                .json({ status: res.locals.api.errors.unauthorized });
+        const relation = await db.getRelation("user", req.cookies.userid, "user", req.body.target);
 
-        if (typeof req.body.target != "number"
-            || isNaN(req.body.target)
-            || req.body.target !== parseInt(req.body.target)
-            || req.body.target < 0
-        )
-            return res
-                .status(400)
-                .json({ status: res.locals.api.errors.invalid_value, param: "target" });
-
-        const relation = await db.getRelation(req.cookies.userid, "user", req.body.target);
-
-        try {
-            if (relation.friend == "incoming")
-                throw [200, "ok"];
-            if (relation.friend == "mutual" || relation.friend == "outcoming")
-                throw [409, "conflict"];
+        await new Promise(async (resolve, reject) => {
+            if (relation.relation == "incoming")
+                return resolve();
+            if (relation.relation == "friend" || relation.relation == "outcoming")
+                return reject([409, "conflict"]);
 
             const profile = await db.getProfile("user", req.body.target);
 
             if (profile.friendable == "public")
-                throw [200, "ok"];
+                return resolve();
             if (profile.friendable == "private")
-                throw [403, "access_denied"];
+                return reject([403, "access_denied"]);
             if (relation.common_friends > 0)
-                throw [200, "ok"];
-            throw [403, "access_denied"];
-        }
-        catch (status) {
-            let friendship = null;
-            if (status[1] == "ok") {
-                friendship = await db.friend(req.cookies.userid, req.body.target);
-            }
+                return resolve();
+            return reject([403, "access_denied"]);
+        })
+        .then(async () => {
+            friendship = await db.friend(req.cookies.userid, req.body.target);
 
-            friendship
+            return friendship
                 ? res
-                    .status(status[0])
-                    .json({ status: res.locals.api.errors[status[1]] })
+                    .status(200)
+                    .json({ status: api.errors.ok })
                 : res
                     .status(403)
-                    .json({ status: res.locals.api.errors.access_denied });
-        }
+                    .json({ status: api.errors.access_denied });
+        })
+        .catch(status => {
+            return res
+                .status(status[0])
+                .json({ status: status[1] });
+        });
     }
     catch (err) {
         res
             .status(400)
-            .json({ status: res.locals.api.errors.invalid_data });
+            .json({ status: api.errors.invalid_data });
     }
 });
 
-router.post("/remove", async (req, res, next) => {
+router.post("/friends.remove", async (req, res, next) => {
     try {
-        if (!res.locals.authorized)
-            return res
-                .status(401)
-                .json({ status: res.locals.api.errors.unauthorized });
-
-        if (typeof req.body.target != "number"
-            || isNaN(req.body.target)
-            || req.body.target !== parseInt(req.body.target)
-            || req.body.target < 0
-        )
-            return res
-                .status(400)
-                .json({ status: res.locals.api.errors.invalid_value, param: "target" });
-
         const friendship = await db.unfriend(req.cookies.userid, req.body.target);
 
-        return friendship
+        friendship
             ? res
                 .status(200)
-                .json({ status: res.locals.api.errors.ok })
+                .json({ status: api.errors.ok })
             : res
                 .status(424)
-                .json({ status: res.locals.api.errors.doesnt_exists });
+                .json({ status: api.errors.doesnt_exists });
     }
     catch (err) {
         res
             .status(400)
-            .json({ status: res.locals.api.errors.invalid_data });
+            .json({ status: api.errors.invalid_data });
     }
 });
 
-router.post("/note", async (req, res, next) => {
+router.post("/friends.note", async (req, res, next) => {
     try {
-        if (!res.locals.authorized)
-            return res
-                .status(401)
-                .json({ status: res.locals.api.errors.unauthorized });
-
-        if (typeof req.body.target != "number"
-            || isNaN(req.body.target)
-            || req.body.target !== parseInt(req.body.target)
-            || req.body.target < 0
-        )
-            return res
-                .status(400)
-                .json({ status: res.locals.api.errors.invalid_value, param: "target" });
-
-        if (typeof req.body.text != "string")
-            return res
-                .status(400)
-                .json({ status: res.locals.api.errors.invalid_value, param: "text" });
-
-        if (req.body.text.length > res.locals.api.types.Friend_Note.max_length)
-            return res
-                .status(413)
-                .json({ status: res.locals.api.errors.too_long, param: "text" });
-
         const friendship = await db.noteFriend(req.cookies.userid, req.body.target, req.body.text);
 
-        return friendship
+        friendship
             ? res
                 .status(200)
-                .json({ status: res.locals.api.errors.ok })
+                .json({ status: api.errors.ok })
             : res
                 .status(424)
-                .json({ status: res.locals.api.errors.doesnt_exists });
+                .json({ status: api.errors.doesnt_exists });
     }
     catch (err) {console.error(err);
         res
             .status(400)
-            .json({ status: res.locals.api.errors.invalid_data });
+            .json({ status: api.errors.invalid_data });
     }
 });
 

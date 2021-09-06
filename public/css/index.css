@@ -155,7 +155,6 @@
 footer {
 	z-index: 1;
 	position: relative;
-	background-color: #FFF;
 }
 
 @media screen and (max-width: 750px) {

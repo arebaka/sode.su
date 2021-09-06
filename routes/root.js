@@ -3,6 +3,7 @@ const fs      = require("fs");
 const express = require("express");
 const router  = express.Router();
 
+const api   = require("../api");
 const i18n  = require("../i18n");
 const cache = require("../cache");
 
@@ -24,7 +25,7 @@ router.get("/robots.txt", async (req, res) => {
 router.get("/api", async (req, res) => {
     res
         .type(".json")
-        .json(res.locals.api);
+        .json(api);
 });
 
 router.get("/emoji", async (req, res) => {
@@ -53,11 +54,11 @@ router.get("/favicon.ico", async(req, res) => {
 
 router.get("/", async (req, res) => {
     const ogMeta = [
-        { "og:image":     `${res.locals.api.host}/img/menu-head.png` },
+        { "og:image":     `${api.host}/img/menu-head.png` },
         { "image:type":   "image/png" },
         { "image:width":  "1500" },
         { "image:height": "500" },
-        { "og:image":     `${res.locals.api.host}/img/logo.png` },
+        { "og:image":     `${api.host}/img/logo.png` },
         { "image:type":   "image/png" },
         { "image:width":  "3750" },
         { "image:height": "3750" }
@@ -74,7 +75,7 @@ router.get("/", async (req, res) => {
             descr:     i18n[res.locals.clientLang].index.descr,
             url:       req.hostname + req.path,
             css:       "css/index.css",
-            canonical: res.locals.api.host + '/',
+            canonical: api.host + '/',
             title:     i18n[res.locals.clientLang].index.title,
             type:      "website",
             og:        ogMeta
