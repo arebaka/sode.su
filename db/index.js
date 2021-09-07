@@ -638,6 +638,7 @@ class DBHelper
                 ${/*left join clubs c
                 on c.entity_id = p.author_id*/""}
                 where p.wall_id = $1
+                and p.sent_dt <= current_timestamp
                 order by ${orderBy[sorting]}
                 offset $2
                 limit $3

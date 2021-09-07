@@ -494,7 +494,7 @@ html.dark .topnav-media-label {
 .notice {
   float: right;
   height: 1rem;
-  padding: 0 .2rem;
+  padding: 0 .3rem;
   font: bold 0.9rem/1rem Digits, Emoji, Mono, monospace, Basic, sans-serif;
   font-size: .8rem;
   text-transform: lowercase;
@@ -624,13 +624,13 @@ html.dark #me-name {
   display: inline-block;
   width: 2.5rem;
   height: 2.5rem;
+  object-fit: cover;
   font-family: Mono;
   font-size: 2.5rem;
   line-height: 2.5rem;
   text-align: center;
   color: #7D80B8;
-  background-color: #FFF;
-  content: "100"; }
+  background-color: #FFF; }
 
 html.dark #me-avatar {
   background-color: #0E1621;
@@ -2310,6 +2310,7 @@ html.dark .friends-user {
   margin-right: .5rem;
   width: 3rem;
   height: 3rem;
+  object-fit: cover;
   font-family: Mono;
   font-size: 2.5rem;
   line-height: 2.5rem;

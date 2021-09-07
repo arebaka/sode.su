@@ -101,14 +101,16 @@
 		newPost.response = null;
 	}
 
-	(() => {
+	$: if (profile) {
+		wall = null;
+
 		let url   = new URL(location.href);
 		let index = url.searchParams.get("wall");
 
 		if (index) {
 			wall = profile.walls.find(w => w.index === index) || null;
 		}
-	})();
+	}
 </script>
 
 <div id="wall" data-relation="{relation ? relation.relation : "none"}">
@@ -198,7 +200,7 @@
 								{:else}
 									<p class="wall-post-author-avatar">{post.author.name[0] || dict.profile.user.default.name[0]}</p>
 								{/if}
-								<p class="wall-post-author-name">{post.author.name}</p>
+								<p class="wall-post-author-name">{post.author.name || dict.profile.user.default.name}</p>
 							</a>
 							<p class="wall-post-datetime">{actions.formatDT(post.sent_dt)}</p>
 						</header>

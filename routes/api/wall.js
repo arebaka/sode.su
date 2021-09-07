@@ -45,9 +45,9 @@ router.post("/wall.post", async (req, res, next) => {
                 .json({ status: api.errors.doesnt_exists, param: "wall" });
 
         if (params.author.type != "user"
-            || !(params.author.id === 0
-                || params.author.id == req.cookies.userid)
-            || (wall.anon_comments_only && params.author.id === 0)
+            || (params.author.id !== 0
+                && params.author.id != req.cookies.userid)
+            || (wall.anon_posts_only && params.author.id !== 0)
         )
             return res
                 .status(403)
@@ -58,7 +58,7 @@ router.post("/wall.post", async (req, res, next) => {
         );
 
         if (relation.banned || (
-            relation.relation != "me" && (
+            relation.relation != "me" && req.cookies.userid != params.wall.ownerId && (
                 wall.postable == "private"
                     || (wall.postable == "protected"
                         && relation.relation != "friend"
@@ -108,7 +108,7 @@ router.post("/wall.post", async (req, res, next) => {
                 .status(403)
                 .json({ status: api.errors.access_denied });
     }
-    catch (err) {console.error(err);
+    catch (err) {
         res
             .status(400)
             .json({ status: api.errors.invalid_data });

@@ -834,6 +834,7 @@ html.dark #new-post-comment-text {
 	background-repeat: no-repeat;
 }
 #new-post-comment-user {
+	display: block;
 	float: left;
 	padding-left: 2rem;
 	padding-right: .5rem;
@@ -845,7 +846,7 @@ html.dark #new-post-comment-text {
 	line-height: 2rem;
 	color: #000;
 	background: none;
-	background-size: contain;
+	background-size: cover;
 	background-position: left;
 	background-repeat: no-repeat;
 	overflow: hidden;
@@ -864,7 +865,7 @@ html.dark #new-post-comment-user {
 	font-size: 0;
 	background: none;
 	background-image: url("../../img/send.svg");
-	background-size: contain;
+	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
 	cursor: pointer;
@@ -1323,10 +1324,16 @@ html.dark .wall-post-more-option:focus {
 	font-weight: bold;
 	line-height: 1.5rem;
 	color: #7D80B8;
+}
+.wall-post-author-name:hover,
+.wall-post-author-name:focus {
 	text-decoration-color: #7D80B8;
 }
 html.dark .wall-post-author-name {
 	color: #0C0;
+}
+html.dark .wall-post-author-name:hover,
+html.dark .wall-post-author-name:focus {
 	text-decoration-color: #0C0;
 }
 .wall-post-author-name:visited {
@@ -1336,7 +1343,7 @@ html.dark .wall-post-author-name:visited {
 	color: #0C0;
 }
 .wall-post-datetime {
-	font-family: Digits, Emoji, monospace;
+	font-family: Basic, Emoji, monospace;
 	font-size: .9rem;
 	line-height: 1.5rem;
 }
@@ -1353,7 +1360,15 @@ html.dark .wall-post-author-name:visited {
 	margin-right: .5rem;
 	width: 3rem;
 	height: 3rem;
-	object-fit: contain;
+	object-fit: cover;
+	font-family: Mono;
+	font-size: 3rem;
+	line-height: 3rem;
+	text-align: center;
+	color: #7D80B8;
+}
+html.dark .wall-post-author-avatar {
+	color: #ECECEC;
 }
 html.circle .wall-post-author-avatar {
 	border-radius: 50%;
