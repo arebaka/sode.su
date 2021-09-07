@@ -47,12 +47,6 @@
 			return list[userId].noteResponse = api.errors.too_long;
 	}
 
-	function updateAreaHeight(area)
-	{
-		area.style.height = "0px";
-		area.style.height = area.scrollHeight + 2 + "px";
-	}
-
 	function remove(id)
 	{
 		let ctxDict  = {...dict.friends.mutual.confirmations.remove};
@@ -87,12 +81,10 @@
 			<li class="friends-user-box">
 				<a class="friends-user" href="{api.paths["@*"]["/"].replace(":1", list[u].username || u)}" use:link>
 					{#if list[u].avatar}
-						<img class="friends-user-avatar"
-							src="{api.paths["@*"].i["0"]["*." + list[u].avatar.split('.')[1]]
+						<img src="{api.paths["@*"].i["0"]["*." + list[u].avatar.split('.')[1]]
 								.replace(":1", u)
-								.replace(":2", list[u].avatar.split('.')[0])
-								+ "?thumb=100"}"
-							alt=""/>
+								.replace(":2", list[u].avatar.split('.')[0])}?thumb=100"
+							alt="" class="friends-user-avatar"/>
 					{:else}
 						<p class="friends-user-avatar">{list[u].name[0] || dict.profile.user.default.name[0]}</p>
 					{/if}
@@ -103,8 +95,8 @@
 					</button>
 					<label class="friends-user-note-box" class:error={list[u].noteResponse} on:click|preventDefault|stopPropagation>
 						<textarea placeholder="{dict.friends[ui.active].note.placeholder}" class="friends-user-note"
-							on:blur={e => updateNote(u, e.target.value)} on:click={e => updateAreaHeight(e.target)}
-							on:input={e => checkNote(u, e.target.value)} on:input={e => updateAreaHeight(e.target)}
+							on:blur={e => updateNote(u, e.target.value)} on:click={e => actions.updateAreaHeight(e.target)}
+							on:input={e => checkNote(u, e.target.value)} on:input={e => actions.updateAreaHeight(e.target)}
 						>{list[u].note}</textarea>
 						{#if list[u].noteResponse !== null && list[u].noteResponse !== undefined}
 							<p class="friends-user-note-response">

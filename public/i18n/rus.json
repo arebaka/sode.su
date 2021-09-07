@@ -1,9 +1,12 @@
 {
 	"time": {
 		"forever": "навсегда",
-		"today": "сегодня в {{TIME}}",
-		"yesterday": "вчера в {{TIME}}",
-		"tomorrow": "завтра в {{TIME}}"
+		"just_now": "только что",
+		"minutes_ago": "{{count}} минут назад",
+		"today": "сегодня в {{hours}}:{{minutes}}",
+		"yesterday": "вчера в {{hours}}:{{minutes}}",
+		"tomorrow": "завтра в {{hours}}:{{minutes}}",
+		"default": "{{hours}}:{{minutes}}"
 	},
 	"langs": {
 		"epo": "Эсперанто",
@@ -273,6 +276,7 @@
 			"reset": "Очистить",
 			"submit": "Отправить",
 			"responses": {
+				"ok": "Пост отправлен.",
 				"too_long": "Текст слишком длинный! Максимум 15000 символов!"
 			}
 		},

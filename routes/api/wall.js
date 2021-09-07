@@ -59,10 +59,10 @@ router.post("/wall.post", async (req, res, next) => {
 
         if (relation.banned || (
             relation.relation != "me" && (
-                wall.postable != "public"
-                    || wall.postable == "private"
-                    || relation.relation != "friend"
-        )))
+                wall.postable == "private"
+                    || (wall.postable == "protected"
+                        && relation.relation != "friend"
+        ))))
             return res
                 .status(403)
                 .json({ status: api.errors.access_denied });
@@ -107,6 +107,50 @@ router.post("/wall.post", async (req, res, next) => {
             : res
                 .status(403)
                 .json({ status: api.errors.access_denied });
+    }
+    catch (err) {console.error(err);
+        res
+            .status(400)
+            .json({ status: api.errors.invalid_data });
+    }
+});
+
+router.post("/wall.posts", async (req, res, next) => {
+    try {
+        let parts = req.body.wall.split('/');
+
+        wall = await db.getWall(
+            parts[0], parts[1], parts[2]
+        );
+        if (!wall)
+            return res
+                .status(424)
+                .json({ status: api.errors.doesnt_exists, param: "wall" });
+
+        const relation = await db.getRelation(
+            parts[0], parts[1], "user", req.cookies.userid
+        );
+
+        if (relation.relation != "me" && (
+            wall.postable == "private"
+                || (wall.visibility == "protected"
+                    && relation.relation != "friend"
+        )))
+            return res
+                .status(403)
+                .json({ status: api.errors.access_denied });
+
+        let posts = await db.getPosts(
+            wall.id, req.body.sorting, req.body.offset, req.body.limit
+        );
+
+        for (let i = 0; i < posts.length; i++) {
+            posts[i].sent_dt = db.formatDT(posts[i].sent_dt);
+        }
+
+        res
+            .status(200)
+            .json({ status: api.errors.ok, data: posts });
     }
     catch (err) {console.error(err);
         res

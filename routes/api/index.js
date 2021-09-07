@@ -252,7 +252,7 @@ router.post("/entities", async (req, res, next) => {
 
         res
             .status(200)
-            .json({ status: 200, data: result });
+            .json({ status: api.errors.ok, data: result });
     }
     catch (err) {
         res

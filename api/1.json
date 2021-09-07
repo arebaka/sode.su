@@ -178,6 +178,7 @@
 		"Post_Text": {
 			"proto":      "str",
 			"descr":      "",
+			"min_length": 1,
 			"max_length": 15000
 		},
 		"Serialized_Wall": {
@@ -382,6 +383,56 @@
 				}
 			}
 		},
+		"Post": {
+			"descr": "",
+			"props": {
+				"index": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"author": {
+					"type":     "Serialized_Entity",
+					"nullable": false,
+					"descr":    ""
+				},
+				"text": {
+					"type":     "Post_Text",
+					"nullable": false,
+					"descr":    ""
+				},
+				"sent_dt": {
+					"type":     "Datetime",
+					"nullable": false,
+					"descr":    ""
+				},
+				"commentable": {
+					"type":     "Access",
+					"nullable": false,
+					"descr":    ""
+				},
+				"anon_comments_only": {
+					"type":     "bool",
+					"nullable": false,
+					"descr":    ""
+				},
+				"last_comment_index": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"poll": {
+					"type":     "Serialized_Poll",
+					"nullable": true,
+					"descr":    ""
+				},
+				"repost": {
+					"type":     "Serialized_Post",
+					"nullable": true,
+					"descr":    ""
+				}
+			}
+		},
 		"Me_Response": {
 			"descr": "",
 			"props": {
@@ -407,12 +458,12 @@
 				},
 				"userid": {
 					"type":     "uint64",
-					"nullable": false,
+					"nullable": true,
 					"descr":    ""
 				},
 				"new_user": {
 					"type":     "bool",
-					"nullable": false,
+					"nullable": true,
 					"descr":    ""
 				}
 			}
@@ -427,8 +478,23 @@
 				},
 				"data": {
 					"type":     "User_Relation",
-					"nullable": false,
+					"nullable": true,
 					"descr":    "//TODO clubs"
+				}
+			}
+		},
+		"Posts_Response": {
+			"descr": "",
+			"props": {
+				"status": {
+					"type":     "Status",
+					"nullable": false,
+					"descr":    ""
+				},
+				"data": {
+					"type":     "Post[]",
+					"nullable": true,
+					"descr":    ""
 				}
 			}
 		}
@@ -702,6 +768,34 @@
 				}
 			},
 			"returns": "Response"
+		},
+		"wall.posts": {
+			"path":  "api/wall.posts",
+			"descr": "",
+			"auth":  true,
+			"params": {
+				"wall": {
+					"type":     "Serialized_Wall",
+					"nullable": false,
+					"descr":    ""
+				},
+				"sorting": {
+					"type":     "Wall_Sorting",
+					"nullable": false,
+					"descr":    ""
+				},
+				"offset": {
+					"type":     "uint64",
+					"nullable": true,
+					"descr":    ""
+				},
+				"limit": {
+					"type":     "uint64",
+					"nullable": true,
+					"descr":    ""
+				}
+			},
+			"returns": "Posts_Response"
 		}
 	}
 }

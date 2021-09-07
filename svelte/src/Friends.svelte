@@ -50,15 +50,13 @@
 
 			fetch(api.methods.entities.path, {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ entities: list.map(u => "user/" + u.id) })
 			})
 			.then(res => res.json())
 			.then(res => {
 				for (let id in map) {
-					map[id] = {...map[id], ...res.data["user/" + id]};
+					map[id] = { ...map[id], ...res.data["user/" + id] };
 				}
 
 				friends = map;

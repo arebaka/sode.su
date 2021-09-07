@@ -610,11 +610,54 @@ class DBHelper
         if (!image)
             return null;
 
-        image.owner = image.owner_user_id ? "user/" + image.owner_user_id : "club/" + image.club_user_id;
+        image.owner = image.owner_user_id
+            ? "user/" + image.owner_user_id
+            : "club/" + image.owner_club_id;
         delete image.owner_user_id;
         delete image.owner_club_id;
 
         return image;
+    }
+
+    async getPosts(wallId, sorting, offset, limit)
+    {
+        const orderBy = {
+            datetime:         "sent_dt",
+            datetime_reverse: "sent_dt desc"
+        };
+
+        let posts = await this.pool.query(`
+                select p.index, u.id as author_user_id, ${/*c.id as club_user_id,*/""}
+                c.text, p.sent_dt, p.commentable, p.anon_comments_only,
+                p.last_comment_index, p.poll_id, p.repost_id
+                from posts p
+                join content c
+                on c.id = p.text_id
+                left join users u
+                on u.entity_id = p.author_id
+                ${/*left join clubs c
+                on c.entity_id = p.author_id*/""}
+                where p.wall_id = $1
+                order by ${orderBy[sorting]}
+                offset $2
+                limit $3
+            `, [
+                wallId, offset, limit
+            ]);
+        posts = posts.rows;
+
+        for (let i = 0; i < posts.length; i++) {
+            posts[i].author = posts[i].author_user_id
+                ? "user/" + posts[i].author_user_id
+                : "club/" + posts[i].author_club_id;
+
+            delete posts[i].author_user_id;
+            delete posts[i].author_club_id;
+            delete posts[i].poll_id;
+            delete posts[i].repost_id;
+        }
+
+        return posts;
     }
 
     async authUser(id, authDT, sessionKey, ip, useragent)

@@ -134,12 +134,6 @@
 		if (profile.bio.length > api.types.Bio.max_length)
 			return responses.bio = api.errors.too_long;
 	}
-
-	function updateAreaHeight(area)
-	{
-		area.style.height = "0px";
-		area.style.height = area.scrollHeight + 2 + "px";
-	}
 </script>
 
 {#if profile}
@@ -183,8 +177,8 @@
 				{dict.settings.profile.bio.descr}
 			</span>
 			<textarea name="bio" placeholder="{dict.settings.profile.bio.placeholder}" id="settings-profile-bio"
-				on:blur={updateBio} on:click={e => updateAreaHeight(e.target)}
-				on:input={e => checkBio(e.target.value)} on:input={e => updateAreaHeight(e.target)}
+				on:blur={updateBio} on:click={e => actions.updateAreaHeight(e.target)}
+				on:input={e => checkBio(e.target.value)} on:input={e => actions.updateAreaHeight(e.target)}
 			>{profile.bio}</textarea>
 			{#if responses.bio !== null}
 				<p class="settings-response" id="settings-profile-bio-response">

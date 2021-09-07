@@ -1,9 +1,12 @@
 {
 	"time": {
 		"forever": "foverer",
-		"today": "today at {{TIME}}",
-		"yesterday": "yesterday at {{TIME}}",
-		"tomorrow": "tomorrow at {{TIME}}"
+		"just_now": "just now",
+		"minutes_ago": "{{count}} minutes ago",
+		"today": "today at {{hours}}:{{minutes}}",
+		"yesterday": "yesterday at {{hours}}:{{minutes}}",
+		"tomorrow": "tomorrow at {{hours}}:{{minutes}}",
+		"default": "{{hours}}:{{minutes}}"
 	},
 	"langs": {
 		"epo": "Esperanto",
@@ -273,6 +276,7 @@
 			"reset": "Reset",
 			"submit": "Send",
 			"responses": {
+				"ok": "Post sent.",
 				"too_long": "Text is too long! Maximum 15000 characters!"
 			}
 		},

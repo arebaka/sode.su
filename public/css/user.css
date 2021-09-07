@@ -958,11 +958,14 @@ html.dark .walls-wall-name {
 	padding: 0 .5rem;
 	font-family: Digits;
 	font-size: 1rem;
+	font-weight: bold;
 	line-height: 2rem;
-	background-color: #F0F8FF;
+	color: #FFF;
+	background-color: #7D80B8;
 }
 html.dark .walls-wall-posts-count {
-	background-color: #17212B;
+	color: #ECECEC;
+	background-color: #212D3B;
 }
 .walls-wall-prop {
   clear: both;
@@ -1168,16 +1171,22 @@ html.dark .error #wall-post-response {
 	font-size: 1.5rem;
 	line-height: 3rem;
 }
-.post {
+#wall-posts {
+	margin: .5rem 0;
+}
+.wall-post {
+	overflow: hidden;
 	position: relative;
-	margin: .5rem;
-	border: 1px solid #7D80B8;
+	border-bottom: 1px solid #7D80B8;
 	cursor: pointer;
 }
-html.dark .post {
+html.dark .wall-post {
 	border-color: #212D3B;
 }
-.post-more-options {
+.wall-post:last-of-type {
+	border-bottom: none;
+}
+.wall-post-more-options {
 	overflow: visible;
 	float: right;
 	width: 3rem;
@@ -1188,7 +1197,7 @@ html.dark .post {
 	cursor: pointer;
 	transition: all .2s ease 0s;
 }
-.post-more-options:before {
+.wall-post-more-options:before {
 	content: "";
 	display: inline-block;
 	width: 3rem;
@@ -1198,26 +1207,26 @@ html.dark .post {
 	background-position: center;
 	background-repeat: no-repeat;
 }
-.post-more-options:hover,
-.post-more-options:focus {
+.wall-post-more-options:hover,
+.wall-post-more-options:focus {
 	background-color: #F0F8FF;
 	border: 1px solid #7D80B8;
 	border-bottom: none;
 	box-shadow: 0 0 2px rgba(0,0,0,.15);
 }
-html.dark .post-more-options:hover,
-html.dark .post-more-options:focus {
+html.dark .wall-post-more-options:hover,
+html.dark .wall-post-more-options:focus {
 	background-color: #000;
 	border-color: #212D3B;
 	box-shadow: none;
 }
-.post-more-options:hover .post-more-options-list,
-.post-more-options:focus .post-more-options-list {
+.wall-post-more-options:hover .wall-post-more-options-list,
+.wall-post-more-options:focus .wall-post-more-options-list {
 	visibility: visible;
 	opacity: 1;
 	height: 100%;
 }
-.post-more-options-list {
+.wall-post-more-options-list {
 	overflow: hidden;
 	position: absolute;
 	top: 1.3rem;
@@ -1231,18 +1240,18 @@ html.dark .post-more-options:focus {
 	box-shadow: 0 0 2px rgba(0,0,0,.15);
 	transition: all .2s ease 0s;
 }
-html.dark .post-more-options-list {
+html.dark .wall-post-more-options-list {
 	background-color: #0E1621;
 	border-color: #212D3B;
 	box-shadow: none;
 }
-.post-more-options-list[data-count="3"] {
+.wall-post-more-options-list[data-count="3"] {
 	max-height: calc(4.2rem + 2px);
 }
-.post-more-options-list[data-count="4"] {
+.wall-post-more-options-list[data-count="4"] {
 	max-height: calc(5.6rem + 3px);
 }
-.post-more-option {
+.wall-post-more-option {
 	display: block;
 	width: 100%;
 	height: 1.4rem;
@@ -1255,15 +1264,15 @@ html.dark .post-more-options-list {
 	background-color: #F0F8FF;
 	border-bottom: 1px solid #7D80B8;
 }
-html.dark .post-more-option {
+html.dark .wall-post-more-option {
 	color: #ECECEC;
 	background-color: #000;
 	border-color: #212D3B;
 }
-.post-more-options-list > .post-more-option:last-clild {
+.wall-post-more-options-list > .wall-post-more-option:last-clild {
 	border-bottom: none;
 }
-.post-more-option:before {
+.wall-post-more-option:before {
 	content: "";
 	position: relative;
 	top: .2rem;
@@ -1274,88 +1283,82 @@ html.dark .post-more-option {
 	background-position: center;
 	background-repeat: no-repeat;
 }
-.post-more-option:hover,
-.post-more-option:focus {
+.wall-post-more-option:hover,
+.wall-post-more-option:focus {
 	background-color: #FFF;
 }
-html.dark .post-more-option:hover,
-html.dark .post-more-option:focus {
+html.dark .wall-post-more-option:hover,
+html.dark .wall-post-more-option:focus {
 	background-color: #0E1621;
 }
-.unpin-post-button:before {
+.wall-unpin-post-button:before {
 	background-image: url("../../img/unpin.svg");
 }
-.pin-post-button:before {
+.wall-pin-post-button:before {
 	background-image: url("../../img/pin.svg");
 }
-.share-post-button:before {
+.wall-share-post-button:before {
 	background-image: url("../../img/share.svg");
 }
-.archive-post-button:before {
+.wall-archive-post-button:before {
 	background-image: url("../../img/archive.svg");
 }
-.delete-post-button:before {
+.wall-delete-post-button:before {
 	background-image: url("../../img/delete.svg");
 }
-.report-post-button:before {
+.wall-report-post-button:before {
 	background-image: url("../../img/report.svg");
 }
-.post-header {
+.wall-post-header {
 	overflow: hidden;
-	margin: 1rem .5rem .5rem;
+	margin: .5rem;
 }
-.post-author-name-box {
+.wall-post-author-name {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	display: inline-block;
-	max-width: 100%;
-}
-.post-author-name {
+	height: 1.5rem;
 	font-family: Basic, Emoji, Mono, sans-serif;
 	font-size: 1rem;
-	line-height: 1.5rem;
 	font-weight: bold;
-	text-align: left;
-	color: #080;
-}
-html.dark .post-author-name {
-	color: #0C0;
-}
-.post-author-name:visited {
-	color: #080;
-}
-html.dark .post-author-name:visited {
-	color: #0C0;
-}
-.post-datetime {
-	margin-top: -.2rem;
-	font-family: Digits, Emoji, monospace;
-	font-size: 1rem;
 	line-height: 1.5rem;
-	text-align: left;
+	color: #7D80B8;
+	text-decoration-color: #7D80B8;
 }
-.post-datetime > .datetime-today {
+html.dark .wall-post-author-name {
+	color: #0C0;
+	text-decoration-color: #0C0;
+}
+.wall-post-author-name:visited {
+	color: #7D80B8;
+}
+html.dark .wall-post-author-name:visited {
+	color: #0C0;
+}
+.wall-post-datetime {
+	font-family: Digits, Emoji, monospace;
+	font-size: .9rem;
+	line-height: 1.5rem;
+}
+.wall-post-datetime > .datetime-today {
 	font-size: 0;
 }
-.post-datetime > .datetime-yesterday,
-.post-datetime > .datetime-tomorrow {
+.wall-post-datetime > .datetime-yesterday,
+.wall-post-datetime > .datetime-tomorrow {
 	font-family: Basic, Emoji, Mono, sans-serif;
 }
-.post-avatar-box {
-	float: left;
-	margin-right: .5rem;
-}
-.post-avatar {
+.wall-post-author-avatar {
 	display: block;
 	float: left;
+	margin-right: .5rem;
 	width: 3rem;
 	height: 3rem;
 	object-fit: contain;
-	border-radius: 2px;
-	-sodesu-thumb: 100;
 }
-.post-author-info {
+html.circle .wall-post-author-avatar {
+	border-radius: 50%;
+}
+.wall-post-author-info {
 	z-index: 5;
 	position: absolute;
 	top: 2.5rem;
@@ -1371,72 +1374,72 @@ html.dark .post-author-name:visited {
 	opacity: 0;
 	transition: all .2s ease 0s;
 }
-html.dark .post-author-info {
+html.dark .wall-post-author-info {
 	color: #ECECEC;
 	background-color: #000;
 	border-color: #212D3B;
 	box-shadow: none;
 }
-.post-avatar-box:hover ~ .post-author-info,
-.post-avatar-box:focus ~ .post-author-info,
-.post-author-name-box:hover ~ .post-author-info,
-.post-author-name-box:focus ~ .post-author-info,
-.post-author-info:hover,
-.post-author-info:focus {
+.wall-post-author-avatar-box:hover ~ .wall-post-author-info,
+.wall-post-author-avatar-box:focus ~ .wall-post-author-info,
+.wall-post-author-name-box:hover ~ .wall-post-author-info,
+.wall-post-author-name-box:focus ~ .wall-post-author-info,
+.wall-post-author-info:hover,
+.wall-post-author-info:focus {
 	visibility: visible;
 	opacity: 1;
 }
-.post-author-info-avatar,
-.post-author-info-name {
+.wall-post-author-info-avatar,
+.wall-post-author-info-name {
 	display: none;
 }
-.post-author-info-alias {
+.wall-post-author-info-alias {
 	font-family: Mono;
 	font-size: 1rem;
 	font-weight: bold;
 	line-height: 1.5rem;
 	color: #080;
 }
-html.dark .post-author-info-alias {
+html.dark .wall-post-author-info-alias {
 	color: #0C0;
 }
-.post-author-info-location-box,
-.post-author-info-languages-box,
-.post-author-info-website-box {
+.wall-post-author-info-location-box,
+.wall-post-author-info-languages-box,
+.wall-post-author-info-website-box {
 	font-family: Basic, Emoji, Mono, sans-serif;
 	font-size: 1rem;
 	line-height: 1.5rem;
 	color: #080;
 }
-html.dark .post-author-info-location-box,
-html.dark .post-author-info-languages-box,
-html.dark .post-author-info-website-box {
+html.dark .wall-post-author-info-location-box,
+html.dark .wall-post-author-info-languages-box,
+html.dark .wall-post-author-info-website-box {
 	color: #0C0;
 }
-.post-author-info-location,
-.post-author-info-languages {
+.wall-post-author-info-location,
+.wall-post-author-info-languages {
 	color: #000;
 }
-html.dark .post-author-info-location,
-html.dark .post-author-info-languages {
+html.dark .wall-post-author-info-location,
+html.dark .wall-post-author-info-languages {
 	color: #ECECEC;
 }
-.post-author-info-location-box.not-specified > .post-author-info-location,
-.post-author-info-languages-box.not-specified > .post-author-info-languages,
-.post-author-info-website-box.not-specified > .post-author-info-website {
+.wall-post-author-info-location-box.not-specified > .wall-post-author-info-location,
+.wall-post-author-info-languages-box.not-specified > .wall-post-author-info-languages,
+.wall-post-author-info-website-box.not-specified > .wall-post-author-info-website {
 	text-transform: lowercase;
 }
-.post-author-info-website {
+.wall-post-author-info-website {
 	color: #40C;
 }
-.post-author-info-website-box.not-specified > .post-author-info-website {
+.wall-post-author-info-website-box.not-specified > .wall-post-author-info-website {
 	color: #000;
 	pointer-events: none;
 }
-html.dark .post-author-info-website-box.not-specified > .post-author-info-website {
+html.dark .wall-post-author-info-website-box.not-specified > .wall-post-author-info-website {
 	color: #ECECEC;
 }
-.post-text {
+.wall-post-text {
 	overflow: hidden;
 	margin: 0 .5rem .5rem;
 	max-height: 15rem;
@@ -1444,17 +1447,17 @@ html.dark .post-author-info-website-box.not-specified > .post-author-info-websit
 	text-align: left;
 	transition: all .3s cubic-bezier(0, 1, 0, 1) 0s;
 }
-.post-text h1 {
+.wall-post-text h1 {
 	font-family: Basic, Emoji, Mono, sans-serif;
 	font-size: 2rem;
 	line-height: 2.5rem;
 	text-align: center;
 }
-.post.full .post-text {
+.wall-post.full .wall-post-text {
 	max-height: 100000rem;
 	transition: all 1s ease-in-out 0s;
 }
-.deploy-post-toggle {
+.wall-post-deploy-toggle {
 	display: block;
 	width: 10%;
 	height: 2rem;
@@ -1467,32 +1470,32 @@ html.dark .post-author-info-website-box.not-specified > .post-author-info-websit
 	cursor: pointer;
 	transition: all .2s ease 0s;
 }
-.deploy-post-toggle:hover,
-.deploy-post-toggle:focus {
+.wall-post-deploy-toggle:hover,
+.wall-post-deploy-toggle:focus {
 	background-color: #7D80B8;
 }
-html.dark .deploy-post-toggle:hover,
-html.dark .deploy-post-toggle:focus {
+html.dark .wall-post-deploy-toggle:hover,
+html.dark .wall-post-deploy-toggle:focus {
 	background-color: #212D3B;
 }
-.deploy-post-toggle:after {
+.wall-post-deploy-toggle:after {
 	content: "▼";
 	font-size: 1.5rem;
 	color: #7D80B8;
 	transition: all .2s ease 0s;
 }
-.deploy-post-toggle:hover:after,
-.deploy-post-toggle:focus:after {
+.wall-post-deploy-toggle:hover:after,
+.wall-post-deploy-toggle:focus:after {
 	color: #FFF;
 }
-.post.full .deploy-post-toggle {
+.wall-post.full .wall-post-deploy-toggle {
 	display: none;
 }
-.post-options {
+.wall-post-options {
 	overflow: hidden;
 	height: 2rem;
 }
-.post-comments-count {
+.wall-post-comments-count {
 	display: inline-block;
 	float: left;
 	min-width: 3rem;
@@ -1503,10 +1506,10 @@ html.dark .deploy-post-toggle:focus {
 	line-height: 2rem;
 	color: #7D80B8;
 }
-html.dark .post-comments-count {
+html.dark .wall-post-comments-count {
 	color: #7D80B8;
 }
-.post-comments-count:before {
+.wall-post-comments-count:before {
 	content: "";
 	display: block;
 	float: left;
@@ -1517,7 +1520,7 @@ html.dark .post-comments-count {
 	background-position: center;
 	background-repeat: no-repeat;
 }
-.post-option {
+.wall-post-option {
 	display: inline-block;
 	float: right;
 	min-width: 3rem;
@@ -1528,18 +1531,18 @@ html.dark .post-comments-count {
 	cursor: pointer;
 	transition: all .2s ease 0s;
 }
-.post-option:hover,
-.post-option:focus {
+.wall-post-option:hover,
+.wall-post-option:focus {
 	background-color: #F0F8FF;
 }
-html.dark .post-option:hover,
-html.dark .post-option:focus {
+html.dark .wall-post-option:hover,
+html.dark .wall-post-option:focus {
 	background-color: #000;
 }
-.post-option:active {
+.wall-post-option:active {
 	transform: scale(1.2, 1.2);
 }
-.post-option:before {
+.wall-post-option:before {
 	content: "";
 	display: inline-block;
 	width: 3rem;

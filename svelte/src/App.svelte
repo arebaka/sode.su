@@ -103,6 +103,34 @@
 			ui.confirmation.onYes = onYes;
 			ui.confirmation.onNo  = onNo;
 			ui.confirmation.open  = true;
+		},
+		updateAreaHeight: (area) => {
+			area.style.height = "0px";
+			area.style.height = area.scrollHeight + 2 + "px";
+		},
+		formatDT: (str) => {
+			let datetime = new Date(str + "Z");
+			let now      = new Date();
+			let diff     = now - datetime;
+
+			if (diff < 60000)
+				return dict.time.just_now;
+			if (diff < 3600000)
+				return dict.time.minutes_ago.replace("{{count}}", diff / 60000 >> 0);
+			if (datetime.getDate() == now.getDate())
+				return dict.time.today
+					.replace("{{hours}}",   ("" + datetime.getHours()).padStart(2, '0'))
+					.replace("{{minutes}}", ("" + datetime.getMinutes()).padStart(2, '0'))
+					.replace("{{seconds}}", ("" + datetime.getSeconds()).padStart(2, '0'));
+			if (datetime.getDate() + 1 == now.getDate())
+				return dict.time.yesterday
+					.replace("{{hours}}",   ("" + datetime.getHours()).padStart(2, '0'))
+					.replace("{{minutes}}", ("" + datetime.getMinutes()).padStart(2, '0'))
+					.replace("{{seconds}}", ("" + datetime.getSeconds()).padStart(2, '0'));
+			return dict.time.default
+				.replace("{{hours}}",   ("" + datetime.getHours()).padStart(2, '0'))
+				.replace("{{minutes}}", ("" + datetime.getMinutes()).padStart(2, '0'))
+				.replace("{{seconds}}", ("" + datetime.getSeconds()).padStart(2, '0'));
 		}
 	};
 

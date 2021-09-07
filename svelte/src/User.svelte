@@ -14,80 +14,56 @@
 	let relation;
 
 	let ui = {
-		profile: {
-			buttons: {
-				chat: {
-					allowed: false,
-					handler: () => {}
-				},
-				friend: {
-					allowed: false,
-					handler: () => {
-						fetch(api.methods["friends.add"].path, {
-								method: "POST",
-								headers: {
-									"Content-Type": "application/json"
-								},
-								body: JSON.stringify({ target: profile.id })
-							})
-							.then(res => res.json())
-							.then(res => {
-								if (res.status == api.errors.ok) {
-									profile = profile;
-									actions.showToast(
-										dict.profile.user.toasts.friended.replace("{{name}}",profile.name),
-										"success", 5000
-									);
-								}
-							});
-					}
-				},
-				theme: {
-					allowed: true,
-					handler: () => {}
-				},
-				images: {
-					allowed: true,
-					handler: () => {}
-				},
-				videos: {
-					allowed: true,
-					handler: () => {}
-				},
-				music: {
-					allowed: true,
-					handler: () => {}
-				},
-				unfriend: {
-					allowed: false,
-					handler: () => {
-						let ctxDict  = {...dict.profile.user.confirmations.unfriend};
-						ctxDict.text = ctxDict.text.replace("{{name}}", profile.name || dict.profile.user.default.name);
+		buttons: {
+			chat: {
+				allowed: false,
+				handler: () => {}
+			},
+			friend: {
+				allowed: false,
+				handler: () => {
+					fetch(api.methods["friends.add"].path, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({ target: profile.id })
+						})
+						.then(res => res.json())
+						.then(res => {
+							if (res.status == api.errors.ok) {
+								profile = profile;
+								actions.showToast(
+									dict.profile.user.toasts.friended.replace("{{name}}",profile.name),
+									"success", 5000
+								);
+							}
+						});
+				}
+			},
+			theme: {
+				allowed: true,
+				handler: () => {}
+			},
+			images: {
+				allowed: true,
+				handler: () => {}
+			},
+			videos: {
+				allowed: true,
+				handler: () => {}
+			},
+			music: {
+				allowed: true,
+				handler: () => {}
+			},
+			unfriend: {
+				allowed: false,
+				handler: () => {
+					let ctxDict  = {...dict.profile.user.confirmations.unfriend};
+					ctxDict.text = ctxDict.text.replace("{{name}}", profile.name || dict.profile.user.default.name);
 
-						actions.confirm(ctxDict, () => {
-							fetch(api.methods["friends.remove"].path, {
-									method: "POST",
-									headers: {
-										"Content-Type": "application/json"
-									},
-									body: JSON.stringify({ target: profile.id })
-								})
-								.then(res => res.json())
-								.then(res => {
-									if (res.status == api.errors.ok) {
-										profile = profile;
-										actions.showToast(
-											dict.profile.user.toasts.unfriended.replace("{{name}}", profile.name),
-											"success", 5000
-										);
-									}
-								});
-						}, () => {});
-					}
-				},
-				unsubscribe: {
-					allowed: false,
-					handler: () => {
+					actions.confirm(ctxDict, () => {
 						fetch(api.methods["friends.remove"].path, {
 								method: "POST",
 								headers: {
@@ -100,22 +76,44 @@
 								if (res.status == api.errors.ok) {
 									profile = profile;
 									actions.showToast(
-										dict.profile.user.toasts.unsubscribed
-											.replace("{{name}}", profile.name || dict.profile.user.default.name),
+										dict.profile.user.toasts.unfriended.replace("{{name}}", profile.name),
 										"success", 5000
 									);
 								}
 							});
-					}
-				},
-				ban: {
-					allowed: false,
-					handler: () => {}
-				},
-				unban: {
-					allowed: false,
-					handler: () => {}
+					}, () => {});
 				}
+			},
+			unsubscribe: {
+				allowed: false,
+				handler: () => {
+					fetch(api.methods["friends.remove"].path, {
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json"
+							},
+							body: JSON.stringify({ target: profile.id })
+						})
+						.then(res => res.json())
+						.then(res => {
+							if (res.status == api.errors.ok) {
+								profile = profile;
+								actions.showToast(
+									dict.profile.user.toasts.unsubscribed
+										.replace("{{name}}", profile.name || dict.profile.user.default.name),
+									"success", 5000
+								);
+							}
+						});
+				}
+			},
+			ban: {
+				allowed: false,
+				handler: () => {}
+			},
+			unban: {
+				allowed: false,
+				handler: () => {}
 			}
 		}
 	};
@@ -152,23 +150,23 @@
 	}
 
 	$: if (relation) {
-		ui.profile.buttons.friend.allowed = relation.relation == "incoming" || (
+		ui.buttons.friend.allowed = relation.relation == "incoming" || (
 			relation.relation == "none" && (
 				profile.friendable == "public" || (
 					profile.friendable == "protected" && relation.common_friends > 0
 		)));
 
-		ui.profile.buttons.unfriend.allowed    = relation.relation == "friend";
-		ui.profile.buttons.unsubscribe.allowed = relation.relation == "outcoming";
-		ui.profile.buttons.ban.allowed         = !relation.banned;
-		ui.profile.buttons.unban.allowed       = relation.banned;
+		ui.buttons.unfriend.allowed    = relation.relation == "friend";
+		ui.buttons.unsubscribe.allowed = relation.relation == "outcoming";
+		ui.buttons.ban.allowed         = !relation.banned;
+		ui.buttons.unban.allowed       = relation.banned;
 	}
 	else {
-		ui.profile.buttons.friend.allowed      =
-		ui.profile.buttons.unfriend.allowed    =
-		ui.profile.buttons.unsubscribe.allowed =
-		ui.profile.buttons.ban.allowed         =
-		ui.profile.buttons.unban.allowed       = false;
+		ui.buttons.friend.allowed      =
+		ui.buttons.unfriend.allowed    =
+		ui.buttons.unsubscribe.allowed =
+		ui.buttons.ban.allowed         =
+		ui.buttons.unban.allowed       = false;
 	}
 
 	function escapeText(text)
@@ -213,12 +211,6 @@
 			return relation.noteResponse = api.errors.too_long;
 	}
 
-	function updateAreaHeight(area)
-	{
-		area.style.height = "0px";
-		area.style.height = area.scrollHeight + 2 + "px";
-	}
-	
 	document.getElementById("stylesheet").setAttribute("href", "css/user.css");  // TODO change
 </script>
 
@@ -263,8 +255,8 @@
 					{#if relation.relation == "friend"}
 						<label id="profile-relation-note-box" class:error={relation.noteResponse} on:click|preventDefault|stopPropagation>
 							<textarea placeholder="{dict.profile.user.relation.note[relation.relation].placeholder}" id="profile-relation-note"
-								on:blur={e => updateNote(e.target.value)} on:click={e => updateAreaHeight(e.target)}
-								on:input={e => checkNote(e.target.value)} on:input={e => updateAreaHeight(e.target)}
+								on:blur={e => updateNote(e.target.value)} on:click={e => actions.updateAreaHeight(e.target)}
+								on:input={e => checkNote(e.target.value)} on:input={e => actions.updateAreaHeight(e.target)}
 							>{relation.note}</textarea>
 							{#if relation.noteResponse !== null}
 								<p id="profile-relation-note-response">
@@ -280,9 +272,9 @@
 		{/if}
 
 		<div id="profile-buttons">
-			{#each Object.keys(ui.profile.buttons) as button}
-				{#if ui.profile.buttons[button].allowed}
-					<button class="profile-button" id="profile-button-{button}" on:click={ui.profile.buttons[button].handler}>
+			{#each Object.keys(ui.buttons) as button}
+				{#if ui.buttons[button].allowed}
+					<button class="profile-button" id="profile-button-{button}" on:click={ui.buttons[button].handler}>
 						{dict.profile.user.buttons[button]}
 					</button>
 				{/if}
