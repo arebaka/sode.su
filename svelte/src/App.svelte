@@ -128,6 +128,9 @@
 					.replace("{{minutes}}", ("" + datetime.getMinutes()).padStart(2, '0'))
 					.replace("{{seconds}}", ("" + datetime.getSeconds()).padStart(2, '0'));
 			return dict.time.default
+				.replace("{{day}}",     ("" + datetime.getDate()).padStart(2, '0'))
+				.replace("{{month}}",   ("" + (datetime.getMonth() + 1)).padStart(2, '0'))
+				.replace("{{year}}",    ("" + datetime.getFullYear()).padStart(2, '0'))
 				.replace("{{hours}}",   ("" + datetime.getHours()).padStart(2, '0'))
 				.replace("{{minutes}}", ("" + datetime.getMinutes()).padStart(2, '0'))
 				.replace("{{seconds}}", ("" + datetime.getSeconds()).padStart(2, '0'));

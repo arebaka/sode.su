@@ -1,6 +1,6 @@
 <script type="text/javascript">
 	import Error from "./Error.svelte";
-	import Wall  from "./Wall.svelte";
+	import Wall  from "./wall/Wall.svelte";
 
 	export let api;
 	export let dict;
@@ -137,12 +137,12 @@
 		fetch(api.methods.relation.path, {
 				method:  "POST",
 				headers: { "Content-Type": "application/json" },
-				body:    JSON.stringify({ entity: "user/" + profile.id })
+				body:    JSON.stringify({ entity: `${profile.type}/${profile.id}` })
 			})
 			.then(res => res.json())
 			.then(res => {
 				relation = res.status == api.errors.ok
-					? {...res.data, noteResponse: null} : null
+					? { ...res.data, noteResponse: null } : null
 			});
 	}
 	else {
@@ -229,8 +229,7 @@
 		{#if profile.avatar}
 			<img src="{api.paths["@*"].i["0"]["*." + profile.avatar.split('.')[1]]
 					.replace(":1", profile.id)
-					.replace(":2", profile.avatar.split('.')[0])
-					+ "?thumb=1000"}"
+					.replace(":2", profile.avatar.split('.')[0])}?thumb=1000"
 				alt="" class="image" id="profile-avatar" />
 		{:else}
 			<img src="img/avatar.png" alt="" id="profile-avatar" />

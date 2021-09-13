@@ -90,6 +90,7 @@
 			"/":       "@:1",
 			"profile": "@:1/profile",
 			"bio":     "@:1/bio",
+			"walls":   "@:1/walls",
 			"i":            {
 				"/": "@:1/i",
 				"0": {
@@ -247,17 +248,22 @@
 					"descr":    ""
 				},
 				"visibility": {
-					"type":     "bool",
+					"type":     "Access",
 					"nullable": false,
 					"descr":    ""
 				},
 				"postable": {
-					"type":     "bool",
+					"type":     "Access",
 					"nullable": false,
 					"descr":    ""
 				},
 				"commentable": {
-					"type":     "bool",
+					"type":     "Access",
+					"nullable": false,
+					"descr":    ""
+				},
+				"reactionable": {
+					"type":     "Access",
 					"nullable": false,
 					"descr":    ""
 				},
@@ -383,6 +389,21 @@
 				}
 			}
 		},
+		"Reaction": {
+			"descr": "",
+			"props": {
+				"emoji": {
+					"type":    "string",
+					"nullable": false,
+					"descr":    ""
+				},
+				"count": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				}
+			}
+		},
 		"Post": {
 			"descr": "",
 			"props": {
@@ -429,6 +450,16 @@
 				"repost": {
 					"type":     "Serialized_Post",
 					"nullable": true,
+					"descr":    ""
+				},
+				"n_comments": {
+					"type":     "uint64",
+					"nullable": false,
+					"descr":    ""
+				},
+				"reactions": {
+					"type":     "Reaction[]",
+					"nullable": false,
 					"descr":    ""
 				}
 			}

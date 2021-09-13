@@ -6,7 +6,7 @@
 		"today": "today at {{hours}}:{{minutes}}",
 		"yesterday": "yesterday at {{hours}}:{{minutes}}",
 		"tomorrow": "tomorrow at {{hours}}:{{minutes}}",
-		"default": "{{hours}}:{{minutes}}"
+		"default": "{{day}}.{{month}}.{{year}} / {{hours}}:{{minutes}}"
 	},
 	"langs": {
 		"epo": "Esperanto",
@@ -258,6 +258,11 @@
 				"protected": "Commentable only for friends",
 				"private": "Commentable only for owner"
 			},
+			"reactionable": {
+				"public": "Reactionable for everyone",
+				"protected": "Reactionable only for friends",
+				"private": "Unable to react"
+			},
 			"anon_posts_only": "Anon posts only",
 			"anon_comments_only": "Anon comments only",
 			"sorting": {
@@ -280,7 +285,22 @@
 				"too_long": "Text is too long! Maximum 15000 characters!"
 			}
 		},
-		"empty": "The wall is empty"
+		"empty": "The wall is empty",
+		"posts": {
+			"menu": {
+				"wrap": "Menu",
+				"unpin": "Unpin",
+				"pin": "Pin",
+				"share": "Share",
+				"book": "Book",
+				"delete": "Delete",
+				"report": "Report"
+			},
+			"reactions": {
+				"wrap": "Reactions"
+			},
+			"repost": "Repost"
+		}
 	},
 	"settings": {
 		"back": "Back",

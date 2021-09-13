@@ -6,7 +6,7 @@
 		"today": "сегодня в {{hours}}:{{minutes}}",
 		"yesterday": "вчера в {{hours}}:{{minutes}}",
 		"tomorrow": "завтра в {{hours}}:{{minutes}}",
-		"default": "{{hours}}:{{minutes}}"
+		"default": "{{day}}.{{month}}.{{year}} / {{hours}}:{{minutes}}"
 	},
 	"langs": {
 		"epo": "Эсперанто",
@@ -258,6 +258,11 @@
 				"protected": "Комментируема только для друзей",
 				"private": "Комментируема только для владельца"
 			},
+			"reactionable": {
+				"public": "Реакции доступны всем",
+				"protected": "Реакции доступны только друзьям",
+				"private": "Без реакций"
+			},
 			"anon_posts_only": "Только анонимные посты",
 			"anon_comments_only": "Только анонимные комменты",
 			"sorting": {
@@ -280,7 +285,22 @@
 				"too_long": "Текст слишком длинный! Максимум 15000 символов!"
 			}
 		},
-		"empty": "Стена пуста"
+		"empty": "Стена пуста",
+		"posts": {
+			"menu": {
+				"wrap": "Меню",
+				"unpin": "Открепить",
+				"pin": "Закрепить",
+				"share": "Поделиться",
+				"book": "В закладки",
+				"delete": "Удалить",
+				"report": "Пожаловаться"
+			},
+			"reactions": {
+				"wrap": "Реакции"
+			},
+			"repost": "Репост"
+		}
 	},
 	"settings": {
 		"back": "Назад",

@@ -1,6 +1,8 @@
 const path    = require("path");
 const fs      = require("fs");
 const express = require("express");
+const emok    = require("emok");
+
 const router  = express.Router();
 
 const api   = require("../api");
@@ -31,7 +33,7 @@ router.get("/api", async (req, res) => {
 router.get("/emoji", async (req, res) => {
     res
         .type(".json")
-        .sendFile(path.resolve("public/emoji.json"));
+        .json(emok.list);
 });
 
 router.get("/manifest.json", async (req, res) => {
@@ -74,7 +76,7 @@ router.get("/", async (req, res) => {
             lang:      i18n[res.locals.clientLang].meta.lang,
             descr:     i18n[res.locals.clientLang].index.descr,
             url:       req.hostname + req.path,
-            css:       "css/index.css",
+            css:       "css/basic.css",
             canonical: api.host + '/',
             title:     i18n[res.locals.clientLang].index.title,
             type:      "website",

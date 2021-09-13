@@ -42,6 +42,14 @@ router.get("/:prefix(@|~):descriptor/bio", async (req, res, next) => {
         .send(bio);
 });
 
+router.get("/:prefix(@|~):descriptor/walls", async (req, res, next) => {
+    const walls = await db.getWalls(res.locals.entityType, req.params.descriptor);
+
+    res
+        .type("json")
+        .json(walls);
+});
+
 router.get("/:prefix(@|~):descriptor", async (req, res, next) => {
     const profile = await db.getProfile(res.locals.entityType, req.params.descriptor);
     const bio     = await db.getBio(res.locals.entityType, req.params.descriptor);

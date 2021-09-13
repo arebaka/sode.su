@@ -27,6 +27,7 @@ html.dark #profile {
 	font-family: Basic, Emoji, Mono, sans-serif;
 	font-size: 1.5rem;
 	font-weight: bold;
+	line-height: 3rem;
 	color: #7D80B8;
 	text-align: left;
 }
@@ -1035,6 +1036,7 @@ html.dark #wall-back:focus {
 }
 #wall-headline {
 	padding: 0 .5rem;
+	height: 3rem;
 	font-family: Basic, Emoji, Mono, sans-serif;
 	font-size: 1.5rem;
 	font-weight: bold;
@@ -1173,7 +1175,7 @@ html.dark .error #wall-post-response {
 	line-height: 3rem;
 }
 #wall-posts {
-	margin: .5rem 0;
+	overflow: hidden;
 }
 .wall-post {
 	overflow: hidden;
@@ -1187,127 +1189,127 @@ html.dark .wall-post {
 .wall-post:last-of-type {
 	border-bottom: none;
 }
-.wall-post-more-options {
-	overflow: visible;
-	float: right;
-	width: 3rem;
-	height: 1.4rem;
-	margin-top: -1px;
-	margin-right: -1px;
+.wall-post-menu-box {
+	z-index: 10;
+	position: absolute;
+	top: 0;
+	right: 0
+}
+.wall-post-menu-wrap {
+	display: block;
+	width: 1.5rem;
+	height: 1.5rem;
+	font-size: 0;
+	text-align: right;
 	background: none;
 	cursor: pointer;
 	transition: all .2s ease 0s;
 }
-.wall-post-more-options:before {
-	content: "";
-	display: inline-block;
-	width: 3rem;
-	height: 1.4rem;
-	background-image: url("../../img/more.svg");
-	background-size: 70%;
-	background-position: center;
-	background-repeat: no-repeat;
+.wall-post-menu-wrap:before {
+	content: "•••";
+	display: block;
+	width: 1.5rem;
+	height: 1.5rem;
+	font-family: Basic;
+	font-size: .8rem;
+	line-height: 1.5rem;
+	text-align: center;
+	color: #7D80B8;
 }
-.wall-post-more-options:hover,
-.wall-post-more-options:focus {
+.wall-post-menu-box:hover,
+.wall-post-menu-box:focus {
 	background-color: #F0F8FF;
-	border: 1px solid #7D80B8;
-	border-bottom: none;
 	box-shadow: 0 0 2px rgba(0,0,0,.15);
 }
-html.dark .wall-post-more-options:hover,
-html.dark .wall-post-more-options:focus {
-	background-color: #000;
-	border-color: #212D3B;
+html.dark .wall-post-menu-wrap:before {
+	color: #ECECEC;
+}
+html.dark .wall-post-menu-box:hover,
+html.dark .wall-post-menu-box:focus {
+	background-color: #17212B;
 	box-shadow: none;
 }
-.wall-post-more-options:hover .wall-post-more-options-list,
-.wall-post-more-options:focus .wall-post-more-options-list {
+.wall-post-menu-box:hover .wall-post-menu,
+.wall-post-menu-box:focus .wall-post-menu {
 	visibility: visible;
 	opacity: 1;
-	height: 100%;
+	height: max-content;
 }
-.wall-post-more-options-list {
+.wall-post-menu {
+	list-style: none;
 	overflow: hidden;
 	position: absolute;
-	top: 1.3rem;
-	right: -1px;
+	top: 1.5rem;
+	right: 0;
 	min-width: 9rem;
 	height: 0;
-	border: 1px solid #7D80B8;
 	cursor: pointer;
 	visibility: hidden;
 	opacity: 0;
-	box-shadow: 0 0 2px rgba(0,0,0,.15);
+	box-shadow: 0 -2px 2px rgba(0,0,0,0.15),
+		0 2px 2px rgba(0,0,0,0.15);
 	transition: all .2s ease 0s;
 }
-html.dark .wall-post-more-options-list {
+html.dark .wall-post-menu {
 	background-color: #0E1621;
-	border-color: #212D3B;
+	border: 1px solid #212121;
 	box-shadow: none;
 }
-.wall-post-more-options-list[data-count="3"] {
-	max-height: calc(4.2rem + 2px);
-}
-.wall-post-more-options-list[data-count="4"] {
-	max-height: calc(5.6rem + 3px);
-}
-.wall-post-more-option {
+.wall-post-menu-option {
 	display: block;
+	padding: 0 .5rem;
 	width: 100%;
-	height: 1.4rem;
-	padding-left: .5rem;
+	height: 1.5rem;
 	font-family: Mono;
 	font-size: .8rem;
-	line-height: 1.4rem;
+	line-height: 1.5rem;
 	text-align: left;
 	color: #000;
 	background-color: #F0F8FF;
 	border-bottom: 1px solid #7D80B8;
 }
-html.dark .wall-post-more-option {
+html.dark .wall-post-menu-option {
 	color: #ECECEC;
-	background-color: #000;
+	background-color: #17212B;
 	border-color: #212D3B;
 }
-.wall-post-more-options-list > .wall-post-more-option:last-clild {
+.wall-post-menu-option-box:last-of-type .wall-post-menu-option {
 	border-bottom: none;
 }
-.wall-post-more-option:before {
+.wall-post-menu-option:before {
 	content: "";
 	position: relative;
-	top: .2rem;
-	display: inline-block;
+	display: none;
 	width: 2rem;
-	height: 1rem;
+	height: 1.5rem;
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
 }
-.wall-post-more-option:hover,
-.wall-post-more-option:focus {
+.wall-post-menu-option:hover,
+.wall-post-menu-option:focus {
 	background-color: #FFF;
 }
-html.dark .wall-post-more-option:hover,
-html.dark .wall-post-more-option:focus {
+html.dark .wall-post-menu-option:hover,
+html.dark .wall-post-menu-option:focus {
 	background-color: #0E1621;
 }
-.wall-unpin-post-button:before {
+.wall-post-menu-unpin:before {
 	background-image: url("../../img/unpin.svg");
 }
-.wall-pin-post-button:before {
+.wall-post-menu-pin:before {
 	background-image: url("../../img/pin.svg");
 }
-.wall-share-post-button:before {
+.wall-post-menu-share:before {
 	background-image: url("../../img/share.svg");
 }
-.wall-archive-post-button:before {
-	background-image: url("../../img/archive.svg");
+.wall-post-menu-book:before {
+	background-image: url("../../img/book.svg");
 }
-.wall-delete-post-button:before {
+.wall-post-menu-delete:before {
 	background-image: url("../../img/delete.svg");
 }
-.wall-report-post-button:before {
+.wall-post-menu-report:before {
 	background-image: url("../../img/report.svg");
 }
 .wall-post-header {
@@ -1318,6 +1320,7 @@ html.dark .wall-post-more-option:focus {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	width: calc(100% - 5rem);
 	height: 1.5rem;
 	font-family: Basic, Emoji, Mono, sans-serif;
 	font-size: 1rem;
@@ -1456,17 +1459,12 @@ html.dark .wall-post-author-info-website-box.not-specified > .wall-post-author-i
 }
 .wall-post-text {
 	overflow: hidden;
-	margin: 0 .5rem .5rem;
+	margin: .5rem;
+	min-height: 1.5rem;
 	max-height: 15rem;
 	font-size: 1rem;
 	text-align: left;
 	transition: all .3s cubic-bezier(0, 1, 0, 1) 0s;
-}
-.wall-post-text h1 {
-	font-family: Basic, Emoji, Mono, sans-serif;
-	font-size: 2rem;
-	line-height: 2.5rem;
-	text-align: center;
 }
 .wall-post.full .wall-post-text {
 	max-height: 100000rem;
@@ -1506,34 +1504,66 @@ html.dark .wall-post-deploy-toggle:focus {
 .wall-post.full .wall-post-deploy-toggle {
 	display: none;
 }
-.wall-post-options {
+.wall-post-footer {
 	overflow: hidden;
-	height: 2rem;
 }
 .wall-post-comments-count {
-	display: inline-block;
-	float: left;
-	min-width: 3rem;
-	height: 2rem;
-	margin-left: .5rem;
-	font-family: Digits, Emoji, monospace;
-	font-size: 1.2rem;
-	line-height: 2rem;
-	color: #7D80B8;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	padding: 0 .5rem;
+	font-family: Digits;
+	font-size: 1rem;
+	font-weight: bold;
+	line-height: 1.5rem;
+	color: #FFF;
+	background-color: #7D80B8;
 }
 html.dark .wall-post-comments-count {
-	color: #7D80B8;
+	color: #ECECEC;
+	background-color: #212D3B;
 }
-.wall-post-comments-count:before {
-	content: "";
+.wall-post-reactions-wrap {
 	display: block;
 	float: left;
-	width: 2rem;
-	height: 2rem;
-	background-image: url("../../img/comment.svg");
-	background-size: 80%;
-	background-position: center;
-	background-repeat: no-repeat;
+	margin-right: .5rem;
+	height: 1.5rem;
+	font-size: 0;
+	color: #7D80B8;
+	background-color: #F0F8FF;
+}
+.wall-post-reactions-wrap:before {
+	content: "❤️👍💩";
+	display: block;
+	padding: 0 .5rem;
+	font-family: Emoji;
+	font-size: 1rem;
+	line-height: 1.5rem;
+}
+html.dark .wall-post-reactions-wrap {
+	color: #ECECEC;
+	background-color: #17212B;
+}
+.wall-post-repost {
+	display: block;
+	float: left;
+	margin-right: .5rem;
+	height: 1.5rem;
+	font-size: 0;
+	color: #7D80B8;
+	background-color: #F0F8FF;
+}
+.wall-post-repost:before {
+	content: "➥";
+	display: block;
+	padding: 0 .5rem;
+	font-family: Emoji;
+	font-size: 1rem;
+	line-height: 1.5rem;
+}
+html.dark .wall-post-repost {
+	color: #ECECEC;
+	background-color: #17212B;
 }
 .wall-post-option {
 	display: inline-block;

@@ -139,8 +139,9 @@ CREATE TABLE IF NOT EXISTS public.emoji (
     id bigserial NOT NULL PRIMARY KEY,
     category character varying(255) NOT NULL,
     subcategory character varying(255) NOT NULL,
-    symbol character varying(32) NOT NULL,
-    title character varying(255) NOT NULL
+    slug character varying(255) NOT NULL,
+    char_id bigint NOT NULL,
+    title_id bigint NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.prohibited_media (
@@ -148,6 +149,11 @@ CREATE TABLE IF NOT EXISTS public.prohibited_media (
     type public.file_format NOT NULL,
     hash bigint NOT NULL,
     reason_id bigint DEFAULT 1 NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.objects (
+    id bigserial NOT NULL PRIMARY KEY,
+    last_comment_index bigint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.media (
@@ -172,12 +178,12 @@ CREATE TABLE IF NOT EXISTS public.albums (
 
 CREATE TABLE IF NOT EXISTS public.images (
     id bigserial NOT NULL PRIMARY KEY,
+    object_id bigint NOT NULL,
     album_id bigint NOT NULL,
     media_id bigint NOT NULL,
     owner_id bigint NOT NULL,
     descr_id bigint DEFAULT 1 NOT NULL,
     saved_dt timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_comment_index bigint DEFAULT 0 NOT NULL,
     width integer NOT NULL,
     height integer NOT NULL
 );
@@ -195,6 +201,7 @@ CREATE TABLE IF NOT EXISTS public.playlists (
 
 CREATE TABLE IF NOT EXISTS public.audios (
     id bigserial NOT NULL PRIMARY KEY,
+    object_id bigint NOT NULL,
     playlist_id bigint NOT NULL,
     media_id bigint NOT NULL,
     owner_id bigint NOT NULL,
@@ -203,7 +210,6 @@ CREATE TABLE IF NOT EXISTS public.audios (
     poster_image_id bigint,
     lyrics_id bigint DEFAULT 1 NOT NULL,
     saved_dt timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_comment_index bigint DEFAULT 0 NOT NULL,
     duration integer NOT NULL,
     bitrate int NOT NULL
 );
@@ -227,6 +233,7 @@ CREATE TABLE IF NOT EXISTS public.videolibs (
 
 CREATE TABLE IF NOT EXISTS public.videos (
     id bigserial NOT NULL PRIMARY KEY,
+    object_id bigint NOT NULL,
     videolib_id bigint NOT NULL,
     media_id bigint NOT NULL,
     owner_id bigint NOT NULL,
@@ -235,7 +242,6 @@ CREATE TABLE IF NOT EXISTS public.videos (
     poster_image_id bigint,
     content_rating smallint DEFAULT 0 NOT NULL,
     saved_dt timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_comment_index bigint DEFAULT 0 NOT NULL,
     width integer NOT NULL,
     height integer NOT NULL,
     duration integer NOT NULL,
@@ -258,6 +264,7 @@ CREATE TABLE IF NOT EXISTS public.walls (
     visibility public.access DEFAULT 'public'::public.access NOT NULL,
     postable public.access DEFAULT 'protected'::public.access NOT NULL,
     commentable public.access DEFAULT 'public'::public.access NOT NULL,
+    reactionable public.access DEFAULT 'public'::public.access NOT NULL,
     anon_posts_only boolean DEFAULT false NOT NULL,
     anon_comments_only boolean DEFAULT false NOT NULL,
     sorting public.wall_sorting DEFAULT 'datetime_reverse'::public.wall_sorting NOT NULL,
@@ -268,6 +275,7 @@ CREATE TABLE IF NOT EXISTS public.walls (
 
 CREATE TABLE IF NOT EXISTS public.posts (
     id bigserial NOT NULL PRIMARY KEY,
+    object_id bigint NOT NULL,
     wall_id bigint NOT NULL,
     index bigint NOT NULL,
     author_id bigint NOT NULL,
@@ -275,7 +283,6 @@ CREATE TABLE IF NOT EXISTS public.posts (
     sent_dt timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     commentable public.access DEFAULT 'public'::public.access NOT NULL,
     anon_comments_only boolean DEFAULT false NOT NULL,
-    last_comment_index bigint DEFAULT 0 NOT NULL,
     poll_id bigint,
     repost_id bigint
 );
@@ -331,6 +338,13 @@ CREATE TABLE IF NOT EXISTS public.profile_links (
     artifact_id bigint NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS public.reactions (
+    id bigserial NOT NULL PRIMARY KEY,
+    object_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    emoji_id bigint NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS public.polls (
     id bigserial NOT NULL PRIMARY KEY,
     creator_id bigint NOT NULL,
@@ -365,14 +379,16 @@ CREATE UNIQUE INDEX IF NOT EXISTS artifacts_uindex             ON public.artifac
 CREATE UNIQUE INDEX IF NOT EXISTS artifacts_in_content_uindex  ON public.artifacts_in_content USING btree (content_id, artifact_id, "offset", length);
 CREATE UNIQUE INDEX IF NOT EXISTS langs_code_uindex            ON public.langs                USING btree (code);
 CREATE UNIQUE INDEX IF NOT EXISTS langs_name_uindex            ON public.langs                USING btree (name);
-CREATE UNIQUE INDEX IF NOT EXISTS emoji_symbol_uindex          ON public.emoji                USING btree (symbol);
-CREATE UNIQUE INDEX IF NOT EXISTS emoji_title_uindex           ON public.emoji                USING btree (title);
+CREATE UNIQUE INDEX IF NOT EXISTS emoji_slug_uindex            ON public.emoji                USING btree (slug);
+CREATE UNIQUE INDEX IF NOT EXISTS emoji_char_id_index          ON public.emoji                USING btree (char_id);
+CREATE UNIQUE INDEX IF NOT EXISTS emoji_title_id_index         ON public.emoji                USING btree (title_id);
 CREATE UNIQUE INDEX IF NOT EXISTS prohibited_media_hash_uindex ON public.prohibited_media     USING btree (hash);
 CREATE UNIQUE INDEX IF NOT EXISTS media_hash_uindex            ON public.media                USING btree (hash);
 CREATE UNIQUE INDEX IF NOT EXISTS users_entity_id_uindex       ON public.users                USING btree (entity_id);
 CREATE UNIQUE INDEX IF NOT EXISTS users_tg_id_uindex           ON public.users                USING btree (tg_id);
 CREATE UNIQUE INDEX IF NOT EXISTS friends_uindex               ON public.friends              USING btree (offerer_id , acceptor_id);
 CREATE UNIQUE INDEX IF NOT EXISTS user_profiles_alias_uindex   ON public.user_profiles        USING btree (lower((alias)::text));
+CREATE UNIQUE INDEX IF NOT EXISTS reactions_uindex             ON public.reactions            USING btree (object_id, user_id);
 
 CREATE INDEX IF NOT EXISTS content_uploaded_dt_index              ON public.content              USING btree (uploaded_dt);
 CREATE INDEX IF NOT EXISTS artifacts_type_index                   ON public.artifacts            USING btree (type);
@@ -385,6 +401,7 @@ CREATE INDEX IF NOT EXISTS langs_native_index                     ON public.lang
 CREATE INDEX IF NOT EXISTS emoji_category_index                   ON public.emoji                USING btree (category);
 CREATE INDEX IF NOT EXISTS emoji_subcategory_index                ON public.emoji                USING btree (subcategory);
 CREATE INDEX IF NOT EXISTS prohibited_media_type_index            ON public.prohibited_media     USING btree (type);
+CREATE INDEX IF NOT EXISTS objects_last_comment_index_index       ON public.objects              USING btree (last_comment_index);
 CREATE INDEX IF NOT EXISTS media_format_index                     ON public.media                USING btree (format);
 CREATE INDEX IF NOT EXISTS media_size_index                       ON public.media                USING btree (size);
 CREATE INDEX IF NOT EXISTS albums_visibility_index                ON public.albums               USING btree (visibility);
@@ -392,7 +409,6 @@ CREATE INDEX IF NOT EXISTS albums_index_index                     ON public.albu
 CREATE INDEX IF NOT EXISTS albums_commentable_index               ON public.albums               USING btree (commentable);
 CREATE INDEX IF NOT EXISTS albums_anon_comments_only_index        ON public.albums               USING btree (anon_comments_only);
 CREATE INDEX IF NOT EXISTS images_saved_dt_index                  ON public.images               USING btree (saved_dt);
-CREATE INDEX IF NOT EXISTS images_last_comment_index_index        ON public.images               USING btree (last_comment_index);
 CREATE INDEX IF NOT EXISTS images_width_index                     ON public.images               USING btree (width);
 CREATE INDEX IF NOT EXISTS images_heigth_index                    ON public.images               USING btree (height);
 CREATE INDEX IF NOT EXISTS playlists_visibility_index             ON public.playlists            USING btree (visibility);
@@ -408,7 +424,6 @@ CREATE INDEX IF NOT EXISTS videolibs_commentable_index            ON public.vide
 CREATE INDEX IF NOT EXISTS videolibs_anon_comments_only_index     ON public.videolibs            USING btree (anon_comments_only);
 CREATE INDEX IF NOT EXISTS videos_content_rating_index            ON public.videos               USING btree (content_rating);
 CREATE INDEX IF NOT EXISTS videos_saved_dt_index                  ON public.videos               USING btree (saved_dt);
-CREATE INDEX IF NOT EXISTS videos_last_comment_index_index        ON public.videos               USING btree (last_comment_index);
 CREATE INDEX IF NOT EXISTS videos_width_index                     ON public.videos               USING btree (width);
 CREATE INDEX IF NOT EXISTS videos_height_index                    ON public.videos               USING btree (height);
 CREATE INDEX IF NOT EXISTS videos_duration_index                  ON public.videos               USING btree (duration);
@@ -442,6 +457,7 @@ CREATE INDEX IF NOT EXISTS walls_index_index                      ON public.wall
 CREATE INDEX IF NOT EXISTS walls_visibility_index                 ON public.walls                USING btree (visibility);
 CREATE INDEX IF NOT EXISTS walls_postable_index                   ON public.walls                USING btree (postable);
 CREATE INDEX IF NOT EXISTS walls_commentable_index                ON public.walls                USING btree (commentable);
+CREATE INDEX IF NOT EXISTS walls_reactionable_index               ON public.walls                USING btree (reactionable);
 CREATE INDEX IF NOT EXISTS walls_anon_posts_only_index            ON public.walls                USING btree (anon_posts_only);
 CREATE INDEX IF NOT EXISTS walls_anon_comments_only_index         ON public.walls                USING btree (anon_comments_only);
 CREATE INDEX IF NOT EXISTS walls_sorting_index                    ON public.walls                USING btree (sorting);
@@ -451,7 +467,6 @@ CREATE INDEX IF NOT EXISTS posts_index_index                      ON public.post
 CREATE INDEX IF NOT EXISTS posts_sent_dt_index                    ON public.posts                USING btree (sent_dt);
 CREATE INDEX IF NOT EXISTS posts_commentable_index                ON public.posts                USING btree (commentable);
 CREATE INDEX IF NOT EXISTS posts_anon_comments_only_index         ON public.posts                USING btree (anon_comments_only);
-CREATE INDEX IF NOT EXISTS posts_last_comment_index_index         ON public.posts                USING btree (last_comment_index);
 
 ALTER TABLE public.content              ADD CONSTRAINT content_uploader_id_fk              FOREIGN KEY (uploader_id)       REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.artifacts            ADD CONSTRAINT artifacts_string_id_fk              FOREIGN KEY (string_id)         REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
@@ -466,6 +481,7 @@ ALTER TABLE public.media                ADD CONSTRAINT media_uploader_id_fk     
 ALTER TABLE public.albums               ADD CONSTRAINT albums_owner_id_fk                  FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.albums               ADD CONSTRAINT albums_descr_id_fk                  FOREIGN KEY (descr_id)          REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.albums               ADD CONSTRAINT albums_poster_image_id_fk           FOREIGN KEY (poster_image_id)   REFERENCES public.images(id)       ON UPDATE CASCADE ON DELETE SET DEFAULT;
+ALTER TABLE public.images               ADD CONSTRAINT images_object_id_fk                 FOREIGN KEY (object_id)         REFERENCES public.objects(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.images               ADD CONSTRAINT images_album_id_fk                  FOREIGN KEY (album_id)          REFERENCES public.albums(id)       ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.images               ADD CONSTRAINT images_media_id_fk                  FOREIGN KEY (media_id)          REFERENCES public.media(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.images               ADD CONSTRAINT images_owner_id_fk                  FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
@@ -473,6 +489,7 @@ ALTER TABLE public.images               ADD CONSTRAINT images_descr_id_fk       
 ALTER TABLE public.playlists            ADD CONSTRAINT playlists_owner_id_fk               FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.playlists            ADD CONSTRAINT playlists_descr_id_fk               FOREIGN KEY (descr_id)          REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.playlists            ADD CONSTRAINT playlists_poster_image_id_fk        FOREIGN KEY (poster_image_id)   REFERENCES public.images(id)       ON UPDATE CASCADE ON DELETE SET DEFAULT;
+ALTER TABLE public.audios               ADD CONSTRAINT audios_object_id_fk                 FOREIGN KEY (object_id)         REFERENCES public.objects(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.audios               ADD CONSTRAINT audios_playlist_id_fk               FOREIGN KEY (playlist_id)       REFERENCES public.playlists(id)    ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.audios               ADD CONSTRAINT audios_media_id_fk                  FOREIGN KEY (media_id)          REFERENCES public.media(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.audios               ADD CONSTRAINT audios_owner_id_fk                  FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
@@ -485,6 +502,7 @@ ALTER TABLE public.audio_tags           ADD CONSTRAINT audio_tags_tag_id_fk     
 ALTER TABLE public.videolibs            ADD CONSTRAINT videolibs_owner_id_fk               FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.videolibs            ADD CONSTRAINT videolibs_descr_id_fk               FOREIGN KEY (descr_id)          REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.videolibs            ADD CONSTRAINT videolibs_poster_image_id_fk        FOREIGN KEY (poster_image_id)   REFERENCES public.images(id)       ON UPDATE CASCADE ON DELETE SET DEFAULT;
+ALTER TABLE public.videos               ADD CONSTRAINT videos_object_id_fk                 FOREIGN KEY (object_id)         REFERENCES public.objects(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.videos               ADD CONSTRAINT videos_videolib_id_fk               FOREIGN KEY (videolib_id)       REFERENCES public.videolibs(id)    ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.videos               ADD CONSTRAINT videos_media_id_fk                  FOREIGN KEY (media_id)          REFERENCES public.media(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.videos               ADD CONSTRAINT videos_owner_id_fk                  FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
@@ -518,8 +536,14 @@ ALTER TABLE public.poll_answers         ADD CONSTRAINT poll_answers_option_id_fk
 ALTER TABLE public.walls                ADD CONSTRAINT walls_owner_id_fk                   FOREIGN KEY (owner_id)          REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.walls                ADD CONSTRAINT walls_name_id_fk                    FOREIGN KEY (name_id)           REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE SET DEFAULT;
 ALTER TABLE public.walls                ADD CONSTRAINT walls_pinned_post_id_fk             FOREIGN KEY (pinned_post_id)    REFERENCES public.posts(id)        ON UPDATE CASCADE ON DELETE SET DEFAULT;
+ALTER TABLE public.posts                ADD CONSTRAINT posts_object_id_fk                  FOREIGN KEY (object_id)         REFERENCES public.objects(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.posts                ADD CONSTRAINT posts_wall_id_fk                    FOREIGN KEY (wall_id)           REFERENCES public.walls(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.posts                ADD CONSTRAINT posts_author_id_fk                  FOREIGN KEY (author_id)         REFERENCES public.entities(id)     ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.posts                ADD CONSTRAINT posts_text_id_fk                    FOREIGN KEY (text_id)           REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.posts                ADD CONSTRAINT posts_poll_id_fk                    FOREIGN KEY (poll_id)           REFERENCES public.polls(id)        ON UPDATE CASCADE ON DELETE CASCADE;
 ALTER TABLE public.posts                ADD CONSTRAINT posts_repost_id_fk                  FOREIGN KEY (repost_id)         REFERENCES public.posts(id)        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.emoji                ADD CONSTRAINT emoji_char_id_fk                    FOREIGN KEY (char_id)           REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.emoji                ADD CONSTRAINT emoji_title_id_fk                   FOREIGN KEY (title_id)          REFERENCES public.content(id)      ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.reactions            ADD CONSTRAINT reactions_object_id_fk              FOREIGN KEY (object_id)         REFERENCES public.objects(id)      ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.reactions            ADD CONSTRAINT reactions_user_id_fk                FOREIGN KEY (user_id)           REFERENCES public.users(id)        ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE public.reactions            ADD CONSTRAINT reactions_emoji_id_fk               FOREIGN KEY (emoji_id)          REFERENCES public.emoji(id)        ON UPDATE CASCADE ON DELETE CASCADE;

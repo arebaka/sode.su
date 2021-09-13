@@ -2,6 +2,7 @@ const path   = require("path");
 const fs     = require("fs");
 const crypto = require("crypto");
 const pg     = require("pg");
+const emok   = require("emok");
 
 const { spawn }      = require("child_process");
 const { v4: uuidv4 } = require("uuid");
@@ -42,7 +43,7 @@ class DBHelper
             phone:    /(\+\d{1,3}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/g,
             email:    /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g,
             uri:      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g,
-            emoji:    /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?(?:\u200d(?:[^\ud800-\udfff]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?)*/g
+            emoji:    emok.regexp
         };
     }
 
@@ -162,8 +163,34 @@ class DBHelper
         }
     
         await this.hash("");
-        await this.createUser(0, "anon", "Anon", 3828481200)
-            .catch(err => {});
+
+        let char;
+        let title;
+
+        let existingEmoji = await this.pool.query("select slug from emoji");
+        existingEmoji = existingEmoji.rows.map(e => e.slug);
+
+        for (let cat in emok.list) {
+            for (let subcat in emok.list[cat]) {
+                for (let emoji of emok.list[cat][subcat]) {
+                    if (existingEmoji.find(e => e == emoji.slug))
+                        continue;
+
+                    char  = await this._getContent(emoji.char, 0);
+                    title = await this._getContent(emoji.title, 0);
+
+                    await this.pool.query(`
+                            insert into emoji (category, subcategory, slug, char_id, title_id)
+                            values ($1, $2, $3, $4, $5)
+                            on conflict do nothing
+                        `, [
+                            cat, subcat, emoji.slug, char.id, title.id
+                        ]);
+                }
+            }
+        }
+
+        await this.createUser(0, "anon", "Anon", 3828481200, null).catch(err => {});
     }
 
     async stop()
@@ -268,7 +295,7 @@ class DBHelper
 
         const walls = await this.pool.query(`
                 select w.index, c.text as name,
-                    w.visibility, w.postable, w.commentable,
+                    w.visibility, w.postable, w.commentable, w.reactionable,
                     w.anon_posts_only, w.anon_comments_only,
                     w.sorting, w.bumplimit, w.last_post_index,
                     p.index as pinned_post_index
@@ -325,27 +352,10 @@ class DBHelper
         if (!profile)
             return null;
 
-        const walls = await this.pool.query(`
-                select w.index, c.text as name,
-                    w.visibility, w.postable, w.commentable,
-                    w.anon_posts_only, w.anon_comments_only,
-                    w.sorting, w.bumplimit, w.last_post_index,
-                    pp.index as pinned_post_index, count(p.*) as n_posts
-                from walls w
-                join content c
-                on c.id = w.name_id
-                left join posts pp
-                on pp.id = w.pinned_post_id
-                left join posts p
-                on p.wall_id = w.id
-                where w.owner_id = $1
-                group by w.id, c.id, pp.id
-            `, [profile.entity_id]);
-
+        profile.type   = entityType;
         profile.id     = parseInt(profile.id);
         profile.cover  = profile.cover_hash  ? (new BigUint64Array([profile.cover_hash]))[0]  + '.' + profile.cover_format  : null;
         profile.avatar = profile.avatar_hash ? (new BigUint64Array([profile.avatar_hash]))[0] + '.' + profile.avatar_format : null;
-        profile.walls  = walls.rows;
 
         profile.cover_hash
             = profile.cover_format
@@ -376,27 +386,52 @@ class DBHelper
             `,
             club: ``
         };
+
         let profiles = await this.pool.query(queries[type], [ids]);
         profiles = profiles.rows;
 
-        for (let i in profiles) {
-            profiles[i].type   = type;
-            profiles[i].id     = parseInt(profiles[i].id);
-            profiles[i].cover  = profiles[i].cover_hash
-                ? (new BigUint64Array([profiles[i].cover_hash]))[0]  + '.' + profiles[i].cover_format
+        for (let profile of profiles) {
+            profile.type   = type;
+            profile.id     = parseInt(profile.id);
+            profile.cover  = profile.cover_hash
+                ? (new BigUint64Array([profile.cover_hash]))[0]  + '.' + profile.cover_format
                 : null;
-            profiles[i].avatar = profiles[i].avatar_hash
-                ? (new BigUint64Array([profiles[i].avatar_hash]))[0] + '.' + profiles[i].avatar_format
+            profile.avatar = profile.avatar_hash
+                ? (new BigUint64Array([profile.avatar_hash]))[0] + '.' + profile.avatar_format
                 : null;
     
-            profiles[i].cover_hash
-                = profiles[i].cover_format
-                = profiles[i].avatar_hash
-                = profiles[i].avatar_format
+            profile.cover_hash
+                = profile.cover_format
+                = profile.avatar_hash
+                = profile.avatar_format
                 = undefined;
         }
 
         return profiles;
+    }
+
+    async getWalls(entityType, entityId)
+    {
+        const walls = await this.pool.query(`
+                select w.index, c.text as name,
+                    w.visibility, w.postable, w.commentable, w.reactionable,
+                    w.anon_posts_only, w.anon_comments_only,
+                    w.sorting, w.bumplimit, w.last_post_index,
+                    pp.index as pinned_post_index, count(p.*) as n_posts
+                from walls w
+                join ${this.entityTables[entityType].account} u
+                on u.entity_id = w.owner_id
+                join content c
+                on c.id = w.name_id
+                left join posts pp
+                on pp.id = w.pinned_post_id
+                left join posts p
+                on p.wall_id = w.id
+                where u.id = $1
+                group by w.id, c.id, pp.id
+            `, [entityId]);
+
+        return walls.rows;
     }
 
     async getBio(entityType, entityId)
@@ -415,7 +450,7 @@ class DBHelper
     {
         const wall = await this.pool.query(`
                 select w.id, w.index, c.text as name,
-                    w.visibility, w.postable, w.commentable,
+                    w.visibility, w.postable, w.commentable, w.reactionable,
                     w.anon_posts_only, w.anon_comments_only,
                     w.sorting, w.bumplimit, w.last_post_index,
                     pp.index as pinned_post_index, count(p.*) as n_posts
@@ -586,13 +621,13 @@ class DBHelper
             return null;
 
         let image = await this.pool.query(`
-                select m.hash as hash, m.format as format,
-                    m.uploader_id as uploader_id, m.uploaded_dt as uploaded_dt,
-                    m.size as size, u.id as owner_user_id, ${/*c.id as owner_club_id,*/""}
-                    ct.text as descr, i.saved_dt as saved_dt, i.last_comment_index as last_comment_index,
+                select m.hash as hash, m.format, m.uploader_id, m.uploaded_dt,
+                    m.size, u.id as owner_user_id, ${/*c.id as owner_club_id,*/""}
+                    ct.text as descr, i.saved_dt, o.last_comment_index,
                     i.width as width, i.height as height
-                from media m
-                join images i on i.media_id = m.id
+                from images i
+                join media m on m.id = i.media_id
+                join objects o on o.id = i.object_id
                 join entities e on e.id = i.owner_id
                 left join ${this.entityTables.user.account} u
                 on u.entity_id = e.id
@@ -627,10 +662,12 @@ class DBHelper
         };
 
         let posts = await this.pool.query(`
-                select p.index, u.id as author_user_id, ${/*c.id as club_user_id,*/""}
+                select p.object_id, p.index, u.id as author_user_id, ${/*c.id as club_user_id,*/""}
                 c.text, p.sent_dt, p.commentable, p.anon_comments_only,
-                p.last_comment_index, p.poll_id, p.repost_id
+                p.poll_id, p.repost_id, o.last_comment_index, 0 as n_comments
                 from posts p
+                join objects o
+                on o.id = p.object_id
                 join content c
                 on c.id = p.text_id
                 left join users u
@@ -647,15 +684,31 @@ class DBHelper
             ]);
         posts = posts.rows;
 
-        for (let i = 0; i < posts.length; i++) {
-            posts[i].author = posts[i].author_user_id
-                ? "user/" + posts[i].author_user_id
-                : "club/" + posts[i].author_club_id;
+        let reactions;
 
-            delete posts[i].author_user_id;
-            delete posts[i].author_club_id;
-            delete posts[i].poll_id;
-            delete posts[i].repost_id;
+        for (let post of posts) {
+            post.author = post.author_user_id
+                ? "user/" + post.author_user_id
+                : "club/" + post.author_club_id;
+
+            reactions = await this.pool.query(`
+                    select c.text as emoji, count(r.id) as count
+                    from content c
+                    join emoji e
+                    on e.char_id = c.id
+                    join reactions r
+                    on r.emoji_id = e.id
+                    where r.object_id = $1
+                    group by c.id
+                `, [post.object_id]);
+
+            post.reactions = reactions.rows;
+
+            delete post.object_id;
+            delete post.author_user_id;
+            delete post.author_club_id;
+            delete post.poll_id;
+            delete post.repost_id;
         }
 
         return posts;
@@ -924,22 +977,27 @@ class DBHelper
             schedule = "2019-04-27 03:00:00";
         }
 
+        const object = await this.pool.query(`
+                insert into objects default values
+                returning id
+            `);
+
         const post = await this.pool.query(`
                 insert into posts (
-                    wall_id, index, author_id, text_id, sent_dt,
+                    object_id, wall_id, index, author_id, text_id, sent_dt,
                     commentable, anon_comments_only, poll_id, repost_id
                 )
-                values ($1, $2, $3, $4, (
-                    select $5 as dt
+                values ($1, $2, $3, $4, $5, (
+                    select $6 as dt
                     union
                     select current_timestamp as dt
                     order by dt desc
                     limit 1
-                ), $6, $7, $8, $9)
+                ), $7, $8, $9, $10)
                 returning id, index, sent_dt
             `, [
-                wallId, index.rows[0].last_post_index, author.rows[0].id, text.id,
-                schedule, commentable, anon_comments_only, pollId, repostId
+                object.rows[0].id, wallId, index.rows[0].last_post_index, author.rows[0].id,
+                text.id, schedule, commentable, anon_comments_only, pollId, repostId
             ]);
 
         return post.rows[0] || null;
@@ -966,12 +1024,20 @@ class DBHelper
         if (!data)
             return null;
 
+        const object = await this.pool.query(`
+                insert into objects default values
+                returning id
+            `);
+
         const image = await this.pool.query(`
-                insert into images (album_id, media_id, owner_id, descr_id, width, height)
-                values ($1, $2, (select entity_id from ${this.entityTables[ownerType].account} where id = $3), $4, $5, $6)
+                insert into images (object_id, album_id, media_id, owner_id, descr_id, width, height)
+                values ($1, $2, $3, (
+                    select entity_id from ${this.entityTables[ownerType].account}
+                    where id = $4
+                ), $5, $6, $7)
                 returning id
             `, [
-                album.rows[0].id, data.media.id, ownerId, descrId, data.width, data.height
+                object.rows[0].id, album.rows[0].id, data.media.id, ownerId, descrId, data.width, data.height
             ]);
 
         return image.rows[0].id;
