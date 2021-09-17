@@ -833,14 +833,16 @@ html.dark .menu .notice {
   height: 100%;
   background: rgba(100, 100, 100, 0.5);
 }
+#confirmation-box {
+  display: block;
+}
 html.dark #log-in-box,
 html.dark #log-out-box,
 html.dark #confirmation-box {
   background: rgba(50, 50, 100, 0.5);
 }
 #log-in-box.open,
-#log-out-box.open,
-#confirmation-box.open {
+#log-out-box.open {
   display: block;
 }
 #log-in,

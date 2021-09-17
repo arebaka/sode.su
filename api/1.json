@@ -139,7 +139,7 @@
 			"descr":      "",
 			"min_length": 5,
 			"max_length": 32,
-			"pattern":    "^[A-Za-z][A-Za-z0-9\\-\\.]*$"
+			"pattern":    "^[A-Za-z_][A-Za-z0-9_\\-\\.]*$"
 		},
 		"Entity_Name": {
 			"proto":      "str",
