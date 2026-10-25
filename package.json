@@ -9,11 +9,11 @@
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "emok": "^1.1.0",
-    "express": "~4.16.1",
+    "express": "~5.3.0",
     "express-useragent": "^1.0.15",
     "handlebars": "^4.7.7",
     "helmet": "^4.6.0",
-    "image-size": "^1.0.0",
+    "image-size": "^2.0.4",
     "imagemin": "^7.0.0",
     "imagemin-gifsicle": "^7.0.0",
     "imagemin-mozjpeg": "^9.0.0",
@@ -25,7 +25,7 @@
     "morgan": "^1.10.0",
     "pg": "^8.6.0",
     "serverline": "^1.5.0",
-    "sharp": "^0.29.0",
-    "uuid": "^8.3.2"
+    "sharp": "^0.35.5",
+    "uuid": "^14.0.3"
   }
 }
